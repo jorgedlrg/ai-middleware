@@ -89,3 +89,4 @@ nb-configuration.xml
 ## Miscellaneous
 ##############################
 *.log
+secrets.properties
