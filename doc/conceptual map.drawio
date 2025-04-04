@@ -35,7 +35,7 @@
           <mxGeometry x="70" y="680" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jFvxkbqrJUWGBROlJ44q-15" value="Avatar" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="430" y="680" width="120" height="60" as="geometry" />
+          <mxGeometry x="441" y="680" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jFvxkbqrJUWGBROlJ44q-20" value="Behavior" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="70" y="780" width="120" height="60" as="geometry" />
@@ -74,10 +74,10 @@
           </mxGeometry>
         </mxCell>
         <mxCell id="jFvxkbqrJUWGBROlJ44q-29" value="Outfit" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="380" y="840" width="120" height="60" as="geometry" />
+          <mxGeometry x="260" y="800" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jFvxkbqrJUWGBROlJ44q-30" value="Physical description" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="260" y="740" width="120" height="60" as="geometry" />
+          <mxGeometry x="260" y="700" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="jFvxkbqrJUWGBROlJ44q-31" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="jFvxkbqrJUWGBROlJ44q-29" target="jFvxkbqrJUWGBROlJ44q-30">
           <mxGeometry width="50" height="50" relative="1" as="geometry">
@@ -147,9 +147,6 @@
             <mxPoint x="260" y="700" as="sourcePoint" />
             <mxPoint x="310" y="650" as="targetPoint" />
           </mxGeometry>
-        </mxCell>
-        <mxCell id="jFvxkbqrJUWGBROlJ44q-50" value="Missing:&lt;div&gt;Current scene&lt;/div&gt;&lt;div&gt;Activity&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-180" y="450" width="250" height="100" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
