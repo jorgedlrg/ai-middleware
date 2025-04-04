@@ -11,7 +11,7 @@ Every interaction won't be just one big message to the Text-gen LLM, but instead
 - [ ] How will be modeles the Activity
 ***
 ## Random Ideas. Pending classification.
-### Locations
+### Location
 The idea here is to be able to create **Locations**, which can be hierarchically linked (sub-location)
 These **Locations** will have 
 - Physical description: how the place looks like, what does it have/contain
@@ -25,6 +25,16 @@ If they're controlled by the system, they become **Characters**.
 **Actors** have:
 - Physical description: how these beings look like.
 - **Outfits**: In case the do use outfits, a set of **outfits** that the **Actors** might use. Also, in which _situations_ they might use these outfits. Actors should be able to change their outfits. This seems to require some refinement.
+#### Character
+A _system_ controlled **Actor**
+
+They should have a defined **behavior**
+The **behavior** consists of:
+- Personality
+- Traits
+- Memory
+#### Avatar
+A **user** controlled **Actor**
 
 
 ***
