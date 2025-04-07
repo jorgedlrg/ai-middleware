@@ -30,9 +30,8 @@ A _system_ controlled **Actor**
 
 They should have a defined **behavior**
 The **behavior** consists of:
-- Personality
-- Traits
-- Memory
+- Personality: Describes how the **Character** behaves. Reflects its mind.
+- Memory: Past things that the **Character** remembers. Includes interactions with other **Actors**
 #### Avatar
 A **user** controlled **Actor**
 
@@ -41,9 +40,4 @@ A **user** controlled **Actor**
 ## Use Cases
 ### User
 #### Create Avatar
-***
-## Tables
-| Header 1 | Header 2 |  Header 3 |
-|----------|----------|-----------|
-|   Col 1  |   Col 2  |   Col 3   |
 
