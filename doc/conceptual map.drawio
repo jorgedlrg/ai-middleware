@@ -139,22 +139,32 @@
             <mxPoint x="310" y="650" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="ALwA_angph4xc7U3fhFM-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;exitX=0.5;exitY=1;exitDx=0;exitDy=0;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-1" target="ALwA_angph4xc7U3fhFM-13">
-          <mxGeometry relative="1" as="geometry" />
+        <mxCell id="ALwA_angph4xc7U3fhFM-14" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-1" target="ALwA_angph4xc7U3fhFM-31">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="-620" y="210" as="targetPoint" />
+          </mxGeometry>
         </mxCell>
-        <mxCell id="ALwA_angph4xc7U3fhFM-15" value="Happens in" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ALwA_angph4xc7U3fhFM-14">
+        <mxCell id="ALwA_angph4xc7U3fhFM-15" value="Uses" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ALwA_angph4xc7U3fhFM-14">
           <mxGeometry x="-0.0522" y="-4" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
         <mxCell id="ALwA_angph4xc7U3fhFM-1" value="Scene" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-660" y="210" width="120" height="60" as="geometry" />
+          <mxGeometry x="-670" y="50" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="ALwA_angph4xc7U3fhFM-6" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-2" target="ALwA_angph4xc7U3fhFM-4">
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="ALwA_angph4xc7U3fhFM-7" value="Controls" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ALwA_angph4xc7U3fhFM-6">
           <mxGeometry y="-3" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-27" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-2" target="ALwA_angph4xc7U3fhFM-1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-28" value="Joins" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ALwA_angph4xc7U3fhFM-27">
+          <mxGeometry x="-0.05" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
@@ -199,6 +209,23 @@
         </mxCell>
         <mxCell id="ALwA_angph4xc7U3fhFM-24" value="AI*" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-220" y="210" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-30" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-29" target="jFvxkbqrJUWGBROlJ44q-2">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-29" value="Scenario" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="260" y="90" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-33" style="edgeStyle=orthogonalEdgeStyle;rounded=0;orthogonalLoop=1;jettySize=auto;html=1;" edge="1" parent="1" source="ALwA_angph4xc7U3fhFM-31" target="ALwA_angph4xc7U3fhFM-13">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-34" value="Plays" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="ALwA_angph4xc7U3fhFM-33">
+          <mxGeometry x="-0.2857" y="1" relative="1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="ALwA_angph4xc7U3fhFM-31" value="Scenario" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-670" y="220" width="120" height="60" as="geometry" />
         </mxCell>
       </root>
     </mxGraphModel>
