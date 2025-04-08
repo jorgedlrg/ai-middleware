@@ -11,7 +11,9 @@ Every interaction won't be just one big message to the Text-gen LLM, but instead
 - [ ] How will be modeles the Activity
 
 ***
-## Statis concepts
+
+## Static concepts
+
 ### Location
 The idea here is to be able to create **Locations**, which can be hierarchically linked (sub-location)
 These **Locations** will have 
@@ -20,6 +22,7 @@ These **Locations** will have
 - Activity: What's _happening_ in the **location** in this moment. (This requires more thought and refinement).
 - Roles:
     - **Actors**, in the locations, will have a defined Role. This roles can have a description regarding how the avatars fit in the Location.
+
 ### Actor
 An Actor is a functional being, with their own mind. If these Actors are controlled by a **User**, then they'll be **Avatars**.
 If they're controlled by the system, they become **Characters**.
@@ -35,8 +38,12 @@ The **behavior** consists of:
 - Memory: Past things that the **Character** remembers. Includes interactions with other **Actors**
 #### Avatar
 A **user** controlled **Actor**
+**Users** could control many **Avatars** in a **Scene**. There can be many **Users** at the same **Scene** (Multiplayer).
+
 ***
+
 ## Chat session - Scene
+
 ### Scene
 ### Scenario
 
@@ -44,4 +51,27 @@ A **user** controlled **Actor**
 ## Use Cases
 ### User
 #### Create Avatar
+
+## Random Thoughts
+
+### What happens when the user wants to send a message.
+When the user wants to send a message, using an Avatar, we need to include:
+- Current Location descriptions. (all of them)
+- Active Roles (**Active** has to be defined and refined)
+    - Actor Physical Description
+    - Actor Outfits (One will be marked as Current)
+    - **Characters**:
+        - Personality
+        - Memory    
+    - Current Avatar:
+        - Actor P. Description
+        - Current Actor Outfit
+        - **Avatar Event text**
+        - **Avatar speech text**
+
+#### Event
+This is something happening at a given time. Describes what's happening and what the **Avatar** is doing, and non-avatar events. It could be possible to include other Actor actions. **It includes Actor thoughts (for now, but quite possible I remove this).**
+
+
+
 
