@@ -9,8 +9,9 @@ Every interaction won't be just one big message to the Text-gen LLM, but instead
 ## TODO:
 - [ ] Describe current Scene
 - [ ] How will be modeles the Activity
+
 ***
-## Random Ideas. Pending classification.
+## Statis concepts
 ### Location
 The idea here is to be able to create **Locations**, which can be hierarchically linked (sub-location)
 These **Locations** will have 
@@ -34,7 +35,10 @@ The **behavior** consists of:
 - Memory: Past things that the **Character** remembers. Includes interactions with other **Actors**
 #### Avatar
 A **user** controlled **Actor**
-
+***
+## Chat session - Scene
+### Scene
+### Scenario
 
 ***
 ## Use Cases
