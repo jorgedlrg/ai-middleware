@@ -254,7 +254,7 @@
         <mxCell id="5rmoQbRewHmo6QNsUxsW-7" value="Thoughts?" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-250" y="720" width="120" height="60" as="geometry" />
         </mxCell>
-        <mxCell id="5rmoQbRewHmo6QNsUxsW-8" value="Event description (what the Role is doing)" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-8" value="Role Actions" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-600" y="720" width="120" height="60" as="geometry" />
         </mxCell>
         <mxCell id="5rmoQbRewHmo6QNsUxsW-9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="5rmoQbRewHmo6QNsUxsW-8" target="5rmoQbRewHmo6QNsUxsW-3">
@@ -282,6 +282,30 @@
         <mxCell id="5rmoQbRewHmo6QNsUxsW-12" value="Previous" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="5rmoQbRewHmo6QNsUxsW-11">
           <mxGeometry x="-0.01" relative="1" as="geometry">
             <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-13" value="Events" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-820" y="720" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-14" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="5rmoQbRewHmo6QNsUxsW-2" target="5rmoQbRewHmo6QNsUxsW-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-20" y="450" as="sourcePoint" />
+            <mxPoint x="30" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-15" value="Location" style="rounded=1;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-510" y="510" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-16" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="5rmoQbRewHmo6QNsUxsW-15" target="5rmoQbRewHmo6QNsUxsW-2">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-20" y="450" as="sourcePoint" />
+            <mxPoint x="30" y="400" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="5rmoQbRewHmo6QNsUxsW-17" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="5rmoQbRewHmo6QNsUxsW-3" target="5rmoQbRewHmo6QNsUxsW-15">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="-20" y="450" as="sourcePoint" />
+            <mxPoint x="30" y="400" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
