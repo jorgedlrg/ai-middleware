@@ -15,6 +15,7 @@ Every interaction won't be just one big message to the Text-gen LLM, but instead
 ## Static concepts
 
 ### Location
+I'm thinking about refactoring this to **Context** because they don't have to be "physical".
 The idea here is to be able to create **Locations**, which can be hierarchically linked (sub-location)
 These **Locations** will have 
 - Physical description: how the place looks like, what does it have/contain
@@ -56,8 +57,8 @@ A **user** controlled **Actor**
 
 ### What happens when the user wants to send a message.
 When the user wants to send a message, using an Avatar, we need to include:
-- Current Location descriptions. (all of them)
-- Active Roles (**Active** has to be defined and refined)
+- Current **Location** descriptions. (all of them)
+- Active **Roles** (**Active** has to be defined and refined)
     - Actor Physical Description
     - Actor Outfits (One will be marked as Current)
     - **Characters**:
@@ -68,6 +69,7 @@ When the user wants to send a message, using an Avatar, we need to include:
         - Current Actor Outfit
         - **Avatar Event text**
         - **Avatar speech text**
+- Previous **Interactions**
 
 #### Event
 This is something happening at a given time. Describes what's happening and what the **Avatar** is doing, and non-avatar events. It could be possible to include other Actor actions. **It includes Actor thoughts (for now, but quite possible I remove this).**
