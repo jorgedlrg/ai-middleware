@@ -460,7 +460,7 @@
         <mxCell id="R8JtSFRpjHo3paldOy-k-42" value="&lt;div&gt;Manual or&lt;/div&gt;&lt;div&gt;automatic&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
           <mxGeometry x="-320" y="2200" width="100" height="100" as="geometry" />
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-43" value="Role to reply&lt;div&gt;selected&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-43" value="Role to interact&lt;div&gt;selected&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="-320" y="2470" width="100" height="100" as="geometry" />
         </mxCell>
         <mxCell id="R8JtSFRpjHo3paldOy-k-44" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-42" target="R8JtSFRpjHo3paldOy-k-43">
@@ -469,12 +469,12 @@
             <mxPoint x="30" y="2380" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-45" value="Manual: User selectes Role to reply" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-44">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-45" value="Manual: User selects Role to reply" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-44">
           <mxGeometry x="-0.3176" y="-2" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-46" value="LLM generates a response" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-46" value="Sophisticated mechanism chooses Role that will go next" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="-50" y="2350" width="100" height="100" as="geometry" />
         </mxCell>
         <mxCell id="R8JtSFRpjHo3paldOy-k-47" value="" style="endArrow=classic;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-42" target="R8JtSFRpjHo3paldOy-k-46">
@@ -483,7 +483,7 @@
             <mxPoint x="30" y="2380" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-48" value="Automatic: Send Context+ Interactions&lt;div&gt;to the LLM to choose&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-47">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-48" value="Automatic: Send Context+ Interactions&lt;div&gt;to a sophisticated mechanism to choose&lt;/div&gt;&lt;div&gt;the Role that will reply&lt;/div&gt;" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-47">
           <mxGeometry x="-0.1378" y="-1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -494,7 +494,7 @@
             <mxPoint x="30" y="2380" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-50" value="Parse response" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-49">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-50" value="Role selected" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-49">
           <mxGeometry x="-0.1539" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
@@ -510,7 +510,7 @@
             <mxPoint as="offset" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-53" value="Role Interaction generated&amp;nbsp;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-53" value="&lt;div&gt;Generate Role Interaction&amp;nbsp;&lt;/div&gt;" style="rounded=1;whiteSpace=wrap;html=1;absoluteArcSize=1;arcSize=14;strokeWidth=2;" vertex="1" parent="1">
           <mxGeometry x="-160" y="2870" width="100" height="100" as="geometry" />
         </mxCell>
         <mxCell id="R8JtSFRpjHo3paldOy-k-54" value="If Role is&amp;nbsp;&lt;div&gt;User or AI&lt;/div&gt;" style="strokeWidth=2;html=1;shape=mxgraph.flowchart.decision;whiteSpace=wrap;" vertex="1" parent="1">
@@ -552,7 +552,7 @@
             </Array>
           </mxGeometry>
         </mxCell>
-        <mxCell id="R8JtSFRpjHo3paldOy-k-61" value="Parse response" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-60">
+        <mxCell id="R8JtSFRpjHo3paldOy-k-61" value="Interaction" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];" vertex="1" connectable="0" parent="R8JtSFRpjHo3paldOy-k-60">
           <mxGeometry x="-0.1423" y="1" relative="1" as="geometry">
             <mxPoint as="offset" />
           </mxGeometry>
