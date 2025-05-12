@@ -4,8 +4,8 @@
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="IGtqy3-27ZP9-1s9x_6J-3" value="Aggregate Interaction" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
-          <mxGeometry x="-570" y="1220" width="420" height="340" as="geometry" />
+        <mxCell id="IGtqy3-27ZP9-1s9x_6J-3" value="Aggregate Session" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
+          <mxGeometry x="-570" y="1220" width="560" height="430" as="geometry" />
         </mxCell>
         <mxCell id="IGtqy3-27ZP9-1s9x_6J-2" value="Aggregate Scenario" style="ellipse;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="-190" y="1020" width="690" height="450" as="geometry" />
