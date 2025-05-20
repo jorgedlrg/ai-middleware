@@ -3,10 +3,12 @@ package com.jorgedelarosa.aimiddleware.application.port.in;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
+@Component
 public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
   @Override
