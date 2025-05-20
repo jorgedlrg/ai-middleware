@@ -12,8 +12,8 @@ import java.util.UUID;
  */
 public class Session extends AggregateRoot {
 
-  private Scenario scenario;
-  private List<Interaction> interactions;
+  private final Scenario scenario;
+  private final List<Interaction> interactions;
 
   public Session(Scenario scenario) {
     super(Session.class, UUID.randomUUID());
@@ -21,11 +21,13 @@ public class Session extends AggregateRoot {
     this.interactions = new ArrayList<>();
   }
   
-  
+  // POC method
   public void interact(String text, Role role){
     interactions.add(new Interaction("", text, "", role));
   }
 
+  
+  //TODO: Avoid external modification
   public Scenario getScenario() {
     return scenario;
   }

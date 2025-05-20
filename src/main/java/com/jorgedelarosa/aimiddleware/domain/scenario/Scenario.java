@@ -12,14 +12,23 @@ public class Scenario extends AggregateRoot {
 
   private final List<Context> contexts;
   private final List<Role> roles;
+
   // TODO map with context - role
 
-  public Scenario() {
+  public Scenario(Role user, Role machine) {
     super(Scenario.class, UUID.randomUUID());
     contexts = new ArrayList<>();
     roles = new ArrayList<>();
+    roles.add(user);
+    roles.add(machine);
   }
 
+  // TODO: Maybe I'll create the Role here later on
+  public void addRole(Role role) {
+    roles.add(role);
+  }
+
+  // TODO: Avoid external modification
   public List<Context> getContexts() {
     return contexts;
   }
