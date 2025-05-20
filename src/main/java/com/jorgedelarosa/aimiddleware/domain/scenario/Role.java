@@ -9,6 +9,7 @@ import java.util.UUID;
  */
 public class Role extends Entity {
 
+  //TODO: this is pending refinement
   private final Actor actor;
 
   public Role() {
