@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import java.util.UUID;
 import org.springframework.stereotype.Component;
 
 /**
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class ScenarioAdapter implements GetScenarioByIdOutPort{
 
   @Override
-  public Scenario query() {
+  public Scenario query(UUID id) {
     throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
   }
 }
