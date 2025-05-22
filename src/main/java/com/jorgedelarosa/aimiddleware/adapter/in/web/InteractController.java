@@ -3,7 +3,6 @@ package com.jorgedelarosa.aimiddleware.adapter.in.web;
 import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
 import lombok.AllArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,8 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 @AllArgsConstructor
 public class InteractController {
 
-  @Autowired private final MachineInteractUseCase machineInteractUseCase;
-  @Autowired private final UserInteractUseCase userInteractUseCase;
+  private final MachineInteractUseCase machineInteractUseCase;
+  private final UserInteractUseCase userInteractUseCase;
 
   @GetMapping("/interact/user")
   public String interactUser() {
