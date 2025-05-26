@@ -1,9 +1,14 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.web;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractMachineReq;
+import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractMachineRes;
+import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserReq;
+import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserRes;
 import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
@@ -18,17 +23,17 @@ public class InteractController {
   private final MachineInteractUseCase machineInteractUseCase;
   private final UserInteractUseCase userInteractUseCase;
 
-  @GetMapping("/interact/user")
-  public String interactUser() {
-    userInteractUseCase.execute(new UserInteractUseCase.Command("hello"));
+  @PostMapping("/interact/user")
+  public InteractUserRes interactUser(@RequestBody InteractUserReq req) {
+    userInteractUseCase.execute(new UserInteractUseCase.Command(req.text()));
 
-    return "ok";
+    return new InteractUserRes("ok");
   }
 
-  @GetMapping("/interact/machine")
-  public String interactMachine() {
+  @PostMapping("/interact/machine")
+  public InteractMachineRes interactMachine(@RequestBody InteractMachineReq req) {
     machineInteractUseCase.execute(new MachineInteractUseCase.Command());
 
-    return "ok";
+    return new InteractMachineRes("ok");
   }
 }
