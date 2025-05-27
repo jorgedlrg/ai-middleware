@@ -4,11 +4,11 @@ spring:
   datasource:
     url: jdbc:h2:mem:mydb
     username: sa
-    password: password
+    password: sa
     driverClassName: org.h2.Driver
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
-    defer-datasource-initialization: true  # Inserts data after hibernate table creation. Useful for DEV purposes
+    defer-datasource-initialization: false  # Inserts data after hibernate table creation. Useful for DEV purposes
   h2:
     console:
       enabled: true # http://localhost:8080/h2-console
