@@ -1,17 +1,29 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.ScenarioEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.ScenarioRepository;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import java.util.Optional;
 import java.util.UUID;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
 @Component
-public class ScenarioAdapter implements GetScenarioByIdOutPort{
+@AllArgsConstructor
+public class ScenarioAdapter implements GetScenarioByIdOutPort {
+
+  private final ScenarioRepository scenarioRepository;
 
   @Override
-  public Scenario query(UUID id) {
-    throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+  public Optional<Scenario> query(UUID id) {
+    Optional<ScenarioEntity> scenarioEntity = scenarioRepository.findById(id);
+    if (scenarioEntity.isPresent()) {
+      return Optional.of(Scenario.restore(scenarioEntity.get().getId()));
+    } else {
+      return Optional.empty();
+    }
   }
 }

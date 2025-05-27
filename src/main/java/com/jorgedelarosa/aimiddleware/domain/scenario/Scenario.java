@@ -23,6 +23,16 @@ public class Scenario extends AggregateRoot {
     roles.add(machine);
   }
 
+  private Scenario(List<Context> contexts, List<Role> roles, Class clazz, UUID id) {
+    super(clazz, id);
+    this.contexts = contexts;
+    this.roles = roles;
+  }
+
+  public static Scenario restore(UUID id) {
+    return new Scenario(new ArrayList<>(), new ArrayList<>(), Scenario.class, id);
+  }
+
   // TODO: Maybe I'll create the Role here later on
   public void addRole(Role role) {
     roles.add(role);

@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -8,5 +9,5 @@ import java.util.UUID;
  */
 public interface GetScenarioByIdOutPort {
 
- public Scenario query(UUID id);
+ public Optional<Scenario> query(UUID id);
 }
