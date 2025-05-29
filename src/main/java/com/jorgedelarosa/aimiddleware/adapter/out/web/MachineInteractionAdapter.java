@@ -1,5 +1,6 @@
-package com.jorgedelarosa.aimiddleware.application.port.out;
+package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
+import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import org.springframework.stereotype.Component;
 

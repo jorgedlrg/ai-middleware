@@ -1,5 +1,7 @@
-package com.jorgedelarosa.aimiddleware.application.port.out;
+package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
+import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.Optional;
 import java.util.UUID;
