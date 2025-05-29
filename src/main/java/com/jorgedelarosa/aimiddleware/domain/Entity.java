@@ -12,7 +12,12 @@ public abstract class Entity {
     this.entityId = id;
   }
 
-  public String getId() {
+  public UUID getId() {
+    return entityId;
+  }
+
+  @Override
+  public String toString() {
     return entityId.toString();
   }
 }

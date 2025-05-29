@@ -14,11 +14,6 @@ public abstract class AggregateRoot extends Entity {
     aggregateId = new AggregateId(clazz, id);
   }
 
-  @Override
-  public String getId() {
-    return aggregateId.toString();
-  }
-
   public class AggregateId {
     private final Class clazz;
     private final UUID id;

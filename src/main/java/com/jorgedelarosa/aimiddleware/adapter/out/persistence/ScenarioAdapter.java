@@ -1,7 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.ScenarioEntity;
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.ScenarioRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import java.util.Optional;
