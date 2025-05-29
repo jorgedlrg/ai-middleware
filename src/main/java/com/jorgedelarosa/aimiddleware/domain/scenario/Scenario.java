@@ -30,7 +30,11 @@ public class Scenario extends AggregateRoot {
   }
 
   public static Scenario restore(UUID id) {
-    return new Scenario(new ArrayList<>(), new ArrayList<>(), Scenario.class, id);
+    // TODO roles
+    List<Role> roles = new ArrayList();
+    roles.add(new Role());
+    roles.add(new Role());
+    return new Scenario(new ArrayList<>(), roles, Scenario.class, id);
   }
 
   // TODO: Maybe I'll create the Role here later on

@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * @author jorge
  */
-@Entity
+@Entity(name = "scenario")
 @Data
 public class ScenarioEntity {
   @Id private UUID id;

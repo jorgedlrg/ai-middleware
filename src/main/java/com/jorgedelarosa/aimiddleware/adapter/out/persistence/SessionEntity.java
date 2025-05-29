@@ -8,7 +8,7 @@ import lombok.Data;
 /**
  * @author jorge
  */
-@Entity
+@Entity(name = "session")
 @Data
 public class SessionEntity {
 
