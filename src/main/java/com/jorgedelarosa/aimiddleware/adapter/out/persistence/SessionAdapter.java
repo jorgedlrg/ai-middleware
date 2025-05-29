@@ -20,17 +20,14 @@ import org.springframework.stereotype.Component;
 public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort {
 
   private final SessionRepository sessionRepository;
-  private final ScenarioRepository scenarioRepository;
 
   @Override
   public Optional<Session> query(UUID id) {
     Optional<SessionEntity> sessionEntity = sessionRepository.findById(id);
     if (sessionEntity.isPresent()) {
       SessionEntity se = sessionEntity.get();
-      ScenarioEntity scenarioEnt = scenarioRepository.findById(se.getScenario()).orElseThrow();
-      Scenario scenario = Scenario.restore(scenarioEnt.getId());
       // TODO: restore interactions as well
-      return Optional.of(Session.restore(se.getId(), scenario, new ArrayList<>()));
+      return Optional.of(Session.restore(se.getId(), se.getScenario(), new ArrayList<>()));
     } else {
       return Optional.empty();
     }

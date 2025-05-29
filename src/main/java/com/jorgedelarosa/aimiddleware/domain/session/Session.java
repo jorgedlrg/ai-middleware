@@ -2,7 +2,6 @@ package com.jorgedelarosa.aimiddleware.domain.session;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -12,32 +11,31 @@ import java.util.UUID;
  */
 public class Session extends AggregateRoot {
 
-  private final Scenario scenario;
+  private final UUID scenario;
   private final List<Interaction> interactions;
 
-  private Session(Scenario scenario, List<Interaction> interactions, Class clazz, UUID id) {
+  private Session(UUID scenario, List<Interaction> interactions, Class clazz, UUID id) {
     super(clazz, id);
     this.scenario = scenario;
     this.interactions = interactions;
   }
 
-  public Session(Scenario scenario) {
+  public Session(UUID scenario) {
     super(Session.class, UUID.randomUUID());
     this.scenario = scenario;
     this.interactions = new ArrayList<>();
   }
 
-  public static Session restore(UUID id, Scenario scenario, List<Interaction> interactions) {
+  public static Session restore(UUID id, UUID scenario, List<Interaction> interactions) {
     return new Session(scenario, interactions, Session.class, id);
   }
 
   // POC method
   public void interact(String text, Role role) {
-    interactions.add(new Interaction("", text, "", role));
+    interactions.add(new Interaction("", text, "", role.getId()));
   }
 
-  // TODO: Avoid external modification
-  public Scenario getScenario() {
+  public UUID getScenario() {
     return scenario;
   }
 

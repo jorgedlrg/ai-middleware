@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -14,9 +13,9 @@ public class Interaction extends Entity {
   private final String spokenText;
   private final String actionText;
   private final Instant timestamp;
-  private final Role role;
+  private final UUID role;
 
-  public Interaction(String thoughtText, String spokenText, String actionText, Role role) {
+  public Interaction(String thoughtText, String spokenText, String actionText, UUID role) {
     super(UUID.randomUUID());
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
@@ -41,7 +40,7 @@ public class Interaction extends Entity {
     return timestamp;
   }
 
-  public Role getRole() {
+  public UUID getRole() {
     return role;
   }
 }
