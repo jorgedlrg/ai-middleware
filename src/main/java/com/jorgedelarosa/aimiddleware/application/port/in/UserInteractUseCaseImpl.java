@@ -8,12 +8,14 @@ import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author jorge
  */
 @Component
 @AllArgsConstructor
+@Transactional
 public class UserInteractUseCaseImpl implements UserInteractUseCase {
 
   private final GetScenarioByIdOutPort getScenarioByIdOutPort;

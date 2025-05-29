@@ -27,7 +27,7 @@ public class Session extends AggregateRoot {
   }
 
   public static Session restore(UUID id, UUID scenario, List<Interaction> interactions) {
-    return new Session(scenario, interactions, Session.class, id);
+    return new Session(scenario, new ArrayList(interactions), Session.class, id);
   }
 
   // POC method

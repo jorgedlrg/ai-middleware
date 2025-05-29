@@ -32,8 +32,8 @@ public class Scenario extends AggregateRoot {
   public static Scenario restore(UUID id) {
     // TODO roles
     List<Role> roles = new ArrayList();
-    roles.add(new Role());
-    roles.add(new Role());
+    roles.add(new Role()); //FIXME
+    roles.add(new Role()); //FIXME
     return new Scenario(new ArrayList<>(), roles, Scenario.class, id);
   }
 
