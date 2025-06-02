@@ -1,5 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatMessage;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatRequest;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatResponse;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionMessage;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
@@ -25,7 +28,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     MachineResponse machineResponse;
 
-    String client = "openrouter"; // FIXME
+    String client = "ollama"; // FIXME
     switch (client) {
       case "openrouter" -> {
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
@@ -45,7 +48,19 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         machineResponse = new MachineResponse(res.choices().getFirst().message().content());
       }
       case "ollama" -> {
-        machineResponse = new MachineResponse("TODO");
+        List<OllamaChatMessage> messages = new ArrayList<>();
+        for (Interaction interaction : cmd.session().getInteractions()) {
+          String role = "assistant";
+          if (interaction.isUser()) {
+            role = "user";
+          }
+          OllamaChatMessage ocm = new OllamaChatMessage(role, interaction.getSpokenText());
+          messages.add(ocm);
+        }
+
+        OllamaChatRequest req = new OllamaChatRequest(ollamaClient.MODEL, messages, false);
+        OllamaChatResponse res = ollamaClient.chatCompletion(req);
+        machineResponse = new MachineResponse(res.message().content());
       }
       default -> throw new AssertionError();
     }
