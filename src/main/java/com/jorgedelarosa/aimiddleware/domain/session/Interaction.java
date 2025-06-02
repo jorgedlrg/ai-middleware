@@ -14,6 +14,7 @@ public class Interaction extends Entity {
   private final String actionText;
   private final Instant timestamp;
   private final UUID role;
+  private final boolean user; //FIXME this shouldn't be a hacky flag. this should be coming from the role, probably.
 
   private Interaction(
       String thoughtText,
@@ -21,22 +22,26 @@ public class Interaction extends Entity {
       String actionText,
       Instant timestamp,
       UUID role,
-      UUID id) {
+      UUID id,
+      boolean user) {
     super(id);
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
     this.actionText = actionText;
     this.timestamp = timestamp;
     this.role = role;
+    this.user = user;
   }
 
-  public Interaction(String thoughtText, String spokenText, String actionText, UUID role) {
+  public Interaction(
+      String thoughtText, String spokenText, String actionText, UUID role, boolean user) {
     super(UUID.randomUUID());
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
     this.actionText = actionText;
     this.role = role;
     this.timestamp = Instant.now();
+    this.user = user;
   }
 
   public static Interaction restore(
@@ -45,9 +50,10 @@ public class Interaction extends Entity {
       String spokenText,
       String actionText,
       long timestamp,
-      UUID role) {
+      UUID role,
+      boolean user) {
     return new Interaction(
-        thoughtText, spokenText, actionText, Instant.ofEpochMilli(timestamp), role, id);
+        thoughtText, spokenText, actionText, Instant.ofEpochMilli(timestamp), role, id, user);
   }
 
   public String getThoughtText() {
@@ -68,5 +74,9 @@ public class Interaction extends Entity {
 
   public UUID getRole() {
     return role;
+  }
+
+  public boolean isUser() {
+    return user;
   }
 }

@@ -3,4 +3,4 @@ package com.jorgedelarosa.aimiddleware.adapter.in.web.dto;
 /**
  * @author jorge
  */
-public record InteractMachineReq(String text) {}
+public record InteractMachineReq() {}

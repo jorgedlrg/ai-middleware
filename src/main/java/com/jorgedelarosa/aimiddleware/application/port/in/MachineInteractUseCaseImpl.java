@@ -5,7 +5,6 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPor
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
-import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -25,8 +24,6 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
   @Override
   public void execute(Command cmd) {
-    // TODO: POC code
-
     Session session =
         getSessionByIdOutPort
             .query(UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"))
@@ -35,8 +32,9 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
 
     GenerateMachineInteractionOutPort.MachineResponse response =
-        generateMachineInteractionOutPort.execute(new GenerateMachineInteractionOutPort.Command());
-    session.interact(response.text(), scenario.getRoles().getLast());
+        generateMachineInteractionOutPort.execute(
+            new GenerateMachineInteractionOutPort.Command(session));
+    session.interact(response.text(), scenario.getRoles().getLast(), false);
 
     saveSessionOutPort.save(session);
   }

@@ -32,7 +32,7 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
 
     Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
 
-    session.interact(cmd.text(), scenario.getRoles().getFirst());
+    session.interact(cmd.text(), scenario.getRoles().getFirst(), true);
 
     saveSessionOutPort.save(session);
   }

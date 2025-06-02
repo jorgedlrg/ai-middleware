@@ -6,7 +6,6 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -72,7 +71,13 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
 
     default Interaction toDom(InteractionEntity entity) {
       return Interaction.restore(
-          entity.getId(), "", entity.getText(), "", entity.getTimestamp(), entity.getRole());
+          entity.getId(),
+          "",
+          entity.getText(),
+          "",
+          entity.getTimestamp(),
+          entity.getRole(),
+          entity.isUser());
     }
 
     default long map(Instant value) {

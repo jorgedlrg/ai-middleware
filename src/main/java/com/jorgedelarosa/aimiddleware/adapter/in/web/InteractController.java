@@ -1,6 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.web;
 
-import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractMachineReq;
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractMachineRes;
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserReq;
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserRes;
@@ -31,7 +30,7 @@ public class InteractController {
   }
 
   @PostMapping("/interact/machine")
-  public InteractMachineRes interactMachine(@RequestBody InteractMachineReq req) {
+  public InteractMachineRes interactMachine() {
     machineInteractUseCase.execute(new MachineInteractUseCase.Command());
 
     return new InteractMachineRes("ok");

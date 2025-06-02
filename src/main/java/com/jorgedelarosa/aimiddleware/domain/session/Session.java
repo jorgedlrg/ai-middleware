@@ -30,9 +30,9 @@ public class Session extends AggregateRoot {
     return new Session(scenario, new ArrayList(interactions), Session.class, id);
   }
 
-  // POC method
-  public void interact(String text, Role role) {
-    interactions.add(new Interaction("", text, "", role.getId()));
+  //FIXME: POC method
+  public void interact(String text, Role role, boolean user) {
+    interactions.add(new Interaction("", text, "", role.getId(),user));
   }
 
   public UUID getScenario() {

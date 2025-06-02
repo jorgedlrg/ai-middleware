@@ -17,18 +17,20 @@ import org.springframework.web.client.RestClient;
  * @author jorge
  */
 @Component
-public class OpenRouterAdapter {
+public class OpenRouterClient {
 
-  private Logger logger = LoggerFactory.getLogger(OpenRouterAdapter.class);
+  private final Logger logger = LoggerFactory.getLogger(OpenRouterClient.class);
 
   @Value("${openrouter.apikey}")
   private String apikey;
 
-  public OpenRouterChatCompletionResponse test() {
-    String model = "mistral/ministral-8b";
+  public String MODEL = "google/gemma-3-12b-it";
+
+  public OpenRouterChatCompletionResponse chatCompletion(OpenRouterChatCompletionRequest req) {
+
     String url = "https://openrouter.ai/api/v1/chat/completions";
 
-    logger.info("api key: {}", apikey);
+    logger.info("req: {}", req);
     RestClient customClient =
         RestClient.builder()
             .baseUrl(url)
@@ -39,11 +41,6 @@ public class OpenRouterAdapter {
             .defaultHeader("HTTP-Referer", "jorgedelarosa.com")
             .defaultHeader("X-Title", "AI Middleware")
             .build();
-
-    OpenRouterChatCompletionRequest req =
-        new OpenRouterChatCompletionRequest(
-            model,
-            List.of(new OpenRouterChatCompletionMessage("user", "Hola, esto es una prueba")));
 
     OpenRouterChatCompletionResponse response =
         customClient
