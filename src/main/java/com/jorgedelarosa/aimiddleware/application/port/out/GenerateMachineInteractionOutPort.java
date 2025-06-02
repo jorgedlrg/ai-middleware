@@ -1,14 +1,16 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
-import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
-
 /**
  * @author jorge
  */
 public interface GenerateMachineInteractionOutPort {
 
-  //FIXME: probably shouldn't return an Interaction
-public Interaction execute(Command cmd);
+  public MachineResponse execute(Command cmd);
 
-public record Command(){};
+  public record Command() {}
+  ;
+
+  // TODO refine this
+  public record MachineResponse(String text) {}
+  ;
 }

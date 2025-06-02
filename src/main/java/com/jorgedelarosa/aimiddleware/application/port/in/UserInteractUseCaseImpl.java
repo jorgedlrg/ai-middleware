@@ -24,13 +24,13 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
 
   @Override
   public void execute(Command cmd) {
-    Scenario scenario =
-        getScenarioByIdOutPort.query(
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a")).orElseThrow(); // FIXME
 
     Session session =
-        getSessionByIdOutPort.query(
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a")).orElseThrow(); // FIXME
+        getSessionByIdOutPort
+            .query(UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"))
+            .orElseThrow(); // FIXME
+
+    Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
 
     session.interact(cmd.text(), scenario.getRoles().getFirst());
 

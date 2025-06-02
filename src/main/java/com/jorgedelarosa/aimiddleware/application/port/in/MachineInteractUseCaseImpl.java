@@ -26,18 +26,18 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
   @Override
   public void execute(Command cmd) {
     // TODO: POC code
-    Scenario scenario =
-        getScenarioByIdOutPort.query(
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a")).orElseThrow(); // FIXME
 
     Session session =
-        getSessionByIdOutPort.query(
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a")).orElseThrow(); // FIXME
+        getSessionByIdOutPort
+            .query(UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"))
+            .orElseThrow(); // FIXME
 
-    //TODO: I need to think about this... quite probably the outport shouldn't generate an interaction and it needs to be built inside the session aggregate.
-    Interaction interaction = generateMachineInteractionOutPort.execute(new GenerateMachineInteractionOutPort.Command());
-    session.interact(interaction.getSpokenText(), scenario.getRoles().getLast());
-    
+    Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
+
+    GenerateMachineInteractionOutPort.MachineResponse response =
+        generateMachineInteractionOutPort.execute(new GenerateMachineInteractionOutPort.Command());
+    session.interact(response.text(), scenario.getRoles().getLast());
+
     saveSessionOutPort.save(session);
   }
 }
