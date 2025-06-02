@@ -50,6 +50,8 @@ public class OpenRouterClient {
             .retrieve()
             .body(OpenRouterChatCompletionResponse.class);
 
+    logger.info("res: {}", response);
+
     return response;
   }
 }
