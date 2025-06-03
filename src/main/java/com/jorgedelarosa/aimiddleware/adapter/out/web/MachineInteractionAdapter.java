@@ -26,12 +26,20 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   @Override
   public MachineResponse execute(Command cmd) {
 
+    // FIXME non-final version. I'm experimenting here with the LLM providers.
+
     MachineResponse machineResponse;
 
-    String client = "ollama"; // FIXME
+    String client = "openrouter"; // FIXME
     switch (client) {
       case "openrouter" -> {
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
+        //TODO: Add All the scenario in an initial 'user' message.
+        // Maybe use thymeleaf for templating?
+//        messages.add(
+//            new OpenRouterChatCompletionMessage(
+//                "user",
+//                "Behave according to this: {You're a caribbean pirate, and you talk and behave like one. Your name is Jack Sparragus. We're in your ship, called \"The Bit Torrent\"}"));
         for (Interaction interaction : cmd.session().getInteractions()) {
           String role = "assistant";
           if (interaction.isUser()) {
