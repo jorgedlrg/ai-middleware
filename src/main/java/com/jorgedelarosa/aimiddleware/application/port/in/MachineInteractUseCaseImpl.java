@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineIntera
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
+import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.UUID;
@@ -30,10 +31,14 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
             .orElseThrow(); // FIXME
 
     Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
+    Context currentContext =
+        scenario
+            .getContexts()
+            .getFirst(); // FIXME temporary. this might be in the session, probably.
 
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
-            new GenerateMachineInteractionOutPort.Command(session));
+            new GenerateMachineInteractionOutPort.Command(session, currentContext));
     session.interact(response.text(), scenario.getRoles().getLast(), false);
 
     saveSessionOutPort.save(session);

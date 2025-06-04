@@ -30,16 +30,22 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     MachineResponse machineResponse;
 
-    String client = "openrouter"; // FIXME
+    String client = "openrouter";
+    // FIXME don't use this crappy switch
     switch (client) {
       case "openrouter" -> {
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
-        //TODO: Add All the scenario in an initial 'user' message.
-        // Maybe use thymeleaf for templating?
-//        messages.add(
-//            new OpenRouterChatCompletionMessage(
-//                "user",
-//                "Behave according to this: {You're a caribbean pirate, and you talk and behave like one. Your name is Jack Sparragus. We're in your ship, called \"The Bit Torrent\"}"));
+        //         TODO: Add All the scenario in an initial 'user' message.
+        //         Maybe use thymeleaf for templating?
+        messages.add(
+            new OpenRouterChatCompletionMessage(
+                "user",
+                new StringBuilder()
+                    .append("This interaction happens in this context: {")
+                    .append(cmd.currentContext().getPhysicalDescription())
+                    .append("}")
+                    .toString()));
+
         for (Interaction interaction : cmd.session().getInteractions()) {
           String role = "assistant";
           if (interaction.isUser()) {
