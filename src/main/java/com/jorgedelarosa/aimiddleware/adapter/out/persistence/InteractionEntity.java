@@ -21,5 +21,8 @@ public class InteractionEntity {
   @Column(name = "isuser")
   private boolean
       user; // FIXME: remove this. I'm using this in an initial stage to know which interactions are
+
   // made by the user so the AI clients work.
+
+  private UUID context;
 }

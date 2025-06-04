@@ -30,9 +30,16 @@ public class Session extends AggregateRoot {
     return new Session(scenario, new ArrayList(interactions), Session.class, id);
   }
 
-  //FIXME: POC method
+  // FIXME: POC method. need to define current context. It doesn't necessarily has to be only 1 method
   public void interact(String text, Role role, boolean user) {
-    interactions.add(new Interaction("", text, "", role.getId(),user));
+    interactions.add(
+        Interaction.create(
+            "",
+            text,
+            "",
+            role.getId(),
+            user,
+            UUID.fromString("af521f08-65f4-4171-9152-8e8e5c229ebf")));
   }
 
   public UUID getScenario() {

@@ -8,7 +8,28 @@ import java.util.UUID;
  */
 public class Context extends Entity {
 
-  public Context() {
-    super(UUID.randomUUID());
+  private String name;
+  private String physicalDescription;
+
+  private Context(UUID id, String name, String physicalDescription) {
+    super(id);
+    this.name = name;
+    this.physicalDescription = physicalDescription;
+  }
+
+  public static Context create(String name, String physicalDescription) {
+    return new Context(UUID.randomUUID(), name, physicalDescription);
+  }
+
+  public static Context restore(UUID id, String name, String physicalDescription) {
+    return new Context(id, name, physicalDescription);
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public String getPhysicalDescription() {
+    return physicalDescription;
   }
 }

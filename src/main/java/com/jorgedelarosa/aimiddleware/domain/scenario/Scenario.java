@@ -15,25 +15,24 @@ public class Scenario extends AggregateRoot {
 
   // TODO map with context - role
 
-  public Scenario(Role user, Role machine) {
-    super(Scenario.class, UUID.randomUUID());
-    contexts = new ArrayList<>();
-    roles = new ArrayList<>();
-    roles.add(user);
-    roles.add(machine);
-  }
-
   private Scenario(List<Context> contexts, List<Role> roles, Class clazz, UUID id) {
     super(clazz, id);
     this.contexts = contexts;
     this.roles = roles;
   }
 
-  public static Scenario restore(UUID id) {
+  public static Scenario create() {
     List<Role> roles = new ArrayList();
     roles.add(Role.restore(Role.USER)); // TODO: store and load roles properly
-    roles.add(Role.restore(Role.MACHINE)); //TODO: store and load roles properly
-    return new Scenario(new ArrayList<>(), roles, Scenario.class, id);
+    roles.add(Role.restore(Role.MACHINE)); // TODO: store and load roles properly
+    return new Scenario(new ArrayList<>(), roles, Scenario.class, UUID.randomUUID());
+  }
+
+  public static Scenario restore(UUID id, List<Context> contexts) {
+    List<Role> roles = new ArrayList();
+    roles.add(Role.restore(Role.USER)); // TODO: store and load roles properly
+    roles.add(Role.restore(Role.MACHINE)); // TODO: store and load roles properly
+    return new Scenario(contexts, roles, Scenario.class, id);
   }
 
   // TODO: Maybe I'll create the Role here later on

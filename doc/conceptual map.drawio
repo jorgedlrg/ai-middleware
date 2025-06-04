@@ -728,6 +728,60 @@
         <mxCell id="IktT7a14SLN-TuxV-4L8-6" value="*Only one will be active" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;whiteSpace=wrap;html=1;" vertex="1" parent="1">
           <mxGeometry x="950" y="950" width="80" height="30" as="geometry" />
         </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-8" value="name" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="240" y="1290" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-9" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-16" target="IktT7a14SLN-TuxV-4L8-8">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="300" y="1630" as="sourcePoint" />
+            <mxPoint x="230" y="1140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-10" value="description" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="360" y="1290" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-11" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="IktT7a14SLN-TuxV-4L8-10" target="R8JtSFRpjHo3paldOy-k-16">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="1190" as="sourcePoint" />
+            <mxPoint x="230" y="1140" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-13" value="name" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-20" y="1300" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-14" value="physical description" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="1300" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-15" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-5" target="IktT7a14SLN-TuxV-4L8-13">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="1400" as="sourcePoint" />
+            <mxPoint x="230" y="1350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-16" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-5" target="IktT7a14SLN-TuxV-4L8-14">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="1400" as="sourcePoint" />
+            <mxPoint x="230" y="1350" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-18" value="name" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-160" y="980" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-20" value="description" style="ellipse;whiteSpace=wrap;html=1;align=center;" vertex="1" parent="1">
+          <mxGeometry x="-40" y="980" width="100" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-21" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-86" target="IktT7a14SLN-TuxV-4L8-18">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="1370" as="sourcePoint" />
+            <mxPoint x="230" y="1320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="IktT7a14SLN-TuxV-4L8-22" value="" style="endArrow=none;html=1;rounded=0;" edge="1" parent="1" source="R8JtSFRpjHo3paldOy-k-86" target="IktT7a14SLN-TuxV-4L8-20">
+          <mxGeometry width="50" height="50" relative="1" as="geometry">
+            <mxPoint x="180" y="1370" as="sourcePoint" />
+            <mxPoint x="230" y="1320" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
       </root>
     </mxGraphModel>
   </diagram>

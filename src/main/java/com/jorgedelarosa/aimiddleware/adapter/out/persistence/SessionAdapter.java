@@ -77,7 +77,8 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
           "",
           entity.getTimestamp(),
           entity.getRole(),
-          entity.isUser());
+          entity.isUser(),
+          entity.getContext());
     }
 
     default long map(Instant value) {

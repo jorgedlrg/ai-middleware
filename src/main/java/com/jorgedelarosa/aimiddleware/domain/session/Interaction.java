@@ -14,7 +14,9 @@ public class Interaction extends Entity {
   private final String actionText;
   private final Instant timestamp;
   private final UUID role;
-  private final boolean user; //FIXME this shouldn't be a hacky flag. this should be coming from the role, probably.
+  private final boolean
+      user; // FIXME this shouldn't be a hacky flag. this should be coming from the role, probably.
+  private final UUID context;
 
   private Interaction(
       String thoughtText,
@@ -23,7 +25,8 @@ public class Interaction extends Entity {
       Instant timestamp,
       UUID role,
       UUID id,
-      boolean user) {
+      boolean user,
+      UUID context) {
     super(id);
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
@@ -31,17 +34,18 @@ public class Interaction extends Entity {
     this.timestamp = timestamp;
     this.role = role;
     this.user = user;
+    this.context = context;
   }
 
-  public Interaction(
-      String thoughtText, String spokenText, String actionText, UUID role, boolean user) {
-    super(UUID.randomUUID());
-    this.thoughtText = thoughtText;
-    this.spokenText = spokenText;
-    this.actionText = actionText;
-    this.role = role;
-    this.timestamp = Instant.now();
-    this.user = user;
+  public static Interaction create(
+      String thoughtText,
+      String spokenText,
+      String actionText,
+      UUID role,
+      boolean user,
+      UUID context) {
+    return new Interaction(
+        thoughtText, spokenText, actionText, Instant.now(), role, UUID.randomUUID(), user, context);
   }
 
   public static Interaction restore(
@@ -51,9 +55,17 @@ public class Interaction extends Entity {
       String actionText,
       long timestamp,
       UUID role,
-      boolean user) {
+      boolean user,
+      UUID context) {
     return new Interaction(
-        thoughtText, spokenText, actionText, Instant.ofEpochMilli(timestamp), role, id, user);
+        thoughtText,
+        spokenText,
+        actionText,
+        Instant.ofEpochMilli(timestamp),
+        role,
+        id,
+        user,
+        context);
   }
 
   public String getThoughtText() {
@@ -78,5 +90,9 @@ public class Interaction extends Entity {
 
   public boolean isUser() {
     return user;
+  }
+
+  public UUID getContext() {
+    return context;
   }
 }
