@@ -9,9 +9,15 @@ import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompleti
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.TemplateEngine;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.context.IContext;
 
 /**
  * @author jorge
@@ -22,6 +28,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
   private final OpenRouterClient openRouterClient;
   private final OllamaClient ollamaClient;
+  private final TemplateEngine templateEngine;
 
   @Override
   public MachineResponse execute(Command cmd) {
@@ -36,15 +43,11 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
       case "openrouter" -> {
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
         //         TODO: Add All the scenario in an initial 'user' message.
-        //         Maybe use thymeleaf for templating?
-        messages.add(
-            new OpenRouterChatCompletionMessage(
-                "user",
-                new StringBuilder()
-                    .append("This interaction happens in this context: {")
-                    .append(cmd.currentContext().getPhysicalDescription())
-                    .append("}")
-                    .toString()));
+        Map<String, Object> variables = new HashMap();
+        variables.put("description", cmd.currentContext().getPhysicalDescription());
+        IContext iContext = new Context(Locale.ENGLISH, variables);
+        String contextMessage = templateEngine.process("context", iContext);
+        messages.add(new OpenRouterChatCompletionMessage("user", contextMessage));
 
         for (Interaction interaction : cmd.session().getInteractions()) {
           String role = "assistant";

@@ -7,8 +7,8 @@ spring:
     password: sa
     driverClassName: org.h2.Driver
     hikari:
-      minimum-idle: 2
-      maximum-pool-size: 6
+      minimum-idle: 1
+      maximum-pool-size: 5
       connection-timeout: 30000
       idle-timeout: 600000
       max-lifetime: 1800000
@@ -21,3 +21,6 @@ spring:
       path: /h2-console
       settings.trace: false
       settings.web-allow-others: false
+management:
+  endpoint.health.enabled: true
+  endpoints.web.exposure.include: health, metrics
