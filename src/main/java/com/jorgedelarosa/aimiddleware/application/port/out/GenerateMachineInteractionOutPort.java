@@ -12,9 +12,7 @@ public interface GenerateMachineInteractionOutPort {
 
   // TODO this needs refinement. Probably I won't send the whole session. This is in discovery stage
   public record Command(Session session, Context currentContext) {}
-  ;
 
   // TODO refine this
   public record MachineResponse(String text) {}
-  ;
 }

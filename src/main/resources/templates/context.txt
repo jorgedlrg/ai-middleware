@@ -1,1 +1,1 @@
-This interaction happens in this context: { [(${description})] }
+This interaction happens in this context, named [(${name})]: { [(${description})] }

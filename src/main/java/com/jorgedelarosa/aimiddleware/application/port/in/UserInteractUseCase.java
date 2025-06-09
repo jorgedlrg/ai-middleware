@@ -5,8 +5,7 @@ package com.jorgedelarosa.aimiddleware.application.port.in;
  */
 public interface UserInteractUseCase {
 
-    public void execute(Command cmd);
-    
-    public record Command(String text){
-    }
+  public void execute(Command cmd);
+
+  public record Command(String text) {}
 }

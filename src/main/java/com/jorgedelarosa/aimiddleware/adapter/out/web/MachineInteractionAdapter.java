@@ -39,9 +39,10 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     //         TODO: Add All the scenario in an initial 'user' message.
     Map<String, Object> variables = new HashMap();
+    variables.put("name", cmd.currentContext().getName());
     variables.put("description", cmd.currentContext().getPhysicalDescription());
-    IContext iContext = new Context(Locale.ENGLISH, variables);
-    String contextMessage = templateEngine.process("context", iContext);
+    String contextMessage =
+        templateEngine.process("context", new Context(Locale.ENGLISH, variables));
 
     String client = "openrouter";
     // FIXME don't use this crappy switch
