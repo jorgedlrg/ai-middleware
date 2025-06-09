@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
+import com.jorgedelarosa.aimiddleware.domain.Actor;
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import java.util.ArrayList;
@@ -26,13 +27,14 @@ public class Session extends AggregateRoot {
 
   // FIXME: POC method. need to define current context. It doesn't necessarily has to be only 1
   // method
-  public void interact(String text, Role role, boolean user) {
+  public void interact(String text, Role role, Actor actor, boolean user) {
     interactions.add(
         Interaction.create(
             "",
             text,
             "",
             role.getId(),
+            actor.getId(),
             user,
             UUID.fromString("af521f08-65f4-4171-9152-8e8e5c229ebf")));
   }

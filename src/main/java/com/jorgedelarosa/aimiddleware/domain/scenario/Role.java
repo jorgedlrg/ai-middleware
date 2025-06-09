@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -8,27 +9,32 @@ import java.util.UUID;
  */
 public class Role extends Entity {
 
-  private final UUID actor;
+  private final String name;
+  private Optional<UUID> actor;
 
-  public static final UUID USER =
-      UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"); // FIXME: remove this dirty hack
-  public static final UUID MACHINE =
-      UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf"); // FIXME: remove this dirty hack
-
-  private Role(UUID id, UUID actor) {
+  private Role(UUID id, Optional<UUID> actor, String name) {
     super(id);
-    this.actor =  actor;
+    this.actor = actor;
+    this.name = name;
   }
 
-  public static Role create(UUID actor) {
-    return new Role(UUID.randomUUID(),actor);
+  public static Role create(String name) {
+    return new Role(UUID.randomUUID(), Optional.empty(), name);
   }
 
-  public static Role restore(UUID id,UUID actor) {
-    return new Role(id,actor);
+  public static Role restore(UUID id, String name) {
+    return new Role(id, Optional.empty(), name);
   }
 
-  public UUID getActor() {
+  public void perform(UUID actor) {
+    this.actor = Optional.of(actor);
+  }
+
+  public Optional<UUID> getActor() {
     return actor;
+  }
+
+  public String getName() {
+    return name;
   }
 }

@@ -14,6 +14,7 @@ import lombok.Data;
 public class InteractionEntity {
   @Id private UUID id;
   private UUID role;
+  private UUID actor;
   private UUID session;
   private long timestamp;
   private String text;
