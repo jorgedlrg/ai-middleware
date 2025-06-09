@@ -6,6 +6,12 @@ spring:
     username: sa
     password: sa
     driverClassName: org.h2.Driver
+    hikari:
+      minimum-idle: 2
+      maximum-pool-size: 6
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
   jpa:
     database-platform: org.hibernate.dialect.H2Dialect
     defer-datasource-initialization: false  # Inserts data after hibernate table creation. Useful for DEV purposes
