@@ -14,23 +14,18 @@ public class Session extends AggregateRoot {
   private final UUID scenario;
   private final List<Interaction> interactions;
 
-  private Session(UUID scenario, List<Interaction> interactions, Class clazz, UUID id) {
-    super(clazz, id);
+  private Session(UUID scenario, List<Interaction> interactions, UUID id) {
+    super(Session.class, id);
     this.scenario = scenario;
     this.interactions = interactions;
   }
 
-  public Session(UUID scenario) {
-    super(Session.class, UUID.randomUUID());
-    this.scenario = scenario;
-    this.interactions = new ArrayList<>();
-  }
-
   public static Session restore(UUID id, UUID scenario, List<Interaction> interactions) {
-    return new Session(scenario, new ArrayList(interactions), Session.class, id);
+    return new Session(scenario, new ArrayList(interactions), id);
   }
 
-  // FIXME: POC method. need to define current context. It doesn't necessarily has to be only 1 method
+  // FIXME: POC method. need to define current context. It doesn't necessarily has to be only 1
+  // method
   public void interact(String text, Role role, boolean user) {
     interactions.add(
         Interaction.create(
