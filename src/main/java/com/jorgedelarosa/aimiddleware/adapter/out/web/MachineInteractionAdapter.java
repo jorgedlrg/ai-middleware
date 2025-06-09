@@ -53,6 +53,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     // FIXME don't use this crappy switch
     switch (client) {
       case "openrouter" -> {
+        //FIXME: I should use generic messages and map them in the different clients
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
         messages.add(new OpenRouterChatCompletionMessage("user", contextMessage));
         messages.add(new OpenRouterChatCompletionMessage("user", actorsMessage));
@@ -76,8 +77,12 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         machineResponse = new MachineResponse(res.choices().getFirst().message().content());
       }
       case "ollama" -> {
+        //FIXME: I should use generic messages and map them in the different clients
         List<OllamaChatMessage> messages = new ArrayList<>();
         messages.add(new OllamaChatMessage("assistant", contextMessage));
+        messages.add(new OllamaChatMessage("user", actorsMessage));
+        // FIXME
+        messages.add(new OllamaChatMessage("user", "You're " + cmd.actor().getName()));
 
         for (Interaction interaction : cmd.session().getInteractions()) {
           String role = "assistant";
