@@ -37,16 +37,17 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     MachineResponse machineResponse;
 
+    //         TODO: Add All the scenario in an initial 'user' message.
+    Map<String, Object> variables = new HashMap();
+    variables.put("description", cmd.currentContext().getPhysicalDescription());
+    IContext iContext = new Context(Locale.ENGLISH, variables);
+    String contextMessage = templateEngine.process("context", iContext);
+
     String client = "openrouter";
     // FIXME don't use this crappy switch
     switch (client) {
       case "openrouter" -> {
         List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
-        //         TODO: Add All the scenario in an initial 'user' message.
-        Map<String, Object> variables = new HashMap();
-        variables.put("description", cmd.currentContext().getPhysicalDescription());
-        IContext iContext = new Context(Locale.ENGLISH, variables);
-        String contextMessage = templateEngine.process("context", iContext);
         messages.add(new OpenRouterChatCompletionMessage("user", contextMessage));
 
         for (Interaction interaction : cmd.session().getInteractions()) {
@@ -66,6 +67,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
       }
       case "ollama" -> {
         List<OllamaChatMessage> messages = new ArrayList<>();
+        messages.add(new OllamaChatMessage("assistant", contextMessage));
+
         for (Interaction interaction : cmd.session().getInteractions()) {
           String role = "assistant";
           if (interaction.isUser()) {
