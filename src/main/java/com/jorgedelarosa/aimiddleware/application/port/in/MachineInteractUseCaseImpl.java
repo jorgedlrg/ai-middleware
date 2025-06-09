@@ -10,6 +10,7 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -43,14 +44,19 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     Role role = scenario.getRoles().getLast();
 
     // TODO: Also, the actor might come from the assigned actor to the role in the session.
-    Actor actor =
+    Actor user =
+        getActorByIdOutPort
+            .query(UUID.fromString("857fa610-b987-454c-96c3-bbf5354f13a0"))
+            .orElseThrow();
+    Actor machine =
         getActorByIdOutPort
             .query(UUID.fromString("caa30e65-1886-4366-bfb7-f415af9f4a40"))
             .orElseThrow();
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
-            new GenerateMachineInteractionOutPort.Command(session, currentContext));
-    session.interact(response.text(), role, actor, false);
+            new GenerateMachineInteractionOutPort.Command(
+                session, currentContext, List.of(user, machine), machine));
+    session.interact(response.text(), role, machine, false);
 
     saveSessionOutPort.save(session);
   }

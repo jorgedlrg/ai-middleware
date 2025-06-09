@@ -1,0 +1,9 @@
+This scenario contains the following characters:
+[
+[# th:each="character : ${characters}"]
+    {
+      "name": [(${character.name})], 
+      "physical description": [(${character.physicalDescription})]
+    }
+[/]
+]

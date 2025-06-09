@@ -40,12 +40,12 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
     Role role = scenario.getRoles().getFirst();
 
     // TODO: Also, the actor might come from the assigned actor to the role in the session.
-    Actor actor =
+    Actor user =
         getActorByIdOutPort
             .query(UUID.fromString("857fa610-b987-454c-96c3-bbf5354f13a0"))
             .orElseThrow();
 
-    session.interact(cmd.text(), role, actor, true);
+    session.interact(cmd.text(), role, user, true);
 
     saveSessionOutPort.save(session);
   }

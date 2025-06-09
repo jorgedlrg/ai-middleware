@@ -14,6 +14,9 @@ public class Session extends AggregateRoot {
 
   private final UUID scenario;
   private final List<Interaction> interactions;
+  
+  //TODO: Need to assign which actors is doing each role
+  
 
   private Session(UUID scenario, List<Interaction> interactions, UUID id) {
     super(Session.class, id);
