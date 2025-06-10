@@ -12,8 +12,8 @@ CREATE TABLE role (id UUID, scenario UUID, name TEXT);
 INSERT INTO role VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','user');
 INSERT INTO role VALUES ('655cfb3d-c740-48d2-ab4f-51e391c4deaf','7376f89d-4ca7-423b-95f1-e29a8832ec4a','misterious person in the room');
 
-CREATE TABLE session (id UUID, scenario UUID);
-INSERT INTO session VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a');
+CREATE TABLE session (id UUID, scenario UUID, current_context UUID);
+INSERT INTO session VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','af521f08-65f4-4171-9152-8e8e5c229ebf');
 
 CREATE TABLE interaction (id UUID, role UUID, actor UUID, session UUID, timestamp BIGINT, text LONGTEXT, isuser bit, context UUID);
 

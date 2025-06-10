@@ -34,7 +34,8 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
           interactionRepository.findAllBySession(se.getId()).stream()
               .map((e) -> InteractionEntityMapper.INSTANCE.toDom(e))
               .toList();
-      return Optional.of(Session.restore(se.getId(), se.getScenario(), interactions));
+      return Optional.of(
+          Session.restore(se.getId(), se.getScenario(), se.getCurrentContext(), interactions));
     } else {
       return Optional.empty();
     }
