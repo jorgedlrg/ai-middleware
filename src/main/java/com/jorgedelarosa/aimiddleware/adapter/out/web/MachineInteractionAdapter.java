@@ -1,5 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.GenericChatMessage;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.GenericChatRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatMessage;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatResponse;
@@ -14,6 +16,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
@@ -31,6 +36,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
   @Override
   public MachineResponse execute(Command cmd) {
+    String client = "openrouter";
 
     // FIXME non-final version. I'm experimenting here with the LLM providers.
 
@@ -49,56 +55,53 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     String actorsMessage =
         templateEngine.process("actors", new Context(Locale.ENGLISH, actorsVars));
 
-    String client = "openrouter";
+    List<GenericChatMessage> messages = new ArrayList<>();
+    messages.add(new GenericChatMessage("user", contextMessage));
+    messages.add(new GenericChatMessage("user", actorsMessage));
+    // FIXME: maybe this should go a template somewhere
+    messages.add(new GenericChatMessage("user", "You're " + cmd.actor().getName()));
+
+    for (Interaction interaction : cmd.session().getInteractions()) {
+      String role = "assistant";
+      if (interaction.isUser()) {
+        role = "user";
+      }
+      messages.add(new GenericChatMessage(role, interaction.getSpokenText()));
+    }
+
+    GenericChatRequest req =
+        new GenericChatRequest(
+            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL, messages);
+
     // FIXME don't use this crappy switch
     switch (client) {
       case "openrouter" -> {
-        //FIXME: I should use generic messages and map them in the different clients
-        List<OpenRouterChatCompletionMessage> messages = new ArrayList<>();
-        messages.add(new OpenRouterChatCompletionMessage("user", contextMessage));
-        messages.add(new OpenRouterChatCompletionMessage("user", actorsMessage));
-        // FIXME
-        messages.add(
-            new OpenRouterChatCompletionMessage("user", "You're " + cmd.actor().getName()));
-
-        for (Interaction interaction : cmd.session().getInteractions()) {
-          String role = "assistant";
-          if (interaction.isUser()) {
-            role = "user";
-          }
-          OpenRouterChatCompletionMessage ocm =
-              new OpenRouterChatCompletionMessage(role, interaction.getSpokenText());
-          messages.add(ocm);
-        }
-
-        OpenRouterChatCompletionRequest req =
-            new OpenRouterChatCompletionRequest(openRouterClient.MODEL, messages);
-        OpenRouterChatCompletionResponse res = openRouterClient.chatCompletion(req);
+        OpenRouterChatCompletionResponse res =
+            openRouterClient.chatCompletion(
+                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
         machineResponse = new MachineResponse(res.choices().getFirst().message().content());
       }
       case "ollama" -> {
-        //FIXME: I should use generic messages and map them in the different clients
-        List<OllamaChatMessage> messages = new ArrayList<>();
-        messages.add(new OllamaChatMessage("assistant", contextMessage));
-        messages.add(new OllamaChatMessage("user", actorsMessage));
-        // FIXME
-        messages.add(new OllamaChatMessage("user", "You're " + cmd.actor().getName()));
-
-        for (Interaction interaction : cmd.session().getInteractions()) {
-          String role = "assistant";
-          if (interaction.isUser()) {
-            role = "user";
-          }
-          OllamaChatMessage ocm = new OllamaChatMessage(role, interaction.getSpokenText());
-          messages.add(ocm);
-        }
-
-        OllamaChatRequest req = new OllamaChatRequest(ollamaClient.MODEL, messages, false);
-        OllamaChatResponse res = ollamaClient.chatCompletion(req);
+        OllamaChatResponse res =
+            ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
         machineResponse = new MachineResponse(res.message().content());
       }
       default -> throw new AssertionError();
     }
     return machineResponse;
+  }
+
+  @Mapper
+  public interface ChatMapper {
+    ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
+
+    OllamaChatMessage toOllamaChatMessage(GenericChatMessage a);
+
+    @Mapping(target = "stream", constant = "false")
+    OllamaChatRequest toOllamaChatMessage(GenericChatRequest a);
+
+    OpenRouterChatCompletionMessage toOpenRouterChatCompletionMessage(GenericChatMessage a);
+
+    OpenRouterChatCompletionRequest toOpenRouterChatCompletionRequest(GenericChatRequest a);
   }
 }
