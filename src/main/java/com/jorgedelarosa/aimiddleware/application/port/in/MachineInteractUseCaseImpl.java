@@ -8,7 +8,6 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
@@ -41,10 +40,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
             .findFirst()
             .orElseThrow();
 
-    Role role = scenario.getRoles().getLast(); // FIXME
-
     Actor actingActor =
-        getActorByIdOutPort.query(session.getFeaturedActor(role.getId()).get()).orElseThrow();
+        getActorByIdOutPort.query(session.getFeaturedActor(cmd.role()).get()).orElseThrow();
 
     List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
 
@@ -62,8 +59,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
             new GenerateMachineInteractionOutPort.Command(
-                session, currentContext, featuredActors, actingActor, previousMessages));
-    session.interact(response.text(), role.getId(), false);
+                currentContext, featuredActors, actingActor, previousMessages));
+    session.interact(response.text(), cmd.role(), false);
 
     saveSessionOutPort.save(session);
   }

@@ -15,8 +15,6 @@ public class Interaction extends Entity {
   private final Instant timestamp;
   private final UUID role;
   private final UUID actor;
-  private final boolean
-      user; // FIXME this shouldn't be a hacky flag. this should be coming from the role, probably.
   private final UUID context;
 
   private Interaction(
@@ -27,7 +25,6 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID id,
-      boolean user,
       UUID context) {
     super(id);
     this.thoughtText = thoughtText;
@@ -36,7 +33,6 @@ public class Interaction extends Entity {
     this.timestamp = timestamp;
     this.role = role;
     this.actor = actor;
-    this.user = user;
     this.context = context;
   }
 
@@ -56,7 +52,6 @@ public class Interaction extends Entity {
         role,
         actor,
         UUID.randomUUID(),
-        user,
         context);
   }
 
@@ -68,7 +63,6 @@ public class Interaction extends Entity {
       long timestamp,
       UUID role,
       UUID actor,
-      boolean user,
       UUID context) {
     return new Interaction(
         thoughtText,
@@ -78,7 +72,6 @@ public class Interaction extends Entity {
         role,
         actor,
         id,
-        user,
         context);
   }
 
@@ -104,10 +97,6 @@ public class Interaction extends Entity {
 
   public UUID getActor() {
     return actor;
-  }
-
-  public boolean isUser() {
-    return user;
   }
 
   public UUID getContext() {

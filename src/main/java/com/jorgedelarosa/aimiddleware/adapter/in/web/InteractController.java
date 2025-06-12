@@ -39,7 +39,14 @@ public class InteractController {
 
   @PostMapping("/machine")
   public void interactMachine() {
-    machineInteractUseCase.execute(new MachineInteractUseCase.Command(SESSION));
+    machineInteractUseCase.execute(
+        new MachineInteractUseCase.Command(
+            SESSION, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
+  }
+
+  @PostMapping("/machine/{role}")
+  public void interactMachineRole(UUID role) {
+    machineInteractUseCase.execute(new MachineInteractUseCase.Command(SESSION, role));
   }
 
   @GetMapping("/messages")

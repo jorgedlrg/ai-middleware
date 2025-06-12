@@ -9,5 +9,5 @@ public interface MachineInteractUseCase {
 
   public void execute(Command cmd);
 
-  public record Command(UUID session) {}
+  public record Command(UUID session, UUID role) {}
 }

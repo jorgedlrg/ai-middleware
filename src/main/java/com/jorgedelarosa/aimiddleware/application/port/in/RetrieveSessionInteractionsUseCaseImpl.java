@@ -20,7 +20,7 @@ public class RetrieveSessionInteractionsUseCaseImpl implements RetrieveSessionIn
 
   @Override
   public List<InteractionDto> execute(Command cmd) {
-    Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow(); // FIXME
+    Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
     return session.getInteractions().stream()
         .map((e) -> InteractionMapper.INSTANCE.toDto(e))
