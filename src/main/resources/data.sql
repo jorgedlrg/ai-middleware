@@ -26,7 +26,10 @@ CREATE TABLE interaction (id UUID NOT NULL PRIMARY KEY, role UUID NOT NULL, acto
 CREATE TABLE context (id UUID NOT NULL PRIMARY KEY, scenario UUID NOT NULL, name TEXT NOT NULL, physical_desc LONGTEXT NOT NULL);
 INSERT INTO context VALUES ('af521f08-65f4-4171-9152-8e8e5c229ebf','7376f89d-4ca7-423b-95f1-e29a8832ec4a','the white room','this is an empty white room with one door and one window, in the middle of a forest');
 
-CREATE TABLE actor (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NULL, physical_desc LONGTEXT NOT NULL);
-INSERT INTO actor VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40', 'Jack Isparragus', 'He is a very ugly and old pirate with a wooden leg and a hook instead of a hand.');
-INSERT INTO actor VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0', 'Mr. Developer', 'He is a plain human, wearing a paper boat-shaped paper hat.');
-INSERT INTO actor VALUES ('47c4b97f-c273-4a07-8dab-ab6336c15ae6', 'Alfonsito', 'A very tall human. He is bald and has big glasses. He speaks funny.');
+CREATE TABLE actor (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NULL, physical_desc LONGTEXT NOT NULL, mind UUID);
+INSERT INTO actor VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40', 'Jack Isparragus', 'He is a very ugly and old pirate with a wooden leg and a hook instead of a hand.','3bba2c96-a9e7-4301-a594-b8116656be28');
+INSERT INTO actor VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0', 'Mr. Developer', 'He is a plain human, wearing a paper boat-shaped paper hat.', null);
+INSERT INTO actor VALUES ('47c4b97f-c273-4a07-8dab-ab6336c15ae6', 'Alfonsito', 'A very tall human. He is bald and has big glasses. He speaks funny.', null);
+
+CREATE TABLE mind (actor UUID NOT NULL PRIMARY KEY, personality LONGTEXT NOT NULL);
+INSERT INTO mind VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40','Talks as an old, funny pirate. He likes telling jokes and old sea stories.');

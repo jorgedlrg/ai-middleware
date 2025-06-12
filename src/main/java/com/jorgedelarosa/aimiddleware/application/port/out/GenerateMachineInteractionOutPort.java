@@ -1,6 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
-import com.jorgedelarosa.aimiddleware.domain.Actor;
+import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import java.util.List;
 

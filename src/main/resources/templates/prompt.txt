@@ -6,6 +6,9 @@ This scenario contains the following actors:
     {
       "name": [(${actor.name})], 
       "physical description": [(${actor.physicalDescription})]
+      [# th:if="${actor.mind.present}"]
+      "personality": [(${actor.mind.get.personality})]
+      [/]
     }
 [/]]
 
