@@ -26,4 +26,4 @@ INSERT INTO context VALUES ('af521f08-65f4-4171-9152-8e8e5c229ebf','7376f89d-4ca
 
 CREATE TABLE actor (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NULL, physical_desc LONGTEXT NOT NULL);
 INSERT INTO actor VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40', 'Jack Isparragus', 'He is a very ugly and old pirate with a wooden leg and a hook instead of a hand.');
-INSERT INTO actor VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0', 'Mr. Developer', 'He is a plain human.');
+INSERT INTO actor VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0', 'Mr. Developer', 'He is a plain human, wearing a paper boat-shaped paper hat.');

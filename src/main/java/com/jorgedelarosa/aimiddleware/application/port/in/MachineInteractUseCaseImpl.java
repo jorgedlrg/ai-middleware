@@ -12,8 +12,9 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
-import java.util.UUID;
 import lombok.AllArgsConstructor;
+import org.mapstruct.Mapper;
+import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 /**
@@ -33,8 +34,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
   @Override
   public void execute(Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
-
-    Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow(); // FIXME
+    Scenario scenario = getScenarioByIdOutPort.query(session.getScenario()).orElseThrow();
     Context currentContext =
         scenario.getContexts().stream()
             .filter(e -> e.getId().equals(session.getCurrentContext()))
@@ -47,12 +47,34 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
         getActorByIdOutPort.query(session.getFeaturedActor(role.getId()).get()).orElseThrow();
 
     List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
+
+    List<GenerateMachineInteractionOutPort.PreviousMessage> previousMessages =
+        session.getInteractions().stream()
+            .map(
+                (e) ->
+                    MessageMapper.INSTANCE.toMessage(
+                        getActorByIdOutPort
+                            .query(session.getFeaturedActor(e.getRole()).get())
+                            .orElseThrow()
+                            .getName(),
+                        e.getSpokenText()))
+            .toList();
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
             new GenerateMachineInteractionOutPort.Command(
-                session, currentContext, featuredActors, actingActor));
+                session, currentContext, featuredActors, actingActor, previousMessages));
     session.interact(response.text(), role.getId(), false);
 
     saveSessionOutPort.save(session);
+  }
+
+  @Mapper
+  public interface MessageMapper {
+    MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
+
+    default GenerateMachineInteractionOutPort.PreviousMessage toMessage(
+        String actorName, String message) {
+      return new GenerateMachineInteractionOutPort.PreviousMessage(actorName, message);
+    }
   }
 }

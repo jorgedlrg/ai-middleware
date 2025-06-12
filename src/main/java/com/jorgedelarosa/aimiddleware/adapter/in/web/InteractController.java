@@ -1,8 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.web;
 
-import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractMachineRes;
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserReq;
-import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserRes;
 import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase.InteractionDto;
@@ -35,17 +33,13 @@ public class InteractController {
   private final UUID SESSION = UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a");
 
   @PostMapping("/user")
-  public InteractUserRes interactUser(@RequestBody InteractUserReq req) {
+  public void interactUser(@RequestBody InteractUserReq req) {
     userInteractUseCase.execute(new UserInteractUseCase.Command(SESSION, req.text()));
-
-    return new InteractUserRes("ok");
   }
 
   @PostMapping("/machine")
-  public InteractMachineRes interactMachine() {
+  public void interactMachine() {
     machineInteractUseCase.execute(new MachineInteractUseCase.Command(SESSION));
-
-    return new InteractMachineRes("ok");
   }
 
   @GetMapping("/messages")

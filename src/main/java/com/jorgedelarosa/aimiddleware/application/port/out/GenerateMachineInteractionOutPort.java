@@ -13,7 +13,9 @@ public interface GenerateMachineInteractionOutPort {
   public MachineResponse execute(Command cmd);
 
   // TODO this needs refinement. Probably I won't send the whole session. This is in discovery stage
-  public record Command(Session session, Context currentContext, List<Actor> actors, Actor actor) {}
+  public record Command(Session session, Context currentContext, List<Actor> actors, Actor you, List<PreviousMessage> previousMessages) {}
+  
+  public record PreviousMessage(String actorName, String message){}
 
   // TODO refine this
   public record MachineResponse(String text) {}

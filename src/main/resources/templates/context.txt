@@ -1,1 +1,0 @@
-This interaction happens in this context, named [(${name})]: { [(${description})] }

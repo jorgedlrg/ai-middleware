@@ -1,0 +1,17 @@
+You're in a fictional roleplay scenario.
+This is the current context, named [(${name})]: { [(${description})] }
+
+This scenario contains the following actors:
+[[# th:each="actor : ${actors}"]
+    {
+      "name": [(${actor.name})], 
+      "physical description": [(${actor.physicalDescription})]
+    }
+[/]]
+
+This is what the actors have said so far:
+[[# th:each="previousMessage : ${previousMessages}"]
+    [(${previousMessage.actorName})]: [(${previousMessage.message})]
+[/]]
+
+You're playing the actor [(${you})]. Talk as you were that actor.
