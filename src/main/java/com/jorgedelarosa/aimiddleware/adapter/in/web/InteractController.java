@@ -32,16 +32,18 @@ public class InteractController {
   private final UserInteractUseCase userInteractUseCase;
   private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
 
+  private final UUID SESSION = UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a");
+
   @PostMapping("/user")
   public InteractUserRes interactUser(@RequestBody InteractUserReq req) {
-    userInteractUseCase.execute(new UserInteractUseCase.Command(req.text()));
+    userInteractUseCase.execute(new UserInteractUseCase.Command(SESSION, req.text()));
 
     return new InteractUserRes("ok");
   }
 
   @PostMapping("/machine")
   public InteractMachineRes interactMachine() {
-    machineInteractUseCase.execute(new MachineInteractUseCase.Command());
+    machineInteractUseCase.execute(new MachineInteractUseCase.Command(SESSION));
 
     return new InteractMachineRes("ok");
   }
@@ -49,7 +51,6 @@ public class InteractController {
   @GetMapping("/messages")
   public List<InteractionDto> messages() {
     return retrieveSessionInteractionsUseCase.execute(
-        new RetrieveSessionInteractionsUseCase.Command(
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a")));
+        new RetrieveSessionInteractionsUseCase.Command(SESSION));
   }
 }

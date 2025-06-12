@@ -34,11 +34,11 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
       SessionEntity se = sessionEntity.get();
       List<Interaction> interactions =
           interactionRepository.findAllBySession(se.getId()).stream()
-              .map(InteractionMapper.INSTANCE::toDom)
+              .map((e) -> InteractionMapper.INSTANCE.toDom(e))
               .toList();
       List<Performance> performances =
           performanceRepository.findAllByPerformanceIdSession(id).stream()
-              .map(PerformanceMapper.INSTANCE::toValueObject)
+              .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
               .toList();
       return Optional.of(
           Session.restore(

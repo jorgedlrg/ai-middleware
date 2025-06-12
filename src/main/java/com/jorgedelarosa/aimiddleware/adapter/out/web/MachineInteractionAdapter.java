@@ -36,30 +36,10 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
   @Override
   public MachineResponse execute(Command cmd) {
-    String client = "openrouter";
-
-    // FIXME non-final version. I'm experimenting here with the LLM providers.
-
-    MachineResponse machineResponse;
-
-    //         TODO: Add All the scenario in an initial 'user' message.
-
-    Map<String, Object> contextVars = new HashMap();
-    contextVars.put("name", cmd.currentContext().getName());
-    contextVars.put("description", cmd.currentContext().getPhysicalDescription());
-    String contextMessage =
-        templateEngine.process("context", new Context(Locale.ENGLISH, contextVars));
-
-    Map<String, Object> actorsVars = new HashMap();
-    actorsVars.put("characters", cmd.actors());
-    String actorsMessage =
-        templateEngine.process("actors", new Context(Locale.ENGLISH, actorsVars));
-
     List<GenericChatMessage> messages = new ArrayList<>();
-    messages.add(new GenericChatMessage("user", contextMessage));
-    messages.add(new GenericChatMessage("user", actorsMessage));
-    // FIXME: maybe this should go a template somewhere
-    messages.add(new GenericChatMessage("user", "You're " + cmd.actor().getName()));
+    messages.add(new GenericChatMessage("user", createContextMessage(cmd)));
+    messages.add(new GenericChatMessage("user", createActorsMessage(cmd)));
+    messages.add(new GenericChatMessage("user", createRoleMessage(cmd)));
 
     for (Interaction interaction : cmd.session().getInteractions()) {
       String role = "assistant";
@@ -69,11 +49,13 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
       messages.add(new GenericChatMessage(role, interaction.getSpokenText()));
     }
 
+    String client = "openrouter";
+
     GenericChatRequest req =
         new GenericChatRequest(
             client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL, messages);
 
-    // FIXME don't use this crappy switch
+    MachineResponse machineResponse;
     switch (client) {
       case "openrouter" -> {
         OpenRouterChatCompletionResponse res =
@@ -89,6 +71,25 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
       default -> throw new AssertionError();
     }
     return machineResponse;
+  }
+
+  private String createContextMessage(Command cmd) {
+    Map<String, Object> contextVars = new HashMap();
+    contextVars.put("name", cmd.currentContext().getName());
+    contextVars.put("description", cmd.currentContext().getPhysicalDescription());
+
+    return templateEngine.process("context", new Context(Locale.ENGLISH, contextVars));
+  }
+
+  private String createActorsMessage(Command cmd) {
+    Map<String, Object> actorsVars = new HashMap();
+    actorsVars.put("characters", cmd.actors());
+
+    return templateEngine.process("actors", new Context(Locale.ENGLISH, actorsVars));
+  }
+
+  private String createRoleMessage(Command cmd) {
+    return "You're " + cmd.actor().getName();
   }
 
   @Mapper
