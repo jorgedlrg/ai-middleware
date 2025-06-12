@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
 import java.util.List;
@@ -24,6 +25,7 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
 
   private final SessionRepository sessionRepository;
   private final InteractionRepository interactionRepository;
+  private final PerformanceRepository performanceRepository;
 
   @Override
   public Optional<Session> query(UUID id) {
@@ -34,8 +36,12 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
           interactionRepository.findAllBySession(se.getId()).stream()
               .map((e) -> InteractionEntityMapper.INSTANCE.toDom(e))
               .toList();
+      List<Performance> performances =
+          performanceRepository.findAllByPerformanceIdSession(id).stream()
+              .map(PerformanceMapper.INSTANCE::toValueObject)
+              .toList();
       return Optional.of(
-          Session.restore(se.getId(), se.getScenario(), se.getCurrentContext(), interactions));
+          Session.restore(se.getId(), se.getScenario(), se.getCurrentContext(), interactions,performances));
     } else {
       return Optional.empty();
     }
@@ -85,6 +91,15 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
 
     default long map(Instant value) {
       return value.toEpochMilli();
+    }
+  }
+
+  @Mapper
+  public interface PerformanceMapper {
+    PerformanceMapper INSTANCE = Mappers.getMapper(PerformanceMapper.class);
+
+    default Performance toValueObject(PerformanceEntity a) {
+      return new Performance(a.getActor(), a.getPerformanceId().getRole());
     }
   }
 }
