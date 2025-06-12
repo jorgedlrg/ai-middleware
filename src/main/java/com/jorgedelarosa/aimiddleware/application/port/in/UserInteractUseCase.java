@@ -9,5 +9,5 @@ public interface UserInteractUseCase {
 
   public void execute(Command cmd);
 
-  public record Command(UUID session, String text) {}
+  public record Command(UUID session, UUID role, String text) {}
 }

@@ -34,7 +34,14 @@ public class InteractController {
 
   @PostMapping("/user")
   public void interactUser(@RequestBody InteractUserReq req) {
-    userInteractUseCase.execute(new UserInteractUseCase.Command(SESSION, req.text()));
+    userInteractUseCase.execute(
+        new UserInteractUseCase.Command(
+            SESSION, UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"), req.text()));
+  }
+
+  @PostMapping("/user/{role}")
+  public void interactUser(@RequestBody InteractUserReq req, UUID role) {
+    userInteractUseCase.execute(new UserInteractUseCase.Command(SESSION, role, req.text()));
   }
 
   @PostMapping("/machine")
