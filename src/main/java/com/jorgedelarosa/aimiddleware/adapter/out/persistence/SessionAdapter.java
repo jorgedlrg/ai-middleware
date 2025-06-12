@@ -34,14 +34,15 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
       SessionEntity se = sessionEntity.get();
       List<Interaction> interactions =
           interactionRepository.findAllBySession(se.getId()).stream()
-              .map((e) -> InteractionEntityMapper.INSTANCE.toDom(e))
+              .map(InteractionMapper.INSTANCE::toDom)
               .toList();
       List<Performance> performances =
           performanceRepository.findAllByPerformanceIdSession(id).stream()
               .map(PerformanceMapper.INSTANCE::toValueObject)
               .toList();
       return Optional.of(
-          Session.restore(se.getId(), se.getScenario(), se.getCurrentContext(), interactions,performances));
+          Session.restore(
+              se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances));
     } else {
       return Optional.empty();
     }
@@ -49,17 +50,17 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
 
   @Override
   public void save(Session session) {
-    sessionRepository.save(SessionEntityMapper.INSTANCE.toEntity(session));
+    sessionRepository.save(SessionMapper.INSTANCE.toEntity(session));
     List<InteractionEntity> interactions =
         session.getInteractions().stream()
-            .map((e) -> InteractionEntityMapper.INSTANCE.toEntity(e, session.getId()))
+            .map((e) -> InteractionMapper.INSTANCE.toEntity(e, session.getId()))
             .toList();
     interactionRepository.saveAll(interactions);
   }
 
   @Mapper
-  public interface SessionEntityMapper {
-    SessionEntityMapper INSTANCE = Mappers.getMapper(SessionEntityMapper.class);
+  public interface SessionMapper {
+    SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
     SessionEntity toEntity(Session session);
 
@@ -69,8 +70,8 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
   }
 
   @Mapper
-  public interface InteractionEntityMapper {
-    InteractionEntityMapper INSTANCE = Mappers.getMapper(InteractionEntityMapper.class);
+  public interface InteractionMapper {
+    InteractionMapper INSTANCE = Mappers.getMapper(InteractionMapper.class);
 
     @Mapping(source = "interaction.id", target = "id")
     @Mapping(source = "interaction.spokenText", target = "text")

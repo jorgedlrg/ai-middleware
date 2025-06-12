@@ -13,6 +13,4 @@ import lombok.Data;
 public class PerformanceEntity {
   @EmbeddedId private PerformanceId performanceId;
   private UUID actor;
-
-  
 }
