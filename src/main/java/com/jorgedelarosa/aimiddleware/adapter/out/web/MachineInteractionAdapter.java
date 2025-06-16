@@ -36,7 +36,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   @Override
   public MachineResponse execute(Command cmd) {
     String client = "openrouter";
-    
+
     List<GenericChatMessage> messages = new ArrayList<>();
     messages.add(createPromptMessage(cmd));
     GenericChatRequest req =

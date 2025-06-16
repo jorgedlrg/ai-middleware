@@ -28,17 +28,7 @@ public class Scenario extends AggregateRoot {
     return new Scenario(contexts, roles, Scenario.class, id);
   }
 
-  // TODO: Maybe I'll create the Role here later on
-  public void addRole(Role role) {
-    roles.add(role);
-  }
-
-  // TODO: Avoid external modification
   public List<Context> getContexts() {
-    return contexts;
-  }
-
-  public List<Role> getRoles() {
-    return roles;
+    return List.copyOf(contexts);
   }
 }
