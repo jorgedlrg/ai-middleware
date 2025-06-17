@@ -90,3 +90,8 @@ nb-configuration.xml
 ##############################
 *.log
 secrets.properties
+
+#############################
+## Vaadin
+#############################
+src/main/frontend/*
