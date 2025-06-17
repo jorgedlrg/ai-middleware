@@ -10,6 +10,9 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.data.value.ValueChangeMode;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.UUID;
@@ -19,9 +22,10 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-@Route("interaction")
-public class InteractionView extends VerticalLayout {
-  private final UUID SESSION = UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a");
+@Route(value = "interaction", layout = MainView.class)
+@PageTitle("Interaction")
+public class InteractionView extends VerticalLayout implements HasUrlParameter<String> {
+  private UUID session;
 
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
@@ -55,11 +59,11 @@ public class InteractionView extends VerticalLayout {
     interactionGrid
         .addColumn(RetrieveSessionInteractionsUseCase.InteractionDto::actor)
         .setHeader("Actor")
-        .setFlexGrow(1);
+        .setFlexGrow(2);
     interactionGrid
         .addColumn(RetrieveSessionInteractionsUseCase.InteractionDto::spokenText)
         .setHeader("Text")
-        .setFlexGrow(5);
+        .setFlexGrow(7);
     interactionGrid.setItems(new ArrayList<>());
     interactionGrid.addThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
 
@@ -71,22 +75,27 @@ public class InteractionView extends VerticalLayout {
   private void userInteractListener() {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
-            SESSION,
+            session,
             UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"),
             inputText.getValue()));
 
     interactionGrid.setItems(
         retrieveSessionInteractionsUseCase.execute(
-            new RetrieveSessionInteractionsUseCase.Command(SESSION)));
+            new RetrieveSessionInteractionsUseCase.Command(session)));
   }
 
   private void machineInteractListener() {
     machineInteractUseCase.execute(
         new MachineInteractUseCase.Command(
-            SESSION, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
+            session, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
 
     interactionGrid.setItems(
         retrieveSessionInteractionsUseCase.execute(
-            new RetrieveSessionInteractionsUseCase.Command(SESSION)));
+            new RetrieveSessionInteractionsUseCase.Command(session)));
+  }
+
+  @Override
+  public void setParameter(BeforeEvent be, String t) {
+    session = UUID.fromString(t);
   }
 }
