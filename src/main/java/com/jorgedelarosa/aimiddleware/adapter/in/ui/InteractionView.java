@@ -79,9 +79,7 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
             UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"),
             inputText.getValue()));
 
-    interactionGrid.setItems(
-        retrieveSessionInteractionsUseCase.execute(
-            new RetrieveSessionInteractionsUseCase.Command(session)));
+    fillInteractionGrid();
   }
 
   private void machineInteractListener() {
@@ -89,6 +87,10 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
         new MachineInteractUseCase.Command(
             session, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
 
+    fillInteractionGrid();
+  }
+
+  private void fillInteractionGrid() {
     interactionGrid.setItems(
         retrieveSessionInteractionsUseCase.execute(
             new RetrieveSessionInteractionsUseCase.Command(session)));
@@ -97,5 +99,6 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
   @Override
   public void setParameter(BeforeEvent be, String t) {
     session = UUID.fromString(t);
+    fillInteractionGrid();
   }
 }

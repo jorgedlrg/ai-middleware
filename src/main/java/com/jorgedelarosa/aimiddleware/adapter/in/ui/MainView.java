@@ -50,9 +50,7 @@ public class MainView extends AppLayout {
     tabs.add(
         createTab("Actors", ActorsView.class),
         createTab("Scenarios", ScenariosView.class),
-        createTab("Sessions", SessionsView.class),
-        createTab(
-            "Test Interaction", InteractionView.class, "7376f89d-4ca7-423b-95f1-e29a8832ec4a"));
+        createTab("Sessions", SessionsView.class));
     return tabs;
   }
 
