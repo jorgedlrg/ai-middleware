@@ -5,8 +5,8 @@
 
 /** TODO: Add audit data **/
 
-CREATE TABLE scenario (id UUID NOT NULL PRIMARY KEY);
-INSERT INTO scenario VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a');
+CREATE TABLE scenario (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NULL);
+INSERT INTO scenario VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a', 'development scenario');
 
 CREATE TABLE role (id UUID NOT NULL PRIMARY KEY, scenario UUID NOT NULL, name TEXT NOT NULL);
 INSERT INTO role VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','user');

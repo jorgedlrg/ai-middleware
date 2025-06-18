@@ -12,4 +12,5 @@ import lombok.Data;
 @Data
 public class ScenarioEntity {
   @Id private UUID id;
+  private String name;
 }

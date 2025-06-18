@@ -8,7 +8,6 @@ import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -32,54 +31,41 @@ public class SessionAdapter
 
   @Override
   public Optional<Session> query(UUID id) {
-    Optional<SessionEntity> sessionEntity = sessionRepository.findById(id);
-    if (sessionEntity.isPresent()) {
-      SessionEntity se = sessionEntity.get();
-      List<Interaction> interactions =
-          interactionRepository.findAllBySession(id).stream()
-              .map((e) -> InteractionMapper.INSTANCE.toDom(e))
-              .toList();
-      List<Performance> performances =
-          performanceRepository.findAllByPerformanceIdSession(id).stream()
-              .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
-              .toList();
-      return Optional.of(
-          Session.restore(
-              se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances));
-    } else {
-      return Optional.empty();
-    }
+    return sessionRepository.findById(id).map(e -> restoreSession(e));
   }
 
   @Override
   public void save(Session session) {
-    sessionRepository.save(SessionMapper.INSTANCE.toEntity(session));
     List<InteractionEntity> interactions =
         session.getInteractions().stream()
             .map((e) -> InteractionMapper.INSTANCE.toEntity(e, session.getId()))
             .toList();
+    List<PerformanceEntity> performances =
+        session.getPerformances().stream()
+            .map(e -> PerformanceMapper.INSTANCE.toEntity(session, e))
+            .toList();
+    sessionRepository.save(SessionMapper.INSTANCE.toEntity(session));
     interactionRepository.saveAll(interactions);
+    performanceRepository.saveAll(performances);
   }
 
   @Override
   public List<Session> query() {
-    List<Session> result = new ArrayList<>();
-    for (SessionEntity se : sessionRepository.findAll()) {
-      List<Interaction> interactions =
-          interactionRepository.findAllBySession(se.getId()).stream()
-              .map((e) -> InteractionMapper.INSTANCE.toDom(e))
-              .toList();
-      List<Performance> performances =
-          performanceRepository.findAllByPerformanceIdSession(se.getId()).stream()
-              .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
-              .toList();
+    return sessionRepository.findAll().stream().map(e -> restoreSession(e)).toList();
+  }
 
-      result.add(
-          Session.restore(
-              se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances));
-    }
+  private Session restoreSession(SessionEntity se) {
+    List<Interaction> interactions =
+        interactionRepository.findAllBySession(se.getId()).stream()
+            .map((e) -> InteractionMapper.INSTANCE.toDom(e))
+            .toList();
+    List<Performance> performances =
+        performanceRepository.findAllByPerformanceIdSession(se.getId()).stream()
+            .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
+            .toList();
 
-    return result;
+    return Session.restore(
+        se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances);
   }
 
   @Mapper
@@ -124,6 +110,10 @@ public class SessionAdapter
 
     default Performance toValueObject(PerformanceEntity a) {
       return new Performance(a.getActor(), a.getPerformanceId().getRole());
+    }
+
+    default PerformanceEntity toEntity(Session se, Performance p) {
+      return new PerformanceEntity(new PerformanceId(se.getId(), p.getRole()), p.getActor());
     }
   }
 }

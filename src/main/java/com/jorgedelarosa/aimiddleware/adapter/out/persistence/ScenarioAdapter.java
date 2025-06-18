@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
@@ -17,7 +18,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @AllArgsConstructor
-public class ScenarioAdapter implements GetScenarioByIdOutPort {
+public class ScenarioAdapter implements GetScenarioByIdOutPort, GetScenariosOutPort {
 
   private final ScenarioRepository scenarioRepository;
   private final ContextRepository contextRepository;
@@ -25,20 +26,24 @@ public class ScenarioAdapter implements GetScenarioByIdOutPort {
 
   @Override
   public Optional<Scenario> query(UUID id) {
-    Optional<ScenarioEntity> scenarioEntity = scenarioRepository.findById(id);
-    if (scenarioEntity.isPresent()) {
-      List<Context> contexts =
-          contextRepository.findAllByScenario(id).stream()
-              .map((e) -> ContextMapper.INSTANCE.toDom(e))
-              .toList();
-      List<Role> roles =
-          roleRepository.findAllByScenario(id).stream()
-              .map((e) -> RoleMapper.INSTANCE.toDom(e))
-              .toList();
-      return Optional.of(Scenario.restore(scenarioEntity.get().getId(), contexts, roles));
-    } else {
-      return Optional.empty();
-    }
+    return scenarioRepository.findById(id).map(e -> restoreScenario(e));
+  }
+
+  @Override
+  public List<Scenario> query() {
+    return scenarioRepository.findAll().stream().map(e -> restoreScenario(e)).toList();
+  }
+
+  private Scenario restoreScenario(ScenarioEntity se) {
+    List<Context> contexts =
+        contextRepository.findAllByScenario(se.getId()).stream()
+            .map((e) -> ContextMapper.INSTANCE.toDom(e))
+            .toList();
+    List<Role> roles =
+        roleRepository.findAllByScenario(se.getId()).stream()
+            .map((e) -> RoleMapper.INSTANCE.toDom(e))
+            .toList();
+    return Scenario.restore(se.getId(), se.getName(), contexts, roles);
   }
 
   @Mapper

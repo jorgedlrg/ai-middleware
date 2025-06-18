@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-//TODO: this should belong to an user
+// TODO: this should belong to an user
 /**
  * @author jorge
  */
@@ -72,5 +72,9 @@ public class Session extends AggregateRoot {
 
   public List<Interaction> getInteractions() {
     return List.copyOf(interactions);
+  }
+
+  public List<Performance> getPerformances() {
+    return List.copyOf(performances.values());
   }
 }
