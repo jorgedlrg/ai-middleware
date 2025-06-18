@@ -13,5 +13,5 @@ public interface GetSessionsUseCase {
   //TODO: find by user 
   public record Command() {}
 
-  public record SessionDto(UUID session, UUID scenario) {}
+  public record SessionDto(UUID session, String scenario) {}
 }
