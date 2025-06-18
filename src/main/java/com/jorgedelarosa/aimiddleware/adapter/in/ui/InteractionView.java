@@ -84,8 +84,8 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
   }
 
   @Override
-  public void setParameter(BeforeEvent be, String t) {
-    session = UUID.fromString(t);
+  public void setParameter(BeforeEvent event, String parameter) {
+    session = UUID.fromString(parameter);
     fillInteractionList();
   }
 

@@ -2,6 +2,8 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.HasElement;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
@@ -11,10 +13,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.tabs.Tab;
 import com.vaadin.flow.component.tabs.Tabs;
 import com.vaadin.flow.component.tabs.TabsVariant;
+import com.vaadin.flow.router.AfterNavigationEvent;
+import com.vaadin.flow.router.AfterNavigationObserver;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
 import com.vaadin.flow.router.RouterLink;
+import java.util.List;
 import java.util.Optional;
 
 // From https://vaadin.com/docs/latest/flow/application/main-view
@@ -26,7 +32,7 @@ import java.util.Optional;
  */
 @RouteAlias(value = "main", layout = MainView.class)
 @Route("")
-public class MainView extends AppLayout {
+public class MainView extends AppLayout implements AfterNavigationObserver{
 
   private final Tabs menu;
   private H1 viewTitle;
@@ -71,7 +77,7 @@ public class MainView extends AppLayout {
     // The title will be set after navigation.
     viewTitle = new H1();
     layout.add(viewTitle);
-
+   
     // TODO A user icon
     // layout.add(new Image("images/user.svg", "Avatar"));
 
@@ -121,8 +127,7 @@ public class MainView extends AppLayout {
     // Select the tab corresponding to currently shown view
     getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
 
-    // Set the view title in the header
-    viewTitle.setText(getCurrentPageTitle());
+    
   }
 
   private Optional<Tab> getTabForComponent(Component component) {
@@ -132,7 +137,28 @@ public class MainView extends AppLayout {
         .map(Tab.class::cast);
   }
 
-  private String getCurrentPageTitle() {
-    return getContent().getClass().getAnnotation(PageTitle.class).value();
+  
+
+  @Override
+  public void afterNavigation(AfterNavigationEvent event) {
+    String pageTitle = "error";
+		 
+		 // Get list of current views, the first view is the top view.
+         List<HasElement> views = UI.getCurrent().getInternals().getActiveRouterTargetsChain();
+         if (!views.isEmpty()) {
+            HasElement view = views.get(0);
+
+            // If the view has a dynamic title we'll use that
+            if (view instanceof HasDynamicTitle hasDynamicTitle) {
+               pageTitle = hasDynamicTitle.getPageTitle();
+            } else {
+               // It does not have a dynamic title. Try to read title from
+               // annotations
+               pageTitle = getContent().getClass().getAnnotation(PageTitle.class).value();
+            }
+         }
+    
+    // Set the view title in the header
+    viewTitle.setText(pageTitle);
   }
 }
