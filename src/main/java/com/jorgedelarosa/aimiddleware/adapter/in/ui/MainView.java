@@ -32,7 +32,8 @@ import java.util.Optional;
  */
 @RouteAlias(value = "main", layout = MainView.class)
 @Route("")
-public class MainView extends AppLayout implements AfterNavigationObserver{
+@PageTitle("Main")
+public class MainView extends AppLayout implements AfterNavigationObserver {
 
   private final Tabs menu;
   private H1 viewTitle;
@@ -77,7 +78,7 @@ public class MainView extends AppLayout implements AfterNavigationObserver{
     // The title will be set after navigation.
     viewTitle = new H1();
     layout.add(viewTitle);
-   
+
     // TODO A user icon
     // layout.add(new Image("images/user.svg", "Avatar"));
 
@@ -126,8 +127,6 @@ public class MainView extends AppLayout implements AfterNavigationObserver{
 
     // Select the tab corresponding to currently shown view
     getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-
-    
   }
 
   private Optional<Tab> getTabForComponent(Component component) {
@@ -137,27 +136,27 @@ public class MainView extends AppLayout implements AfterNavigationObserver{
         .map(Tab.class::cast);
   }
 
-  
-
   @Override
   public void afterNavigation(AfterNavigationEvent event) {
     String pageTitle = "error";
-		 
-		 // Get list of current views, the first view is the top view.
-         List<HasElement> views = UI.getCurrent().getInternals().getActiveRouterTargetsChain();
-         if (!views.isEmpty()) {
-            HasElement view = views.get(0);
 
-            // If the view has a dynamic title we'll use that
-            if (view instanceof HasDynamicTitle hasDynamicTitle) {
-               pageTitle = hasDynamicTitle.getPageTitle();
-            } else {
-               // It does not have a dynamic title. Try to read title from
-               // annotations
-               pageTitle = getContent().getClass().getAnnotation(PageTitle.class).value();
-            }
-         }
-    
+    // Get list of current views, the first view is the top view.
+    List<HasElement> views = UI.getCurrent().getInternals().getActiveRouterTargetsChain();
+    if (!views.isEmpty()) {
+      HasElement view = views.get(0);
+
+      // If the view has a dynamic title we'll use that
+      if (view instanceof HasDynamicTitle hasDynamicTitle) {
+        pageTitle = hasDynamicTitle.getPageTitle();
+      } else if (getContent() != null) {
+        // It does not have a dynamic title. Try to read title from
+        // annotations
+        pageTitle = getContent().getClass().getAnnotation(PageTitle.class).value();
+      } else {
+        pageTitle = "Main";
+      }
+    }
+
     // Set the view title in the header
     viewTitle.setText(pageTitle);
   }

@@ -15,12 +15,14 @@ import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author jorge
  */
 @Component
 @AllArgsConstructor
+@Transactional
 public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
   private final GetScenarioByIdOutPort getScenarioByIdOutPort;
