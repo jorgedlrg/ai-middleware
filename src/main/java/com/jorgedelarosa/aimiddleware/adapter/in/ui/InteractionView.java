@@ -4,12 +4,10 @@ import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase
 import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.textfield.TextArea;
-import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.PageTitle;
@@ -31,8 +29,6 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
   private final MachineInteractUseCase machineInteractUseCase;
   private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
 
-  private final TextArea inputText = new TextArea();
-
   private final MessageList interationList;
 
   public InteractionView(
@@ -43,10 +39,12 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
     this.machineInteractUseCase = machineInteractUseCase;
     this.retrieveSessionInteractionsUseCase = retrieveSessionInteractionsUseCase;
 
-    inputText.setValueChangeMode(ValueChangeMode.ON_CHANGE);
-
-    Button interactButton = new Button("Send");
-    interactButton.addClickListener(e -> userInteractListener());
+    MessageInput input =
+        new MessageInput(
+            submitEvent -> {
+              userInteractListener(submitEvent);
+            });
+    input.setWidthFull();
 
     Button machineButton = new Button("Generate Machine Interaction");
     machineButton.addClickListener(e -> machineInteractListener());
@@ -54,16 +52,16 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
     interationList = new MessageList();
 
     add(interationList);
-    add(new HorizontalLayout(inputText, interactButton));
+    add(input);
     add(machineButton);
   }
 
-  private void userInteractListener() {
+  private void userInteractListener(MessageInput.SubmitEvent submitEvent) {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
             session,
             UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"),
-            inputText.getValue()));
+            submitEvent.getValue()));
 
     fillInteractionList();
   }
