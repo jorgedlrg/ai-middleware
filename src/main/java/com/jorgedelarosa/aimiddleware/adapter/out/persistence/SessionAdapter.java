@@ -1,12 +1,14 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -21,7 +23,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @AllArgsConstructor
-public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort {
+public class SessionAdapter
+    implements GetSessionByIdOutPort, SaveSessionOutPort, GetSessionsOutPort {
 
   private final SessionRepository sessionRepository;
   private final InteractionRepository interactionRepository;
@@ -33,7 +36,7 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
     if (sessionEntity.isPresent()) {
       SessionEntity se = sessionEntity.get();
       List<Interaction> interactions =
-          interactionRepository.findAllBySession(se.getId()).stream()
+          interactionRepository.findAllBySession(id).stream()
               .map((e) -> InteractionMapper.INSTANCE.toDom(e))
               .toList();
       List<Performance> performances =
@@ -56,6 +59,27 @@ public class SessionAdapter implements GetSessionByIdOutPort, SaveSessionOutPort
             .map((e) -> InteractionMapper.INSTANCE.toEntity(e, session.getId()))
             .toList();
     interactionRepository.saveAll(interactions);
+  }
+
+  @Override
+  public List<Session> query() {
+    List<Session> result = new ArrayList<>();
+    for (SessionEntity se : sessionRepository.findAll()) {
+      List<Interaction> interactions =
+          interactionRepository.findAllBySession(se.getId()).stream()
+              .map((e) -> InteractionMapper.INSTANCE.toDom(e))
+              .toList();
+      List<Performance> performances =
+          performanceRepository.findAllByPerformanceIdSession(se.getId()).stream()
+              .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
+              .toList();
+
+      result.add(
+          Session.restore(
+              se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances));
+    }
+
+    return result;
   }
 
   @Mapper

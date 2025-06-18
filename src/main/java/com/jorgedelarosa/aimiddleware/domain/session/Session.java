@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
+//TODO: this should belong to an user
 /**
  * @author jorge
  */
