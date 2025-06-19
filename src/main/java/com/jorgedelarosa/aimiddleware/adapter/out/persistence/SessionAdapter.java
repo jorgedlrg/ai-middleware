@@ -65,7 +65,12 @@ public class SessionAdapter
             .toList();
 
     return Session.restore(
-        se.getId(), se.getScenario(), se.getCurrentContext(), interactions, performances);
+        se.getId(),
+        se.getScenario(),
+        se.getCurrentContext(),
+        interactions,
+        performances,
+        se.getLocale());
   }
 
   @Mapper

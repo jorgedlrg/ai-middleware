@@ -68,6 +68,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     templateVars.put("actors", cmd.actors());
     templateVars.put("previousMessages", cmd.previousMessages());
     templateVars.put("you", cmd.you().getName());
+    templateVars.put("language", cmd.replyLanguage());
 
     return new GenericChatMessage(
         "user", templateEngine.process("prompt", new Context(Locale.ENGLISH, templateVars)));

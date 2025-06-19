@@ -11,6 +11,7 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
+import java.util.Locale;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -61,7 +62,11 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
             new GenerateMachineInteractionOutPort.Command(
-                currentContext, featuredActors, actingActor, previousMessages));
+                currentContext,
+                featuredActors,
+                actingActor,
+                previousMessages,
+                session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
     session.interact(response.text(), cmd.role(), false);
 
     saveSessionOutPort.save(session);

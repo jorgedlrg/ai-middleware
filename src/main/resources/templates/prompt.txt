@@ -21,3 +21,5 @@ This is what the actors have said so far:
 [/]]
 
 You're playing the actor [(${you})]. Talk as you were that actor.
+
+VERY IMPORTANT: write your answer in [(${language})].

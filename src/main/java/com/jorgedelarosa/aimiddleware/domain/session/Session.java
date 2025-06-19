@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
@@ -18,18 +19,21 @@ public class Session extends AggregateRoot {
   private final UUID currentContext;
   private final List<Interaction> interactions;
   private final Map<UUID, Performance> performances;
+  private Locale locale;
 
   private Session(
       UUID scenario,
       UUID currentContext,
       List<Interaction> interactions,
       UUID id,
-      Map<UUID, Performance> performances) {
+      Map<UUID, Performance> performances,
+      Locale locale) {
     super(Session.class, id);
     this.scenario = scenario;
     this.interactions = interactions;
     this.currentContext = currentContext;
     this.performances = performances;
+    this.locale = locale;
   }
 
   public static Session restore(
@@ -37,12 +41,13 @@ public class Session extends AggregateRoot {
       UUID scenario,
       UUID currentContext,
       List<Interaction> interactions,
-      List<Performance> performances) {
+      List<Performance> performances,
+      Locale locale) {
     Map<UUID, Performance> map = new HashMap<>();
     for (Performance per : performances) {
       map.put(per.getRole(), per);
     }
-    return new Session(scenario, currentContext, new ArrayList(interactions), id, map);
+    return new Session(scenario, currentContext, new ArrayList(interactions), id, map, locale);
   }
 
   public void interact(String text, UUID role, boolean user) {
@@ -76,5 +81,13 @@ public class Session extends AggregateRoot {
 
   public List<Performance> getPerformances() {
     return List.copyOf(performances.values());
+  }
+
+  public Locale getLocale() {
+    return locale;
+  }
+
+  public void setLocale(Locale locale) {
+    this.locale = locale;
   }
 }

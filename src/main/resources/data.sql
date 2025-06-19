@@ -9,7 +9,7 @@ INSERT IGNORE INTO role VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d
 INSERT IGNORE INTO role VALUES ('655cfb3d-c740-48d2-ab4f-51e391c4deaf','7376f89d-4ca7-423b-95f1-e29a8832ec4a','misterious person in the room');
 INSERT IGNORE INTO role VALUES ('cf9d843f-bfaa-4aa5-a22b-0754afc57502','7376f89d-4ca7-423b-95f1-e29a8832ec4a','third person in the scenario');
 
-INSERT IGNORE INTO session VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','af521f08-65f4-4171-9152-8e8e5c229ebf');
+INSERT IGNORE INTO session VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','af521f08-65f4-4171-9152-8e8e5c229ebf','es_ES');
 
 INSERT IGNORE INTO performance VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','857fa610-b987-454c-96c3-bbf5354f13a0');
 INSERT IGNORE INTO performance VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','655cfb3d-c740-48d2-ab4f-51e391c4deaf','caa30e65-1886-4366-bfb7-f415af9f4a40');

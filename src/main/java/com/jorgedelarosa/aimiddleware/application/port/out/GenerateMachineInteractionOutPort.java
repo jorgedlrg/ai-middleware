@@ -15,7 +15,8 @@ public interface GenerateMachineInteractionOutPort {
       Context currentContext,
       List<Actor> actors,
       Actor you,
-      List<PreviousMessage> previousMessages) {}
+      List<PreviousMessage> previousMessages,
+      String replyLanguage) {}
 
   public record PreviousMessage(String actorName, String message) {}
 
