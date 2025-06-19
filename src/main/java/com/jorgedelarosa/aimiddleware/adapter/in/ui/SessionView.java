@@ -9,8 +9,8 @@ import com.vaadin.flow.component.messages.MessageList;
 import com.vaadin.flow.component.messages.MessageListItem;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
-import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import java.time.Instant;
 import java.util.UUID;
@@ -20,18 +20,18 @@ import org.mapstruct.factory.Mappers;
 /**
  * @author jorge
  */
-@Route(value = "interaction", layout = MainView.class)
-@PageTitle("Interaction")
-public class InteractionView extends VerticalLayout implements HasUrlParameter<String> {
-  private UUID session;
-
+@Route(value = "session", layout = MainView.class)
+public class SessionView extends VerticalLayout
+    implements HasDynamicTitle, HasUrlParameter<String> {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
   private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
 
+  private UUID session;
+  private String pageTitle;
   private final MessageList interationList;
 
-  public InteractionView(
+  public SessionView(
       UserInteractUseCase userInteractUseCase,
       MachineInteractUseCase machineInteractUseCase,
       RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase) {
@@ -85,8 +85,20 @@ public class InteractionView extends VerticalLayout implements HasUrlParameter<S
 
   @Override
   public void setParameter(BeforeEvent event, String parameter) {
-    session = UUID.fromString(parameter);
+    if (parameter != null) {
+      session = UUID.fromString(parameter);
+      pageTitle = "Session - " + parameter;
+    } else {
+      session = null;
+      pageTitle = "Session - new";
+    }
+
     fillInteractionList();
+  }
+
+  @Override
+  public String getPageTitle() {
+    return pageTitle;
   }
 
   @Mapper

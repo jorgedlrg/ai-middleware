@@ -45,7 +45,7 @@ public class SessionsView extends VerticalLayout {
    */
   private ComponentEventListener<ItemClickEvent<GetSessionsUseCase.SessionDto>> sessionListener() {
     return (ItemClickEvent<GetSessionsUseCase.SessionDto> t) -> {
-      t.getColumn().getUI().ifPresent(ui -> ui.navigate("interaction/" + t.getItem().session()));
+      t.getColumn().getUI().ifPresent(ui -> ui.navigate("session/" + t.getItem().session()));
     };
   }
 }
