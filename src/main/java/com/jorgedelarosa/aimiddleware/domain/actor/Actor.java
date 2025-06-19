@@ -10,6 +10,8 @@ import java.util.UUID;
 /**
  * @author jorge
  */
+
+//TODO Add validation on all entities
 public class Actor extends AggregateRoot {
 
   private String name;
@@ -73,5 +75,13 @@ public class Actor extends AggregateRoot {
               "Outfit %s isn't present in the outfit list. Current outfit list size is %s",
               currentOutfit, outfits.size()));
     }
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPhysicalDescription(String physicalDescription) {
+    this.physicalDescription = physicalDescription;
   }
 }

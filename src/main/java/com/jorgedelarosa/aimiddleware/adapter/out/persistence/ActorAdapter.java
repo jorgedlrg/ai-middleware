@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Mind;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
@@ -20,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ActorAdapter
-    implements GetActorByIdOutPort, GetActorListByIdOutPort, GetActorsOutPort {
+    implements GetActorByIdOutPort, GetActorListByIdOutPort, GetActorsOutPort, SaveActorOutPort {
 
   private final ActorRepository actorRepository;
   private final MindRepository mindRepository;
@@ -53,9 +54,23 @@ public class ActorAdapter
         Optional.ofNullable(entity.getCurrentOutfit()));
   }
 
+  @Override
+  public void save(Actor actor) {
+    actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
+  }
+
   @Mapper
   public interface ActorMapper {
     ActorMapper INSTANCE = Mappers.getMapper(ActorMapper.class);
+
+    default ActorEntity toEntity(Actor dom) {
+      ActorEntity ae = new ActorEntity();
+      ae.setId(dom.getId());
+      ae.setName(dom.getName());
+      ae.setPhysicalDescription(dom.getPhysicalDescription());
+      dom.getCurrentOutfit().ifPresent(e -> ae.setCurrentOutfit(e.getId()));
+      return ae;
+    }
 
     default Mind toMind(MindEntity entity) {
       return Mind.restore(entity.getActor(), entity.getPersonality());
