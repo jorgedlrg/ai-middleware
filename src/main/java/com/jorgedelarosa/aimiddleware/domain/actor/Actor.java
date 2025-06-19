@@ -11,7 +11,7 @@ import java.util.UUID;
  * @author jorge
  */
 
-//TODO Add validation on all entities
+// TODO Add validation on all entities
 public class Actor extends AggregateRoot {
 
   private String name;
@@ -35,9 +35,13 @@ public class Actor extends AggregateRoot {
     this.currentOutfit = currentOutfit;
   }
 
-  public static Actor create(String name, String physicalDescription, Optional<Mind> mind) {
-    return new Actor(
-        UUID.randomUUID(), name, physicalDescription, mind, new ArrayList<>(), Optional.empty());
+  public static Actor create(String name, String physicalDescription, String personality) {
+    UUID id = UUID.randomUUID();
+    Optional<Mind> mind = Optional.empty();
+    if (personality != null && !personality.equals("")) {
+      mind = Optional.of(Mind.create(id, personality));
+    }
+    return new Actor(id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty());
   }
 
   public static Actor restore(
@@ -83,5 +87,17 @@ public class Actor extends AggregateRoot {
 
   public void setPhysicalDescription(String physicalDescription) {
     this.physicalDescription = physicalDescription;
+  }
+
+  public void setPersonality(String personality) {
+    if (personality != null && !personality.equals("")) {
+      if (mind.isPresent()) {
+        mind.get().setPersonality(personality);
+      } else {
+        mind = Optional.of(Mind.create(entityId, personality));
+      }
+    } else {
+      mind = Optional.empty();
+    }
   }
 }

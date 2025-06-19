@@ -2,6 +2,8 @@ package com.jorgedelarosa.aimiddleware.application.port.in;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
+import com.jorgedelarosa.aimiddleware.domain.actor.Mind;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -27,6 +29,10 @@ public class GetActorDetailsUseCaseImpl implements GetActorDetailsUseCase {
   @Mapper
   public interface ActorMapper {
     ActorMapper INSTANCE = Mappers.getMapper(ActorMapper.class);
+
+    default Optional<GetActorDetailsUseCase.MindDto> map(Optional<Mind> value) {
+      return value.map(e -> new MindDto(e.getPersonality()));
+    }
 
     GetActorDetailsUseCase.ActorDto toDto(Actor dom);
   }

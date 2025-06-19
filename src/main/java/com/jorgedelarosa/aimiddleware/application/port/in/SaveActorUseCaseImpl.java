@@ -3,7 +3,6 @@ package com.jorgedelarosa.aimiddleware.application.port.in;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -25,13 +24,14 @@ public class SaveActorUseCaseImpl implements SaveActorUseCase {
     Actor actor;
     if (cmd.id() == null) {
       // CREATE
-      actor = Actor.create(cmd.name(), cmd.physicalDescription(), Optional.empty());
+      actor = Actor.create(cmd.name(), cmd.physicalDescription(), cmd.personality());
     } else {
       // UPDATE
       actor = getActorByIdOutPort.query(cmd.id()).orElseThrow();
 
       actor.setName(cmd.name());
       actor.setPhysicalDescription(cmd.physicalDescription());
+      actor.setPersonality(cmd.personality());
     }
 
     saveActorOutPort.save(actor);

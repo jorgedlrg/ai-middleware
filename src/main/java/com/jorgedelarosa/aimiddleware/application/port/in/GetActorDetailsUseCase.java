@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -10,5 +11,8 @@ public interface GetActorDetailsUseCase {
 
   public record Command(UUID actorId) {}
 
-  public record ActorDto(UUID id, String name, String physicalDescription) {}
+  public record ActorDto(
+      UUID id, String name, String physicalDescription, Optional<MindDto> mind) {}
+
+  public record MindDto(String personality) {}
 }

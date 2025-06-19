@@ -12,6 +12,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
@@ -56,7 +57,9 @@ public class ActorAdapter
 
   @Override
   public void save(Actor actor) {
+    mindRepository.deleteById(actor.getId()); // This makes deleting the Mind possible
     actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
+    actor.getMind().ifPresent(e -> mindRepository.save(ActorMapper.INSTANCE.toEntity(e)));
   }
 
   @Mapper
@@ -75,6 +78,9 @@ public class ActorAdapter
     default Mind toMind(MindEntity entity) {
       return Mind.restore(entity.getActor(), entity.getPersonality());
     }
+
+    @Mapping(target = "actor", source = "id")
+    MindEntity toEntity(Mind dom);
 
     default Outfit toOutfit(OutfitEntity entity) {
       return Outfit.restore(entity.getId(), entity.getDescription());

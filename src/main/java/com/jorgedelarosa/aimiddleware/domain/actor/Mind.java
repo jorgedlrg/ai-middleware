@@ -29,4 +29,8 @@ public class Mind extends Entity {
   public String getPersonality() {
     return personality;
   }
+
+  public void setPersonality(String personality) {
+    this.personality = personality;
+  }
 }
