@@ -33,7 +33,6 @@ public class SessionView extends VerticalLayout
   private UUID session;
   private String pageTitle;
   private final MessageList interationList;
-  private ComboBox<Locale> localeComboBox;
 
   public SessionView(
       UserInteractUseCase userInteractUseCase,
@@ -57,7 +56,7 @@ public class SessionView extends VerticalLayout
 
     interationList = new MessageList();
 
-    localeComboBox = new ComboBox<>("Answer language");
+    ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
     localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
     localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
     localeComboBox.setValue(
