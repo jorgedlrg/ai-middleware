@@ -55,6 +55,7 @@ public class SessionView extends VerticalLayout
     machineButton.addClickListener(e -> machineInteractListener());
 
     interationList = new MessageList();
+    interationList.setMarkdown(true);
 
     ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
     localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
