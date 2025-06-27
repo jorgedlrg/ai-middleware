@@ -36,6 +36,10 @@ public class SessionAdapter
 
   @Override
   public void save(Session session) {
+    // Not the most efficient way, but it works for now for a unique 'save' method
+    interactionRepository.deleteAllBySession(session.getId());
+    performanceRepository.deleteAllByPerformanceIdSession(session.getId());
+
     List<InteractionEntity> interactions =
         session.getInteractions().stream()
             .map((e) -> InteractionMapper.INSTANCE.toEntity(e, session.getId()))

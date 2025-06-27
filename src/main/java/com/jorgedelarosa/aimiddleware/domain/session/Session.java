@@ -59,6 +59,15 @@ public class Session extends AggregateRoot {
     // TODO: else warn or something
   }
 
+  public void deleteInteraction(UUID interactionId) {
+    for (int i= 0; i<interactions.size();++i){
+      if(interactions.get(i).getId().equals(interactionId)){
+        interactions.remove(i);
+        break;
+      }
+    }
+  }
+
   public List<UUID> getFeaturedActors() {
     return performances.values().stream().map(e -> e.getActor()).toList();
   }

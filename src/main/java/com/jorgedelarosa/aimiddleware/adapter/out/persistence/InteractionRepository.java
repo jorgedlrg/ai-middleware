@@ -11,4 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface InteractionRepository extends JpaRepository<InteractionEntity, UUID> {
   List<InteractionEntity> findAllBySession(UUID session);
+
+  void deleteAllBySession(UUID session);
 }

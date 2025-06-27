@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface DeleteInteractionUseCase {
   public void execute(Command cmd);
 
-  public record Command(UUID id) {}
+  public record Command(UUID sessionId, UUID interactionId) {}
 }

@@ -1,23 +1,30 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.application.port.in.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UpdateSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
+import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
-import com.vaadin.flow.component.messages.MessageList;
-import com.vaadin.flow.component.messages.MessageListItem;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.virtuallist.VirtualList;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.Locale;
 import java.util.UUID;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 
 /**
  * @author jorge
@@ -29,20 +36,23 @@ public class SessionView extends VerticalLayout
   private final MachineInteractUseCase machineInteractUseCase;
   private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
   private final UpdateSessionUseCase updateSessionUseCase;
+  private final DeleteInteractionUseCase deleteInteractionUseCase;
 
   private UUID session;
   private String pageTitle;
-  private final MessageList interationList;
+  private final VirtualList<RetrieveSessionInteractionsUseCase.InteractionDto> interactionList;
 
   public SessionView(
       UserInteractUseCase userInteractUseCase,
       MachineInteractUseCase machineInteractUseCase,
       RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase,
-      UpdateSessionUseCase updateSessionUseCase) {
+      UpdateSessionUseCase updateSessionUseCase,
+      DeleteInteractionUseCase deleteInteractionUseCase) {
     this.userInteractUseCase = userInteractUseCase;
     this.machineInteractUseCase = machineInteractUseCase;
     this.retrieveSessionInteractionsUseCase = retrieveSessionInteractionsUseCase;
     this.updateSessionUseCase = updateSessionUseCase;
+    this.deleteInteractionUseCase = deleteInteractionUseCase;
 
     MessageInput input =
         new MessageInput(
@@ -54,8 +64,8 @@ public class SessionView extends VerticalLayout
     Button machineButton = new Button("Generate Machine Interaction");
     machineButton.addClickListener(e -> machineInteractListener());
 
-    interationList = new MessageList();
-    interationList.setMarkdown(true);
+    interactionList = new VirtualList<>();
+    interactionList.setRenderer(interactionRenderer);
 
     ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
     localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
@@ -66,7 +76,7 @@ public class SessionView extends VerticalLayout
     // this view
     localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
 
-    add(interationList);
+    add(interactionList);
     add(input);
     add(machineButton);
     add(localeComboBox);
@@ -94,13 +104,16 @@ public class SessionView extends VerticalLayout
     updateSessionUseCase.execute(new UpdateSessionUseCase.Command(session, locale));
   }
 
+  private void deleteInteractionListener(UUID id) {
+    deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
+    fillInteractionList();
+  }
+
   private void fillInteractionList() {
-    interationList.setItems(
-        retrieveSessionInteractionsUseCase
-            .execute(new RetrieveSessionInteractionsUseCase.Command(session))
-            .stream()
-            .map(e -> MessageMapper.INSTANCE.toMessage(e))
-            .toList());
+    interactionList.setItems(
+        retrieveSessionInteractionsUseCase.execute(
+            new RetrieveSessionInteractionsUseCase.Command(session)));
+    interactionList.scrollToEnd();
   }
 
   @Override
@@ -121,16 +134,35 @@ public class SessionView extends VerticalLayout
     return pageTitle;
   }
 
-  @Mapper
-  public interface MessageMapper {
-    MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
+  private final ComponentRenderer<Component, RetrieveSessionInteractionsUseCase.InteractionDto>
+      interactionRenderer =
+          new ComponentRenderer<>(
+              interaction -> {
+                HorizontalLayout interactionLayout = new HorizontalLayout();
+                interactionLayout.setMargin(true);
 
-    default MessageListItem toMessage(RetrieveSessionInteractionsUseCase.InteractionDto dto) {
-      MessageListItem item =
-          new MessageListItem(dto.spokenText(), dto.timestamp(), dto.actorName());
-      // FIXME Max 5 different colors
-      item.setUserColorIndex(Math.abs(dto.actorName().hashCode()) % 5);
-      return item;
-    }
-  }
+                Avatar avatar = new Avatar(interaction.actorName());
+                avatar.setHeight("64px");
+                avatar.setWidth("64px");
+                avatar.setColorIndex(Math.abs(interaction.actorName().hashCode()) % 5);
+
+                VerticalLayout messageLayout = new VerticalLayout();
+                messageLayout.setSpacing(false);
+                messageLayout.setPadding(false);
+                messageLayout
+                    .getElement()
+                    .appendChild(ElementFactory.createStrong(interaction.actorName()));
+                messageLayout.add(new Div(new Text(interaction.spokenText())));
+
+                HorizontalLayout operationsLayout = new HorizontalLayout();
+                operationsLayout.setSpacing(false);
+                operationsLayout.setPadding(false);
+                Icon deleteIcon = LumoIcon.CROSS.create();
+                deleteIcon.addClickListener(e -> deleteInteractionListener(interaction.id()));
+                operationsLayout.add(deleteIcon);
+                messageLayout.add(operationsLayout);
+
+                interactionLayout.add(avatar, messageLayout);
+                return interactionLayout;
+              });
 }

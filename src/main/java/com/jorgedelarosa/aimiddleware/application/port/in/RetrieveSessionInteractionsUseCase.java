@@ -13,5 +13,5 @@ public interface RetrieveSessionInteractionsUseCase {
 
   public record Command(UUID session) {}
 
-  public record InteractionDto(Instant timestamp, String actorName, String spokenText) {}
+  public record InteractionDto(UUID id, Instant timestamp, String actorName, String spokenText) {}
 }

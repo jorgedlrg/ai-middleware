@@ -7,8 +7,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * @author jorge
  */
-public interface PerformanceRepository
-    extends JpaRepository<PerformanceEntity, PerformanceId> {
+public interface PerformanceRepository extends JpaRepository<PerformanceEntity, PerformanceId> {
 
   List<PerformanceEntity> findAllByPerformanceIdSession(UUID session);
+
+  void deleteAllByPerformanceIdSession(UUID session);
 }

@@ -37,7 +37,7 @@ public class RetrieveSessionInteractionsUseCaseImpl implements RetrieveSessionIn
 
     default InteractionDto toDto(Interaction dom, Optional<Actor> actor) {
       return new InteractionDto(
-          dom.getTimestamp(), actor.orElseThrow().getName(), dom.getSpokenText());
+          dom.getId(), dom.getTimestamp(), actor.orElseThrow().getName(), dom.getSpokenText());
     }
   }
 }

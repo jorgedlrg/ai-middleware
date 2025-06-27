@@ -19,9 +19,9 @@ public class DeleteInteractionUseCaseImpl implements DeleteInteractionUseCase {
 
   @Override
   public void execute(Command cmd) {
-    Session session = getSessionByIdOutPort.query(cmd.id()).orElseThrow();
+    Session session = getSessionByIdOutPort.query(cmd.sessionId()).orElseThrow();
 
-    session.getInteractions().removeIf(e -> e.getId().equals(cmd.id()));
+    session.deleteInteraction(cmd.interactionId());
 
     saveSessionOutPort.save(session);
   }
