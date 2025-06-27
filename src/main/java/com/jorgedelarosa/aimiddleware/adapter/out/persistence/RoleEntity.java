@@ -14,4 +14,5 @@ public class RoleEntity {
   @Id private UUID id;
   private UUID scenario;
   private String name;
+  private String details;
 }

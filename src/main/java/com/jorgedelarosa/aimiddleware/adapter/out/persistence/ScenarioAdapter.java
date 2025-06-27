@@ -60,7 +60,7 @@ public class ScenarioAdapter implements GetScenarioByIdOutPort, GetScenariosOutP
     RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
 
     default Role toDom(RoleEntity entity) {
-      return Role.restore(entity.getId(), entity.getName());
+      return Role.restore(entity.getId(), entity.getName(), entity.getDetails());
     }
   }
 }

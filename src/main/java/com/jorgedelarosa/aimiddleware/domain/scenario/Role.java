@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -10,31 +9,27 @@ import java.util.UUID;
 public class Role extends Entity {
 
   private final String name;
-  private Optional<UUID> actor;
+  private final String details;
 
-  private Role(UUID id, Optional<UUID> actor, String name) {
+  private Role(UUID id, String name, String details) {
     super(id);
-    this.actor = actor;
     this.name = name;
+    this.details = details;
   }
 
-  public static Role create(String name) {
-    return new Role(UUID.randomUUID(), Optional.empty(), name);
+  public static Role create(String name, String details) {
+    return new Role(UUID.randomUUID(), name, details);
   }
 
-  public static Role restore(UUID id, String name) {
-    return new Role(id, Optional.empty(), name);
-  }
-
-  public void perform(UUID actor) {
-    this.actor = Optional.of(actor);
-  }
-
-  public Optional<UUID> getActor() {
-    return actor;
+  public static Role restore(UUID id, String name, String details) {
+    return new Role(id, name, details);
   }
 
   public String getName() {
     return name;
+  }
+
+  public String getDetails() {
+    return details;
   }
 }

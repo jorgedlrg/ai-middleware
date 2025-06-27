@@ -7,6 +7,7 @@ import com.jorgedelarosa.aimiddleware.application.port.in.UpdateSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
+import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -151,7 +152,9 @@ public class SessionView extends VerticalLayout
                 messageLayout.setPadding(false);
                 messageLayout
                     .getElement()
-                    .appendChild(ElementFactory.createStrong(interaction.actorName()));
+                    .appendChild(
+                        ElementFactory.createStrong(interaction.actorName()),
+                        ElementFactory.createLabel(interaction.timestamp().toString()));
                 messageLayout.add(new Div(new Text(interaction.spokenText())));
 
                 HorizontalLayout operationsLayout = new HorizontalLayout();

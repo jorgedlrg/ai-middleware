@@ -1,7 +1,12 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.application.port.in.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenariosUseCase;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
@@ -24,12 +29,27 @@ public class ScenariosView extends VerticalLayout {
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::name).setHeader("Scenario");
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::contexts).setHeader("# contexts");
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::roles).setHeader("# roles");
+    scenariosGrid.addItemClickListener(editScenarioListener());
     fillSessionsGrid();
 
     add(scenariosGrid);
+    add(new Button("New Scenario", newScenarioListener()));
   }
 
   private void fillSessionsGrid() {
     scenariosGrid.setItems(getScenariosUseCase.execute(new GetScenariosUseCase.Command()));
+  }
+
+  private ComponentEventListener<ItemClickEvent<GetScenariosUseCase.ScenarioDto>>
+      editScenarioListener() {
+    return (ItemClickEvent<GetScenariosUseCase.ScenarioDto> t) -> {
+      t.getColumn().getUI().ifPresent(ui -> ui.navigate("scenario/" + t.getItem().id()));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> newScenarioListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario"));
+    };
   }
 }
