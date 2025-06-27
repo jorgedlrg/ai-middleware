@@ -160,12 +160,15 @@ public class SessionView extends VerticalLayout
                 HorizontalLayout operationsLayout = new HorizontalLayout();
                 operationsLayout.setSpacing(false);
                 operationsLayout.setPadding(false);
-                Icon deleteIcon = LumoIcon.CROSS.create();
-                deleteIcon.addClickListener(e -> deleteInteractionListener(interaction.id()));
-                operationsLayout.add(deleteIcon);
-                messageLayout.add(operationsLayout);
 
-                interactionLayout.add(avatar, messageLayout);
+                Icon deleteIcon = LumoIcon.CROSS.create();
+                deleteIcon.setColor("red");
+                Button deleteButton = new Button(deleteIcon);
+                deleteButton.addClickListener(e -> deleteInteractionListener(interaction.id()));
+
+                operationsLayout.add(deleteButton);
+
+                interactionLayout.add(avatar, messageLayout, operationsLayout);
                 return interactionLayout;
               });
 }

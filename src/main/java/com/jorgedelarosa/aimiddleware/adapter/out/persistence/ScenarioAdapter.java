@@ -2,6 +2,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
@@ -18,7 +19,8 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @AllArgsConstructor
-public class ScenarioAdapter implements GetScenarioByIdOutPort, GetScenariosOutPort {
+public class ScenarioAdapter
+    implements GetScenarioByIdOutPort, GetScenariosOutPort, SaveScenarioOutPort {
 
   private final ScenarioRepository scenarioRepository;
   private final ContextRepository contextRepository;
@@ -37,27 +39,29 @@ public class ScenarioAdapter implements GetScenarioByIdOutPort, GetScenariosOutP
   private Scenario restoreScenario(ScenarioEntity se) {
     List<Context> contexts =
         contextRepository.findAllByScenario(se.getId()).stream()
-            .map((e) -> ContextMapper.INSTANCE.toDom(e))
+            .map((e) -> ScenarioMapper.INSTANCE.toDom(e))
             .toList();
     List<Role> roles =
         roleRepository.findAllByScenario(se.getId()).stream()
-            .map((e) -> RoleMapper.INSTANCE.toDom(e))
+            .map((e) -> ScenarioMapper.INSTANCE.toDom(e))
             .toList();
     return Scenario.restore(se.getId(), se.getName(), contexts, roles);
   }
 
+  @Override
+  public void save(Scenario scenario) {
+    scenarioRepository.save(ScenarioMapper.INSTANCE.toEntity(scenario));
+  }
+
   @Mapper
-  public interface ContextMapper {
-    ContextMapper INSTANCE = Mappers.getMapper(ContextMapper.class);
+  public interface ScenarioMapper {
+    ScenarioMapper INSTANCE = Mappers.getMapper(ScenarioMapper.class);
+
+    ScenarioEntity toEntity(Scenario dom);
 
     default Context toDom(ContextEntity entity) {
       return Context.restore(entity.getId(), entity.getName(), entity.getPhysicalDescription());
     }
-  }
-
-  @Mapper
-  public interface RoleMapper {
-    RoleMapper INSTANCE = Mappers.getMapper(RoleMapper.class);
 
     default Role toDom(RoleEntity entity) {
       return Role.restore(entity.getId(), entity.getName(), entity.getDetails());

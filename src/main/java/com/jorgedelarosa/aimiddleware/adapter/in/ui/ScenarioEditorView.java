@@ -2,6 +2,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ScenarioEditorScenarioLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenarioDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.SaveScenarioUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -25,13 +26,17 @@ public class ScenarioEditorView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
 
   private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
+  private final SaveScenarioUseCase saveScenarioUseCase;
 
   private String pageTitle;
   private GetScenarioDetailsUseCase.ScenarioDto scenarioDto;
   private ScenarioEditorScenarioLayout scenarioEditorScenarioLayout;
 
-  public ScenarioEditorView(GetScenarioDetailsUseCase getScenarioDetailsUseCase) {
+  public ScenarioEditorView(
+      GetScenarioDetailsUseCase getScenarioDetailsUseCase,
+      SaveScenarioUseCase saveScenarioUseCase) {
     this.getScenarioDetailsUseCase = getScenarioDetailsUseCase;
+    this.saveScenarioUseCase = saveScenarioUseCase;
   }
 
   private void rebuildEditor() {
@@ -49,8 +54,13 @@ public class ScenarioEditorView extends VerticalLayout
 
   private ComponentEventListener<ClickEvent<Button>> saveScenarioListener() {
     return (ClickEvent<Button> t) -> {
-      // TODO
-      UUID scenarioId = scenarioDto.id();
+      UUID scenarioId =
+          saveScenarioUseCase.execute(
+              new SaveScenarioUseCase.Command(
+                  scenarioDto.id(),
+                  scenarioEditorScenarioLayout.getNameValue(),
+                  Collections.EMPTY_LIST,
+                  Collections.EMPTY_LIST));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario/" + scenarioId));
       Notification notification =
           Notification.show(scenarioEditorScenarioLayout.getNameValue() + " saved!");

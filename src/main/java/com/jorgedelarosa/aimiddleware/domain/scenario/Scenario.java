@@ -10,7 +10,7 @@ import java.util.UUID;
  */
 public class Scenario extends AggregateRoot {
 
-  private final String name;
+  private String name;
   private final List<Context> contexts;
   private final List<Role> roles;
 
@@ -41,5 +41,9 @@ public class Scenario extends AggregateRoot {
 
   public List<Role> getRoles() {
     return List.copyOf(roles);
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 }
