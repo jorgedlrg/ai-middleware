@@ -1,15 +1,18 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ScenarioEditorScenarioLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenarioDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.GetScenariosUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.SaveScenarioUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.HasUrlParameter;
@@ -30,7 +33,8 @@ public class ScenarioEditorView extends VerticalLayout
 
   private String pageTitle;
   private GetScenarioDetailsUseCase.ScenarioDto scenarioDto;
-  private ScenarioEditorScenarioLayout scenarioEditorScenarioLayout;
+
+  private TextField name;
 
   public ScenarioEditorView(
       GetScenarioDetailsUseCase getScenarioDetailsUseCase,
@@ -42,28 +46,56 @@ public class ScenarioEditorView extends VerticalLayout
   private void rebuildEditor() {
     removeAll();
 
-    scenarioEditorScenarioLayout = new ScenarioEditorScenarioLayout(scenarioDto);
+    name = new TextField("Name");
+    name.setValue(scenarioDto.name());
+    name.setRequired(true);
+
+    Grid<GetScenarioDetailsUseCase.ContextDto> grid =
+        new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);
+    grid.addColumn(GetScenarioDetailsUseCase.ContextDto::id).setHeader("id");
+    grid.addColumn(GetScenarioDetailsUseCase.ContextDto::name).setHeader("name");
+    grid.setItems(scenarioDto.contexts());
+    grid.addItemClickListener(editContextListener());
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(saveScenarioListener());
 
-    add(scenarioEditorScenarioLayout);
+    Button addContext = new Button("Add new Context");
+    addContext.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+    addContext.addClickListener(addNewContextListener());
+
+    add(name);
+    add(grid);
+    add(addContext);
     add(saveButton);
+  }
+
+  private ComponentEventListener<ItemClickEvent<GetScenarioDetailsUseCase.ContextDto>>
+      editContextListener() {
+    return (ItemClickEvent<GetScenarioDetailsUseCase.ContextDto> t) -> {
+      t.getColumn()
+          .getUI()
+          .ifPresent(
+              ui -> ui.navigate("scenario/" + scenarioDto.id() + "/context/" + t.getItem().id()));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> addNewContextListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource()
+          .getUI()
+          .ifPresent(ui -> ui.navigate("scenario/" + scenarioDto.id() + "/context"));
+    };
   }
 
   private ComponentEventListener<ClickEvent<Button>> saveScenarioListener() {
     return (ClickEvent<Button> t) -> {
       UUID scenarioId =
           saveScenarioUseCase.execute(
-              new SaveScenarioUseCase.Command(
-                  scenarioDto.id(),
-                  scenarioEditorScenarioLayout.getNameValue(),
-                  Collections.EMPTY_LIST,
-                  Collections.EMPTY_LIST));
+              new SaveScenarioUseCase.Command(scenarioDto.id(), name.getValue()));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario/" + scenarioId));
-      Notification notification =
-          Notification.show(scenarioEditorScenarioLayout.getNameValue() + " saved!");
+      Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }

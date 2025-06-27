@@ -11,4 +11,6 @@ import org.springframework.stereotype.Component;
 @Component
 public interface ContextRepository extends JpaRepository<ContextEntity, UUID> {
   List<ContextEntity> findAllByScenario(UUID scenario);
+
+  void deleteAllByScenario(UUID scenario);
 }

@@ -32,4 +32,12 @@ public class Context extends Entity {
   public String getPhysicalDescription() {
     return physicalDescription;
   }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setPhysicalDescription(String physicalDescription) {
+    this.physicalDescription = physicalDescription;
+  }
 }

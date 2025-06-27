@@ -51,7 +51,7 @@ public class Actor extends AggregateRoot {
       Optional<Mind> mind,
       List<Outfit> outfits,
       Optional<UUID> currentOutfit) {
-    return new Actor(id, name, physicalDescription, mind, outfits, currentOutfit);
+    return new Actor(id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit);
   }
 
   public String getName() {

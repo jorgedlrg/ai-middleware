@@ -28,7 +28,30 @@ public class Scenario extends AggregateRoot {
 
   public static Scenario restore(UUID id, String name, List<Context> contexts, List<Role> roles) {
 
-    return new Scenario(name, contexts, roles, Scenario.class, id);
+    return new Scenario(name, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
+  }
+
+  public void addNewContext(String name, String physicalDescription) {
+    contexts.add(Context.create(name, physicalDescription));
+  }
+
+  public void modifyContext(UUID contextId, String name, String physicalDescription) {
+    contexts.stream()
+        .filter(e -> e.getId().equals(contextId))
+        .forEach(
+            e -> {
+              e.setName(name);
+              e.setPhysicalDescription(physicalDescription);
+            });
+  }
+
+  public void deleteContext(UUID contextId) {
+    for (int i = 0; i < contexts.size(); ++i) {
+      if (contexts.get(i).getId().equals(contextId)) {
+        contexts.remove(i);
+        break;
+      }
+    }
   }
 
   public String getName() {
