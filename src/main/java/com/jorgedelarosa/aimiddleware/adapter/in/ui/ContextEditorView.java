@@ -7,6 +7,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -56,6 +57,11 @@ public class ContextEditorView extends VerticalLayout
       name.setValue(dto.name());
       physicalDescription.setValue(dto.physicalDescription());
     }
+    
+    
+    FormLayout formLayout = new FormLayout();
+    formLayout.add(name, 1);
+    formLayout.add(physicalDescription, 2);  
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -65,8 +71,7 @@ public class ContextEditorView extends VerticalLayout
     deleteButton.addThemeVariants(ButtonVariant.LUMO_WARNING);
     deleteButton.addClickListener(deleteContextListener());
 
-    add(name);
-    add(physicalDescription);
+    add(formLayout);
     add(new Div(saveButton, deleteButton));
   }
 
