@@ -55,9 +55,9 @@ public class MainView extends AppLayout implements AfterNavigationObserver {
     tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
     tabs.setId("tabs");
     tabs.add(
-        createTab("Actors", ActorsView.class),
-        createTab("Scenarios", ScenariosView.class),
-        createTab("Sessions", SessionsView.class));
+        createTab("Actors", ActorsListView.class),
+        createTab("Scenarios", ScenariosListView.class),
+        createTab("Sessions", SessionsListView.class));
     return tabs;
   }
 

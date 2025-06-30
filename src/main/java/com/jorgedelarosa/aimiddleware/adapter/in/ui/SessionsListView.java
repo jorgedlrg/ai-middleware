@@ -16,7 +16,7 @@ import com.vaadin.flow.router.Route;
  */
 @Route(value = "sessions-list", layout = MainView.class)
 @PageTitle("Sessions")
-public class SessionsView extends VerticalLayout {
+public class SessionsListView extends VerticalLayout {
 
   // TODO: The idea here will be to be able to select a session and modify it, and create a new
   // session maybe? or do it from Scenarios
@@ -24,7 +24,7 @@ public class SessionsView extends VerticalLayout {
 
   private final Grid<GetSessionsUseCase.SessionDto> sessionsGrid;
 
-  public SessionsView(GetSessionsUseCase getSessionsUseCase) {
+  public SessionsListView(GetSessionsUseCase getSessionsUseCase) {
     this.getSessionsUseCase = getSessionsUseCase;
 
     sessionsGrid = new Grid<>();

@@ -15,13 +15,13 @@ import com.vaadin.flow.router.Route;
  */
 @Route(value = "actors-list", layout = MainView.class)
 @PageTitle("Actors")
-public class ActorsView extends VerticalLayout {
+public class ActorsListView extends VerticalLayout {
 
   private final GetActorsUseCase getActorsUseCase;
 
   private final Grid<GetActorsUseCase.ActorDto> actorsGrid;
 
-  public ActorsView(GetActorsUseCase getActorsUseCase) {
+  public ActorsListView(GetActorsUseCase getActorsUseCase) {
     this.getActorsUseCase = getActorsUseCase;
 
     actorsGrid = new Grid<>();

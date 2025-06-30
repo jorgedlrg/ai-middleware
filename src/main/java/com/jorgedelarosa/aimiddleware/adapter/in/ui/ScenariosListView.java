@@ -15,13 +15,13 @@ import com.vaadin.flow.router.Route;
  */
 @Route(value = "scenarios-list", layout = MainView.class)
 @PageTitle("Scenarios")
-public class ScenariosView extends VerticalLayout {
+public class ScenariosListView extends VerticalLayout {
 
   private final GetScenariosUseCase getScenariosUseCase;
 
   private final Grid<GetScenariosUseCase.ScenarioDto> scenariosGrid;
 
-  public ScenariosView(GetScenariosUseCase getScenariosUseCase) {
+  public ScenariosListView(GetScenariosUseCase getScenariosUseCase) {
     this.getScenariosUseCase = getScenariosUseCase;
 
     scenariosGrid = new Grid<>();
