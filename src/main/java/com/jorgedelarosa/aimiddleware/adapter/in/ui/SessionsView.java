@@ -1,7 +1,10 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.GetSessionsUseCase;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -29,6 +32,10 @@ public class SessionsView extends VerticalLayout {
     sessionsGrid.addColumn(GetSessionsUseCase.SessionDto::scenario).setHeader("Scenario");
     sessionsGrid.addItemClickListener(sessionListener());
     fillSessionsGrid();
+    
+    Button newSession = new Button("Create new Session");
+    newSession.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+    newSession.addClickListener(createNewSession());
 
     add(sessionsGrid);
   }
@@ -45,6 +52,14 @@ public class SessionsView extends VerticalLayout {
   private ComponentEventListener<ItemClickEvent<GetSessionsUseCase.SessionDto>> sessionListener() {
     return (ItemClickEvent<GetSessionsUseCase.SessionDto> t) -> {
       t.getColumn().getUI().ifPresent(ui -> ui.navigate("sessions/" + t.getItem().session()));
+    };
+  }
+  
+  private ComponentEventListener<ClickEvent<Button>> createNewSession() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource()
+          .getUI()
+          .ifPresent(ui -> ui.navigate("sessions/"));
     };
   }
 }
