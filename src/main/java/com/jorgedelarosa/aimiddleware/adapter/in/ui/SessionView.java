@@ -1,8 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
@@ -35,16 +35,20 @@ import lombok.RequiredArgsConstructor;
 public class SessionView extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
-  private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
   private final UpdateSessionUseCase updateSessionUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
+  private final GetSessionDetailsUseCase getSessionDetailsUseCase;
 
   private UUID session;
   private String pageTitle;
-  private VirtualList<RetrieveSessionInteractionsUseCase.InteractionDto> interactionList;
+  private GetSessionDetailsUseCase.SessionDto sessionDetails;
+  private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
 
   private void render() {
     removeAll();
+
+    sessionDetails =
+        getSessionDetailsUseCase.execute(new GetSessionDetailsUseCase.Command(session));
 
     MessageInput input =
         new MessageInput(
@@ -68,9 +72,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     // this view
     localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
 
-    interactionList.setItems(
-        retrieveSessionInteractionsUseCase.execute(
-            new RetrieveSessionInteractionsUseCase.Command(session)));
+    interactionList.setItems(sessionDetails.interactions());
     interactionList.scrollToEnd();
 
     add(interactionList);
@@ -119,7 +121,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     return pageTitle;
   }
 
-  private final ComponentRenderer<Component, RetrieveSessionInteractionsUseCase.InteractionDto>
+  private final ComponentRenderer<Component, GetSessionDetailsUseCase.InteractionDto>
       interactionRenderer =
           new ComponentRenderer<>(
               interaction -> {

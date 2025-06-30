@@ -1,11 +1,9 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserReq;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase.InteractionDto;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
-import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -28,7 +26,7 @@ public class InteractController {
 
   private final MachineInteractUseCase machineInteractUseCase;
   private final UserInteractUseCase userInteractUseCase;
-  private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
+  private final GetSessionDetailsUseCase getSessionDetailsUseCase;
 
   private final UUID SESSION = UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a");
 
@@ -57,8 +55,8 @@ public class InteractController {
   }
 
   @GetMapping("/messages")
-  public List<InteractionDto> messages() {
-    return retrieveSessionInteractionsUseCase.execute(
-        new RetrieveSessionInteractionsUseCase.Command(SESSION));
+  public GetSessionDetailsUseCase.SessionDto messages() {
+    return getSessionDetailsUseCase.execute(
+        new GetSessionDetailsUseCase.Command(SESSION));
   }
 }
