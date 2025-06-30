@@ -61,11 +61,11 @@ public class Session extends AggregateRoot {
     return new Session(scenario, currentContext, new ArrayList(interactions), id, map, locale);
   }
 
-  public void interact(String text, UUID role, boolean user) {
+  public void interact(String text, UUID role) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
-      interactions.add(Interaction.create("", text, "", role, actorId, user, currentContext));
+      interactions.add(Interaction.create("", text, "", role, actorId, currentContext));
     }
     // TODO: else warn or something
   }

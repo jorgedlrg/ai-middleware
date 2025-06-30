@@ -67,7 +67,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 actingActor,
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
-    session.interact(response.text(), cmd.role(), false);
+    session.interact(response.text(), cmd.role());
 
     saveSessionOutPort.save(session);
   }

@@ -25,11 +25,13 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.Locale;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author jorge
  */
 @Route(value = "sessions/:sessionId?", layout = MainView.class)
+@RequiredArgsConstructor
 public class SessionView extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
@@ -39,19 +41,10 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
 
   private UUID session;
   private String pageTitle;
-  private final VirtualList<RetrieveSessionInteractionsUseCase.InteractionDto> interactionList;
+  private VirtualList<RetrieveSessionInteractionsUseCase.InteractionDto> interactionList;
 
-  public SessionView(
-      UserInteractUseCase userInteractUseCase,
-      MachineInteractUseCase machineInteractUseCase,
-      RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase,
-      UpdateSessionUseCase updateSessionUseCase,
-      DeleteInteractionUseCase deleteInteractionUseCase) {
-    this.userInteractUseCase = userInteractUseCase;
-    this.machineInteractUseCase = machineInteractUseCase;
-    this.retrieveSessionInteractionsUseCase = retrieveSessionInteractionsUseCase;
-    this.updateSessionUseCase = updateSessionUseCase;
-    this.deleteInteractionUseCase = deleteInteractionUseCase;
+  private void render() {
+    removeAll();
 
     MessageInput input =
         new MessageInput(
@@ -75,6 +68,11 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     // this view
     localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
 
+    interactionList.setItems(
+        retrieveSessionInteractionsUseCase.execute(
+            new RetrieveSessionInteractionsUseCase.Command(session)));
+    interactionList.scrollToEnd();
+
     add(interactionList);
     add(input);
     add(machineButton);
@@ -88,7 +86,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
             UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"),
             submitEvent.getValue()));
 
-    fillInteractionList();
+    render();
   }
 
   private void machineInteractListener() {
@@ -96,7 +94,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
         new MachineInteractUseCase.Command(
             session, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
 
-    fillInteractionList();
+    render();
   }
 
   private void changeLocaleListener(Locale locale) {
@@ -105,14 +103,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
 
   private void deleteInteractionListener(UUID id) {
     deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
-    fillInteractionList();
-  }
-
-  private void fillInteractionList() {
-    interactionList.setItems(
-        retrieveSessionInteractionsUseCase.execute(
-            new RetrieveSessionInteractionsUseCase.Command(session)));
-    interactionList.scrollToEnd();
+    render();
   }
 
   @Override
@@ -120,7 +111,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     session = UUID.fromString(event.getRouteParameters().get("sessionId").orElseThrow());
     pageTitle = "Session - " + session;
 
-    fillInteractionList();
+    render();
   }
 
   @Override

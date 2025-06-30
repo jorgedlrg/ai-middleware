@@ -42,7 +42,6 @@ public class Interaction extends Entity {
       String actionText,
       UUID role,
       UUID actor,
-      boolean user,
       UUID context) {
     return new Interaction(
         thoughtText,
