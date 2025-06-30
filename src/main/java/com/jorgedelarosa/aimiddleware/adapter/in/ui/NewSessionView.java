@@ -1,12 +1,29 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.CreateSessionUseCase;
+import com.vaadin.flow.component.ClickEvent;
+import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -17,21 +34,114 @@ import lombok.RequiredArgsConstructor;
 @PageTitle("New Session")
 public class NewSessionView extends VerticalLayout implements BeforeEnterObserver {
   private final GetScenariosUseCase getScenariosUseCase;
+  private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
+  private final GetActorsUseCase getActorsUseCase;
+  private final CreateSessionUseCase createSessionUseCase;
+
+  private GetScenariosUseCase.ScenarioDto selectedScenario = null;
+  private GetScenarioDetailsUseCase.ContextDto selectedContext = null;
+  private Map<UUID, CreateSessionUseCase.PerformanceDto> performances = new HashMap<>();
+  private Locale selectedLocale = null;
 
   private void render() {
     removeAll();
-    ComboBox<GetScenariosUseCase.ScenarioDto> scenariosComboBox = new ComboBox<>("Scenarios");
+
+    ComboBox<GetScenariosUseCase.ScenarioDto> scenariosComboBox = new ComboBox<>("Scenario:");
     scenariosComboBox.setItems(getScenariosUseCase.execute(new GetScenariosUseCase.Command()));
     scenariosComboBox.setItemLabelGenerator(GetScenariosUseCase.ScenarioDto::name);
     scenariosComboBox.addValueChangeListener(e -> selectScenarioListener(e.getValue()));
 
     add(scenariosComboBox);
+    if (selectedScenario != null) {
+      GetScenarioDetailsUseCase.ScenarioDto scenarioDetails =
+          getScenarioDetailsUseCase.execute(
+              new GetScenarioDetailsUseCase.Command(selectedScenario.id()));
+
+      // Current context
+      ComboBox<GetScenarioDetailsUseCase.ContextDto> contextsComboBox = new ComboBox<>("Context:");
+      contextsComboBox.setItems(scenarioDetails.contexts());
+      contextsComboBox.setItemLabelGenerator(GetScenarioDetailsUseCase.ContextDto::name);
+      contextsComboBox.addValueChangeListener(e -> selectContextListener(e.getValue()));
+
+      add(contextsComboBox);
+
+      // Performances
+      List<GetActorsUseCase.ActorDto> actors =
+          getActorsUseCase.execute(new GetActorsUseCase.Command());
+      for (GetScenarioDetailsUseCase.RoleDto role : scenarioDetails.roles()) {
+        ComboBox<GetActorsUseCase.ActorDto> actorsComboBox =
+            new ComboBox<>("Select actor for role " + role.name() + ":");
+        actorsComboBox.setItems(actors);
+        actorsComboBox.setItemLabelGenerator(GetActorsUseCase.ActorDto::name);
+        actorsComboBox.addValueChangeListener(e -> selectActorListener(e.getValue(), role.id()));
+        add(actorsComboBox);
+      }
+
+      ComboBox<Locale> localeComboBox = new ComboBox<>("Session language:");
+      localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
+      localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
+      localeComboBox.addValueChangeListener(e -> selectLocaleListener(e.getValue()));
+      add(localeComboBox);
+    }
+
+    add(new Span("Current selection:"));
+    if (selectedScenario != null) {
+      add(new Span("Scenario: " + selectedScenario.name()));
+      if (selectedContext != null) {
+        add(new Span("Current context: " + selectedContext.name()));
+      }
+      for (Entry<UUID, CreateSessionUseCase.PerformanceDto> dto : performances.entrySet()) {
+        add(new Span("Role " + dto.getKey() + ": " + dto.getValue().actor()));
+      }
+      if (selectedContext != null && selectedLocale != null && performances.size() > 1) {
+        Button createSession = new Button("Save");
+        createSession.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        createSession.addClickListener(createSessionListener());
+        add(createSession);
+      }
+    }
   }
 
   private void selectScenarioListener(GetScenariosUseCase.ScenarioDto dto) {
-    // TODO
+    selectedScenario = dto;
+    selectedContext = null;
+    performances = new HashMap<>();
+    selectedLocale = null;
 
     render();
+  }
+
+  private void selectContextListener(GetScenarioDetailsUseCase.ContextDto dto) {
+    selectedContext = dto;
+
+    render();
+  }
+
+  private void selectActorListener(GetActorsUseCase.ActorDto dto, UUID role) {
+    performances.put(role, new CreateSessionUseCase.PerformanceDto(dto.id(), role));
+
+    render();
+  }
+
+  private void selectLocaleListener(Locale locale) {
+    selectedLocale = locale;
+
+    render();
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> createSessionListener() {
+    return (ClickEvent<Button> t) -> {
+      UUID sessionId =
+          createSessionUseCase.execute(
+              new CreateSessionUseCase.Command(
+                  selectedScenario.id(),
+                  selectedContext.id(),
+                  new ArrayList(performances.values()),
+                  selectedLocale));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId));
+      Notification notification = Notification.show("Session " + sessionId + " created!");
+      notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    };
   }
 
   @Override

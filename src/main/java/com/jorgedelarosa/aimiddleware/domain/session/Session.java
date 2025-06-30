@@ -36,6 +36,8 @@ public class Session extends AggregateRoot {
     this.locale = locale;
   }
 
+  // TODO: Performances shouldn't be added this way. Do it with a method addPerformance, and apply
+  // rules (I.E. not having the same actor for different roles)
   public static Session create(
       UUID scenario, UUID currentContext, List<Performance> performances, Locale locale) {
     Map<UUID, Performance> map = new HashMap<>();
