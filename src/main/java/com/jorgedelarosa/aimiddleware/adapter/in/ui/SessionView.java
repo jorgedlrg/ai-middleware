@@ -11,10 +11,12 @@ import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.ElementFactory;
@@ -43,12 +45,19 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   private String pageTitle;
   private GetSessionDetailsUseCase.SessionDto sessionDetails;
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
+  private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> radioGroup;
 
   private void render() {
     removeAll();
 
     sessionDetails =
         getSessionDetailsUseCase.execute(new GetSessionDetailsUseCase.Command(session));
+
+    radioGroup = new RadioButtonGroup<>();
+    radioGroup.setLabel("You're:");
+    radioGroup.setRenderer(performancesRenderer);
+    radioGroup.setItems(sessionDetails.performances());
+    radioGroup.setValue(sessionDetails.performances().getFirst());
 
     MessageInput input =
         new MessageInput(
@@ -75,6 +84,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     interactionList.setItems(sessionDetails.interactions());
     interactionList.scrollToEnd();
 
+    add(radioGroup);
     add(interactionList);
     add(input);
     add(machineButton);
@@ -84,9 +94,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   private void userInteractListener(MessageInput.SubmitEvent submitEvent) {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
-            session,
-            UUID.fromString("7376f89d-4ca7-423b-95f1-e29a8832ec4a"),
-            submitEvent.getValue()));
+            session, radioGroup.getValue().role(), submitEvent.getValue()));
 
     render();
   }
@@ -120,6 +128,16 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   public String getPageTitle() {
     return pageTitle;
   }
+
+  private final ComponentRenderer<Component, GetSessionDetailsUseCase.PerformanceDto>
+      performancesRenderer =
+          new ComponentRenderer<>(
+              performance -> {
+                HorizontalLayout performanceLayour = new HorizontalLayout();
+                performanceLayour.add(
+                    new Span(performance.actorName() + " (" + performance.roleName() + ")"));
+                return performanceLayour;
+              });
 
   private final ComponentRenderer<Component, GetSessionDetailsUseCase.InteractionDto>
       interactionRenderer =
