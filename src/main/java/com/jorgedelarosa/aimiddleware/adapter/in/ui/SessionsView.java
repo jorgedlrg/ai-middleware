@@ -32,12 +32,13 @@ public class SessionsView extends VerticalLayout {
     sessionsGrid.addColumn(GetSessionsUseCase.SessionDto::scenario).setHeader("Scenario");
     sessionsGrid.addItemClickListener(sessionListener());
     fillSessionsGrid();
-    
+
     Button newSession = new Button("Create new Session");
     newSession.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     newSession.addClickListener(createNewSession());
 
     add(sessionsGrid);
+    add(newSession);
   }
 
   private void fillSessionsGrid() {
@@ -54,12 +55,10 @@ public class SessionsView extends VerticalLayout {
       t.getColumn().getUI().ifPresent(ui -> ui.navigate("sessions/" + t.getItem().session()));
     };
   }
-  
+
   private ComponentEventListener<ClickEvent<Button>> createNewSession() {
     return (ClickEvent<Button> t) -> {
-      t.getSource()
-          .getUI()
-          .ifPresent(ui -> ui.navigate("sessions/"));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("new-session"));
     };
   }
 }

@@ -36,6 +36,15 @@ public class Session extends AggregateRoot {
     this.locale = locale;
   }
 
+  public static Session create(
+      UUID scenario, UUID currentContext, List<Performance> performances, Locale locale) {
+    Map<UUID, Performance> map = new HashMap<>();
+    for (Performance per : performances) {
+      map.put(per.getRole(), per);
+    }
+    return new Session(scenario, currentContext, new ArrayList<>(), UUID.randomUUID(), map, locale);
+  }
+
   public static Session restore(
       UUID id,
       UUID scenario,
@@ -60,8 +69,8 @@ public class Session extends AggregateRoot {
   }
 
   public void deleteInteraction(UUID interactionId) {
-    for (int i= 0; i<interactions.size();++i){
-      if(interactions.get(i).getId().equals(interactionId)){
+    for (int i = 0; i < interactions.size(); ++i) {
+      if (interactions.get(i).getId().equals(interactionId)) {
         interactions.remove(i);
         break;
       }

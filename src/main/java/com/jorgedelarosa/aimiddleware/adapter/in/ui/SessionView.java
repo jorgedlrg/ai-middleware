@@ -7,7 +7,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionU
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.Unit;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -19,9 +18,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
 import com.vaadin.flow.dom.ElementFactory;
-import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.BeforeEnterEvent;
+import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
-import com.vaadin.flow.router.HasUrlParameter;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.Locale;
@@ -30,9 +29,8 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-@Route(value = "sessions", layout = MainView.class)
-public class SessionView extends VerticalLayout
-    implements HasDynamicTitle, HasUrlParameter<String> {
+@Route(value = "sessions/:sessionId?", layout = MainView.class)
+public class SessionView extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
   private final RetrieveSessionInteractionsUseCase retrieveSessionInteractionsUseCase;
@@ -118,14 +116,9 @@ public class SessionView extends VerticalLayout
   }
 
   @Override
-  public void setParameter(BeforeEvent event, String parameter) {
-    if (parameter != null) {
-      session = UUID.fromString(parameter);
-      pageTitle = "Session - " + parameter;
-    } else {
-      session = null;
-      pageTitle = "Session - new";
-    }
+  public void beforeEnter(BeforeEnterEvent event) {
+    session = UUID.fromString(event.getRouteParameters().get("sessionId").orElseThrow());
+    pageTitle = "Session - " + session;
 
     fillInteractionList();
   }
