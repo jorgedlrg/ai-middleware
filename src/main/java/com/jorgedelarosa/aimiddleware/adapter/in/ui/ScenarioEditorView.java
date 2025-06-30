@@ -50,12 +50,19 @@ public class ScenarioEditorView extends VerticalLayout
     name.setValue(scenarioDto.name());
     name.setRequired(true);
 
-    Grid<GetScenarioDetailsUseCase.ContextDto> grid =
+    Grid<GetScenarioDetailsUseCase.ContextDto> contextGrid =
         new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);
-    grid.addColumn(GetScenarioDetailsUseCase.ContextDto::id).setHeader("id");
-    grid.addColumn(GetScenarioDetailsUseCase.ContextDto::name).setHeader("name");
-    grid.setItems(scenarioDto.contexts());
-    grid.addItemClickListener(editContextListener());
+    contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::id).setHeader("id");
+    contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::name).setHeader("name");
+    contextGrid.setItems(scenarioDto.contexts());
+    contextGrid.addItemClickListener(editContextListener());
+
+    Grid<GetScenarioDetailsUseCase.RoleDto> roleGrid =
+        new Grid<>(GetScenarioDetailsUseCase.RoleDto.class, false);
+    roleGrid.addColumn(GetScenarioDetailsUseCase.RoleDto::id).setHeader("id");
+    roleGrid.addColumn(GetScenarioDetailsUseCase.RoleDto::name).setHeader("name");
+    roleGrid.setItems(scenarioDto.roles());
+    roleGrid.addItemClickListener(editRoleListener());
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -64,10 +71,16 @@ public class ScenarioEditorView extends VerticalLayout
     Button addContext = new Button("Add new Context");
     addContext.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addContext.addClickListener(addNewContextListener());
+    
+    Button addRole = new Button("Add new Role");
+    addRole.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+    addRole.addClickListener(addNewRoleListener());
 
     add(name);
-    add(grid);
+    add(contextGrid);
     add(addContext);
+    add(roleGrid);
+    add(addRole);
     add(saveButton);
   }
 
@@ -86,6 +99,22 @@ public class ScenarioEditorView extends VerticalLayout
       t.getSource()
           .getUI()
           .ifPresent(ui -> ui.navigate("scenario/" + scenarioDto.id() + "/context"));
+    };
+  }
+
+  private ComponentEventListener<ItemClickEvent<GetScenarioDetailsUseCase.RoleDto>>
+      editRoleListener() {
+    return (ItemClickEvent<GetScenarioDetailsUseCase.RoleDto> t) -> {
+      t.getColumn()
+          .getUI()
+          .ifPresent(
+              ui -> ui.navigate("scenario/" + scenarioDto.id() + "/role/" + t.getItem().id()));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> addNewRoleListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario/" + scenarioDto.id() + "/role"));
     };
   }
 

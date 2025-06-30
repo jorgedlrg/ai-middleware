@@ -54,6 +54,29 @@ public class Scenario extends AggregateRoot {
     }
   }
 
+  public void addNewRole(String name, String details) {
+    roles.add(Role.create(name, details));
+  }
+
+  public void modifyRole(UUID roleId, String name, String details) {
+    roles.stream()
+        .filter(e -> e.getId().equals(roleId))
+        .forEach(
+            e -> {
+              e.setName(name);
+              e.setDetails(details);
+            });
+  }
+
+  public void deleteRole(UUID roleId) {
+    for (int i = 0; i < roles.size(); ++i) {
+      if (roles.get(i).getId().equals(roleId)) {
+        roles.remove(i);
+        break;
+      }
+    }
+  }
+
   public String getName() {
     return name;
   }

@@ -8,8 +8,8 @@ import java.util.UUID;
  */
 public class Role extends Entity {
 
-  private final String name;
-  private final String details;
+  private String name;
+  private String details;
 
   private Role(UUID id, String name, String details) {
     super(id);
@@ -31,5 +31,13 @@ public class Role extends Entity {
 
   public String getDetails() {
     return details;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public void setDetails(String details) {
+    this.details = details;
   }
 }
