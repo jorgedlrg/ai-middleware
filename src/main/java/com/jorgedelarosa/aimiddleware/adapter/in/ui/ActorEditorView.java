@@ -1,8 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
-import com.jorgedelarosa.aimiddleware.application.port.in.GetActorDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.SaveActorUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;

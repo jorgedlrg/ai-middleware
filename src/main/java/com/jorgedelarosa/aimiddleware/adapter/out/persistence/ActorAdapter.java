@@ -1,5 +1,11 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutfitEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutfitRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;

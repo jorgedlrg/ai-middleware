@@ -1,5 +1,12 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.InteractionEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.InteractionRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.PerformanceEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.PerformanceId;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.PerformanceRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;

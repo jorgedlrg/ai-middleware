@@ -1,10 +1,10 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.application.port.in.DeleteInteractionUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.UpdateSessionUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.Unit;

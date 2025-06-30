@@ -1,6 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
-import com.jorgedelarosa.aimiddleware.application.port.in.GetActorDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;

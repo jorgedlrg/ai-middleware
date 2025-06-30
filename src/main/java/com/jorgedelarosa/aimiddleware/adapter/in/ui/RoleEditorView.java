@@ -1,8 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.application.port.in.DeleteRoleUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.GetScenarioDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.SaveRoleUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.DeleteRoleUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.SaveRoleUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;

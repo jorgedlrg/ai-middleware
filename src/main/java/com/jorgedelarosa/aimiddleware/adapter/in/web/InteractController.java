@@ -1,10 +1,10 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.web.dto.InteractUserReq;
-import com.jorgedelarosa.aimiddleware.application.port.in.MachineInteractUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.RetrieveSessionInteractionsUseCase.InteractionDto;
-import com.jorgedelarosa.aimiddleware.application.port.in.UserInteractUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.RetrieveSessionInteractionsUseCase.InteractionDto;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;

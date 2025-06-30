@@ -1,5 +1,11 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
