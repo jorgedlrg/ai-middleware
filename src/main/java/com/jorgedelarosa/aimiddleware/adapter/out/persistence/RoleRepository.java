@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface RoleRepository extends JpaRepository<RoleEntity, UUID> {
   List<RoleEntity> findAllByScenario(UUID scenario);
+
+  void deleteAllByScenario(UUID scenario);
 }

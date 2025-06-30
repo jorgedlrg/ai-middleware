@@ -1,8 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.application.port.in.DeleteContextUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.DeleteRoleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenarioDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.SaveContextUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.SaveRoleUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -25,65 +25,63 @@ import lombok.RequiredArgsConstructor;
 /**
  * @author jorge
  */
-@Route(value = "scenarios/:scenarioId?/contexts/:contextId?", layout = MainView.class)
+@Route(value = "scenarios/:scenarioId?/roles/:roleId?", layout = MainView.class)
 @RequiredArgsConstructor
-public class ContextEditorView extends VerticalLayout
-    implements BeforeEnterObserver, HasDynamicTitle {
+public class RoleEditorView extends VerticalLayout implements BeforeEnterObserver, HasDynamicTitle {
 
   private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
-  private final SaveContextUseCase saveContextUseCase;
-  private final DeleteContextUseCase deleteContextUseCase;
+  private final SaveRoleUseCase saveRoleUseCase;
+  private final DeleteRoleUseCase deleteRoleUseCase;
 
   private String pageTitle;
 
   private UUID scenario;
-  private UUID context;
+  private UUID role;
   private TextField name;
-  private TextArea physicalDescription;
+  private TextArea details;
 
   private void render() {
     removeAll();
     name = new TextField("Name");
-    physicalDescription = new TextArea("Physical description");
-    if (context != null) {
-      GetScenarioDetailsUseCase.ContextDto dto = retrieveContext();
+    details = new TextArea("Details");
+    if (role != null) {
+      GetScenarioDetailsUseCase.RoleDto dto = retrieveRole();
       name.setValue(dto.name());
-      physicalDescription.setValue(dto.physicalDescription());
+      details.setValue(dto.details());
     }
 
     FormLayout formLayout = new FormLayout();
     formLayout.add(name, 1);
-    formLayout.add(physicalDescription, 2);
+    formLayout.add(details, 2);
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    saveButton.addClickListener(saveContextListener());
+    saveButton.addClickListener(saveRoleListener());
 
     Button deleteButton = new Button("Delete");
     deleteButton.addThemeVariants(ButtonVariant.LUMO_WARNING);
-    deleteButton.addClickListener(deleteContextListener());
+    deleteButton.addClickListener(deleteRoleListener());
 
     add(formLayout);
     add(new Div(saveButton, deleteButton));
   }
 
-  private ComponentEventListener<ClickEvent<Button>> saveContextListener() {
+  private ComponentEventListener<ClickEvent<Button>> saveRoleListener() {
     return (ClickEvent<Button> t) -> {
-      UUID contextId =
-          saveContextUseCase.execute(
-              new SaveContextUseCase.Command(
-                  scenario, context, name.getValue(), physicalDescription.getValue()));
+      UUID roleId =
+          saveRoleUseCase.execute(
+              new SaveRoleUseCase.Command(scenario, role, name.getValue(), details.getValue()));
       t.getSource()
           .getUI()
-          .ifPresent(ui -> ui.navigate("scenarios/" + scenario + "/contexts/" + contextId));
+          .ifPresent(ui -> ui.navigate("scenarios/" + scenario + "/roles/" + roleId));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }
 
-  private ComponentEventListener<ClickEvent<Button>> deleteContextListener() {
+  private ComponentEventListener<ClickEvent<Button>> deleteRoleListener() {
     return (ClickEvent<Button> t) -> {
-      deleteContextUseCase.execute(new DeleteContextUseCase.Command(scenario, context));
+      deleteRoleUseCase.execute(new DeleteRoleUseCase.Command(scenario, role));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenario));
       Notification notification = Notification.show(name.getValue() + " deleted!");
       notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
@@ -94,24 +92,24 @@ public class ContextEditorView extends VerticalLayout
   public void beforeEnter(BeforeEnterEvent event) {
     scenario = UUID.fromString(event.getRouteParameters().get("scenarioId").orElseThrow());
 
-    Optional<String> sc = event.getRouteParameters().get("contextId");
-    sc.ifPresent(e -> context = UUID.fromString(e));
-    if (context != null) {
-      GetScenarioDetailsUseCase.ContextDto dto = retrieveContext();
-      pageTitle = "Context Editor - " + dto.name();
+    Optional<String> sc = event.getRouteParameters().get("roleId");
+    sc.ifPresent(e -> role = UUID.fromString(e));
+    if (role != null) {
+      GetScenarioDetailsUseCase.RoleDto dto = retrieveRole();
+      pageTitle = "Role Editor - " + dto.name();
     } else {
-      pageTitle = "Context Editor - new";
+      pageTitle = "Role Editor - new";
     }
 
     render();
   }
 
-  private GetScenarioDetailsUseCase.ContextDto retrieveContext() {
+  private GetScenarioDetailsUseCase.RoleDto retrieveRole() {
     GetScenarioDetailsUseCase.ScenarioDto sdto =
         getScenarioDetailsUseCase.execute(new GetScenarioDetailsUseCase.Command(scenario));
 
-    return sdto.contexts().stream()
-        .filter(e -> e.id().equals(context))
+    return sdto.roles().stream()
+        .filter(e -> e.id().equals(role))
         .findFirst()
         .orElseThrow(); // FIXME handle this properly
   }

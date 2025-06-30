@@ -30,7 +30,7 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-@Route(value = "session", layout = MainView.class)
+@Route(value = "sessions", layout = MainView.class)
 public class SessionView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
   private final UserInteractUseCase userInteractUseCase;

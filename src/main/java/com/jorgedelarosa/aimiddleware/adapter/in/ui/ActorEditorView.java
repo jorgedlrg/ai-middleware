@@ -21,7 +21,7 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-@Route(value = "actor", layout = MainView.class)
+@Route(value = "actors", layout = MainView.class)
 public class ActorEditorView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
 
@@ -61,7 +61,7 @@ public class ActorEditorView extends VerticalLayout
                   actorEditorActorLayout.getNameValue(),
                   actorEditorActorLayout.getPhysicalDescriptionValue(),
                   actorEditorActorLayout.getPersonalityValue()));
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("actor/" + actorId));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + actorId));
       Notification notification =
           Notification.show(actorEditorActorLayout.getNameValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

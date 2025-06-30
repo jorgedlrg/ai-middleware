@@ -13,7 +13,7 @@ import com.vaadin.flow.router.Route;
 /**
  * @author jorge
  */
-@Route(value = "actors", layout = MainView.class)
+@Route(value = "actors-list", layout = MainView.class)
 @PageTitle("Actors")
 public class ActorsView extends VerticalLayout {
 
@@ -45,13 +45,13 @@ public class ActorsView extends VerticalLayout {
    */
   private ComponentEventListener<ItemClickEvent<GetActorsUseCase.ActorDto>> editActorListener() {
     return (ItemClickEvent<GetActorsUseCase.ActorDto> t) -> {
-      t.getColumn().getUI().ifPresent(ui -> ui.navigate("actor/" + t.getItem().id()));
+      t.getColumn().getUI().ifPresent(ui -> ui.navigate("actors/" + t.getItem().id()));
     };
   }
 
   private ComponentEventListener<ClickEvent<Button>> newActorListener() {
     return (ClickEvent<Button> t) -> {
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("actor"));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors"));
     };
   }
 }

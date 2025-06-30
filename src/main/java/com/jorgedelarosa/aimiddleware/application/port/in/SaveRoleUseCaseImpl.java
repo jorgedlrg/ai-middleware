@@ -23,16 +23,16 @@ public class SaveRoleUseCaseImpl implements SaveRoleUseCase {
   public UUID execute(Command cmd) {
     Scenario scenario = getScenarioByIdOutPort.query(cmd.scenario()).orElseThrow();
     if (cmd.id() == null) {
-      scenario.addNewContext(cmd.name(), cmd.details());
+      scenario.addNewRole(cmd.name(), cmd.details());
     } else {
-      scenario.modifyContext(cmd.id(), cmd.name(), cmd.details());
+      scenario.modifyRole(cmd.id(), cmd.name(), cmd.details());
     }
     scenarioOutPort.save(scenario);
 
     if (cmd.id() != null) {
       return cmd.id();
     } else {
-      return scenario.getContexts().getLast().getId();
+      return scenario.getRoles().getLast().getId();
     }
   }
 }

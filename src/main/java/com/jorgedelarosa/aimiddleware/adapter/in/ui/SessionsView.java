@@ -2,7 +2,6 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.GetSessionsUseCase;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.grid.CellFocusEvent;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -12,7 +11,7 @@ import com.vaadin.flow.router.Route;
 /**
  * @author jorge
  */
-@Route(value = "sessions", layout = MainView.class)
+@Route(value = "sessions-list", layout = MainView.class)
 @PageTitle("Sessions")
 public class SessionsView extends VerticalLayout {
 
@@ -45,7 +44,7 @@ public class SessionsView extends VerticalLayout {
    */
   private ComponentEventListener<ItemClickEvent<GetSessionsUseCase.SessionDto>> sessionListener() {
     return (ItemClickEvent<GetSessionsUseCase.SessionDto> t) -> {
-      t.getColumn().getUI().ifPresent(ui -> ui.navigate("session/" + t.getItem().session()));
+      t.getColumn().getUI().ifPresent(ui -> ui.navigate("sessions/" + t.getItem().session()));
     };
   }
 }

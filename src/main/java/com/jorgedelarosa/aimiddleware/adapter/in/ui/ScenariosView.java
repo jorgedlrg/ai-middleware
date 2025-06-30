@@ -1,6 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.application.port.in.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenariosUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -14,7 +13,7 @@ import com.vaadin.flow.router.Route;
 /**
  * @author jorge
  */
-@Route(value = "scenarios", layout = MainView.class)
+@Route(value = "scenarios-list", layout = MainView.class)
 @PageTitle("Scenarios")
 public class ScenariosView extends VerticalLayout {
 
@@ -43,13 +42,13 @@ public class ScenariosView extends VerticalLayout {
   private ComponentEventListener<ItemClickEvent<GetScenariosUseCase.ScenarioDto>>
       editScenarioListener() {
     return (ItemClickEvent<GetScenariosUseCase.ScenarioDto> t) -> {
-      t.getColumn().getUI().ifPresent(ui -> ui.navigate("scenario/" + t.getItem().id()));
+      t.getColumn().getUI().ifPresent(ui -> ui.navigate("scenarios/" + t.getItem().id()));
     };
   }
 
   private ComponentEventListener<ClickEvent<Button>> newScenarioListener() {
     return (ClickEvent<Button> t) -> {
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario"));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios"));
     };
   }
 }

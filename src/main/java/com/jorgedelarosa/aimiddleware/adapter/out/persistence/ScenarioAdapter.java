@@ -51,9 +51,12 @@ public class ScenarioAdapter
   @Override
   public void save(Scenario scenario) {
     contextRepository.deleteAllByScenario(scenario.getId());
+    roleRepository.deleteAllByScenario(scenario.getId());
     scenarioRepository.save(ScenarioMapper.INSTANCE.toEntity(scenario));
     contextRepository.saveAll(
-        ScenarioMapper.INSTANCE.toEntity(scenario.getContexts(), scenario.getId()));
+        ScenarioMapper.INSTANCE.toContextEntity(scenario.getContexts(), scenario.getId()));
+    roleRepository.saveAll(
+        ScenarioMapper.INSTANCE.toRoleEntity(scenario.getRoles(), scenario.getId()));
   }
 
   @Mapper
@@ -62,11 +65,17 @@ public class ScenarioAdapter
 
     ScenarioEntity toEntity(Scenario dom);
 
-    default List<ContextEntity> toEntity(List<Context> dom, UUID scenario) {
+    default List<ContextEntity> toContextEntity(List<Context> dom, UUID scenario) {
+      return dom.stream().map(e -> toEntity(e, scenario)).toList();
+    }
+
+    default List<RoleEntity> toRoleEntity(List<Role> dom, UUID scenario) {
       return dom.stream().map(e -> toEntity(e, scenario)).toList();
     }
 
     ContextEntity toEntity(Context dom, UUID scenario);
+
+    RoleEntity toEntity(Role dom, UUID scenario);
 
     default Context toDom(ContextEntity entity) {
       return Context.restore(entity.getId(), entity.getName(), entity.getPhysicalDescription());

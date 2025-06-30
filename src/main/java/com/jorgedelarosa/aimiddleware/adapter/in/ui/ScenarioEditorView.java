@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.GetScenarioDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.GetScenariosUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.SaveScenarioUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -24,7 +23,7 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-@Route(value = "scenario", layout = MainView.class)
+@Route(value = "scenarios", layout = MainView.class)
 public class ScenarioEditorView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
 
@@ -71,7 +70,7 @@ public class ScenarioEditorView extends VerticalLayout
     Button addContext = new Button("Add new Context");
     addContext.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addContext.addClickListener(addNewContextListener());
-    
+
     Button addRole = new Button("Add new Role");
     addRole.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addRole.addClickListener(addNewRoleListener());
@@ -90,15 +89,7 @@ public class ScenarioEditorView extends VerticalLayout
       t.getColumn()
           .getUI()
           .ifPresent(
-              ui -> ui.navigate("scenario/" + scenarioDto.id() + "/context/" + t.getItem().id()));
-    };
-  }
-
-  private ComponentEventListener<ClickEvent<Button>> addNewContextListener() {
-    return (ClickEvent<Button> t) -> {
-      t.getSource()
-          .getUI()
-          .ifPresent(ui -> ui.navigate("scenario/" + scenarioDto.id() + "/context"));
+              ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/contexts/" + t.getItem().id()));
     };
   }
 
@@ -108,13 +99,23 @@ public class ScenarioEditorView extends VerticalLayout
       t.getColumn()
           .getUI()
           .ifPresent(
-              ui -> ui.navigate("scenario/" + scenarioDto.id() + "/role/" + t.getItem().id()));
+              ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/roles/" + t.getItem().id()));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> addNewContextListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource()
+          .getUI()
+          .ifPresent(ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/contexts"));
     };
   }
 
   private ComponentEventListener<ClickEvent<Button>> addNewRoleListener() {
     return (ClickEvent<Button> t) -> {
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario/" + scenarioDto.id() + "/role"));
+      t.getSource()
+          .getUI()
+          .ifPresent(ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/roles"));
     };
   }
 
@@ -123,7 +124,7 @@ public class ScenarioEditorView extends VerticalLayout
       UUID scenarioId =
           saveScenarioUseCase.execute(
               new SaveScenarioUseCase.Command(scenarioDto.id(), name.getValue()));
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenario/" + scenarioId));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenarioId));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
