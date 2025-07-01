@@ -26,6 +26,6 @@ public class DeleteConfirmButton extends Button {
     dialog.addConfirmListener(deleteListener);
 
     addClickListener(event -> dialog.open());
-    addThemeVariants(ButtonVariant.LUMO_PRIMARY, ButtonVariant.LUMO_WARNING);
+    addThemeVariants(ButtonVariant.LUMO_ERROR);
   }
 }
