@@ -5,6 +5,6 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 /**
  * @author jorge
  */
-public interface DeleteScenarioByIdOutPort {
+public interface DeleteScenarioOutPort {
   public void delete(Scenario scenario);
 }

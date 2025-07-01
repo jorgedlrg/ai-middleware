@@ -6,7 +6,6 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioRepository;
-import com.jorgedelarosa.aimiddleware.application.port.out.DeleteScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
@@ -20,6 +19,7 @@ import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
+import com.jorgedelarosa.aimiddleware.application.port.out.DeleteScenarioOutPort;
 
 /**
  * @author jorge
@@ -30,7 +30,7 @@ public class ScenarioAdapter
     implements GetScenarioByIdOutPort,
         GetScenariosOutPort,
         SaveScenarioOutPort,
-        DeleteScenarioByIdOutPort {
+        DeleteScenarioOutPort {
 
   private final ScenarioRepository scenarioRepository;
   private final ContextRepository contextRepository;

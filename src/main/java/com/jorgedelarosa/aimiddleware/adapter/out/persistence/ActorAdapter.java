@@ -6,6 +6,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutfitEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutfitRepository;
+import com.jorgedelarosa.aimiddleware.application.port.out.DeleteActorOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
@@ -28,7 +29,11 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ActorAdapter
-    implements GetActorByIdOutPort, GetActorListByIdOutPort, GetActorsOutPort, SaveActorOutPort {
+    implements GetActorByIdOutPort,
+        GetActorListByIdOutPort,
+        GetActorsOutPort,
+        SaveActorOutPort,
+        DeleteActorOutPort {
 
   private final ActorRepository actorRepository;
   private final MindRepository mindRepository;
@@ -63,9 +68,15 @@ public class ActorAdapter
 
   @Override
   public void save(Actor actor) {
-    mindRepository.deleteById(actor.getId()); // This makes deleting the Mind possible
+    mindRepository.deleteById(actor.getId());
     actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
     actor.getMind().ifPresent(e -> mindRepository.save(ActorMapper.INSTANCE.toEntity(e)));
+  }
+
+  @Override
+  public void delete(Actor actor) {
+    mindRepository.deleteById(actor.getId());
+    actorRepository.deleteById(actor.getId());
   }
 
   @Mapper

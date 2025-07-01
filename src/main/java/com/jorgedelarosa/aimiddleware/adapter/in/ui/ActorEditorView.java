@@ -1,12 +1,16 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteActorUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -17,27 +21,24 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import java.util.Optional;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author jorge
  */
 @Route(value = "actors", layout = MainView.class)
+@RequiredArgsConstructor
 public class ActorEditorView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
 
   private final GetActorDetailsUseCase getActorDetailsUseCase;
   private final SaveActorUseCase saveActorUseCase;
+  private final DeleteActorUseCase deleteActorUseCase;
 
   private GetActorDetailsUseCase.ActorDto actorDto;
   private String pageTitle;
 
   private ActorEditorActorLayout actorEditorActorLayout;
-
-  public ActorEditorView(
-      GetActorDetailsUseCase getActorDetailsUseCase, SaveActorUseCase saveActorUseCase) {
-    this.getActorDetailsUseCase = getActorDetailsUseCase;
-    this.saveActorUseCase = saveActorUseCase;
-  }
 
   private void rebuildEditor() {
     removeAll();
@@ -47,9 +48,11 @@ public class ActorEditorView extends VerticalLayout
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(saveActorListener());
+    DeleteConfirmButton deleteButton =
+        new DeleteConfirmButton("Delete", actorDto.name(), deleteActorListener());
 
     add(actorEditorActorLayout);
-    add(saveButton);
+    add(new Div(saveButton, deleteButton));
   }
 
   private ComponentEventListener<ClickEvent<Button>> saveActorListener() {
@@ -65,6 +68,15 @@ public class ActorEditorView extends VerticalLayout
       Notification notification =
           Notification.show(actorEditorActorLayout.getNameValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    };
+  }
+
+  private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteActorListener() {
+    return (ConfirmDialog.ConfirmEvent t) -> {
+      deleteActorUseCase.execute(new DeleteActorUseCase.Command(actorDto.id()));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
+      Notification notification = Notification.show(actorDto.name() + " deleted!");
+      notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     };
   }
 
