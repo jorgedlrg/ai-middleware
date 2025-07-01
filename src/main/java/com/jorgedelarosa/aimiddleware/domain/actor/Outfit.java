@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -24,5 +25,13 @@ public class Outfit extends Entity {
 
   public String getDescription() {
     return description;
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(description)) return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

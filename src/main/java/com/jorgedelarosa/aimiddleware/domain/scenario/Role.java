@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -18,11 +19,15 @@ public class Role extends Entity {
   }
 
   public static Role create(String name, String details) {
-    return new Role(UUID.randomUUID(), name, details);
+    Role role = new Role(UUID.randomUUID(), name, details);
+    role.validate();
+    return role;
   }
 
   public static Role restore(UUID id, String name, String details) {
-    return new Role(id, name, details);
+    Role role = new Role(id, name, details);
+    role.validate();
+    return role;
   }
 
   public String getName() {
@@ -35,9 +40,20 @@ public class Role extends Entity {
 
   public void setName(String name) {
     this.name = name;
+    validate();
   }
 
   public void setDetails(String details) {
     this.details = details;
+    validate();
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(name) && Validator.strNotEmpty.validate(details))
+      return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

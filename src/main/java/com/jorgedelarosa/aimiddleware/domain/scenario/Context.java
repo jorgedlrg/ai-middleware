@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -18,11 +19,15 @@ public class Context extends Entity {
   }
 
   public static Context create(String name, String physicalDescription) {
-    return new Context(UUID.randomUUID(), name, physicalDescription);
+    Context context = new Context(UUID.randomUUID(), name, physicalDescription);
+    context.validate();
+    return context;
   }
 
   public static Context restore(UUID id, String name, String physicalDescription) {
-    return new Context(id, name, physicalDescription);
+    Context context = new Context(id, name, physicalDescription);
+    context.validate();
+    return context;
   }
 
   public String getName() {
@@ -35,9 +40,20 @@ public class Context extends Entity {
 
   public void setName(String name) {
     this.name = name;
+    validate();
   }
 
   public void setPhysicalDescription(String physicalDescription) {
     this.physicalDescription = physicalDescription;
+    validate();
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(name) && Validator.strNotEmpty.validate(physicalDescription))
+      return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

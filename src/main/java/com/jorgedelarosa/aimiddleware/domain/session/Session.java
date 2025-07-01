@@ -44,7 +44,10 @@ public class Session extends AggregateRoot {
     for (Performance per : performances) {
       map.put(per.getRole(), per);
     }
-    return new Session(scenario, currentContext, new ArrayList<>(), UUID.randomUUID(), map, locale);
+    Session session =
+        new Session(scenario, currentContext, new ArrayList<>(), UUID.randomUUID(), map, locale);
+    session.validate();
+    return session;
   }
 
   public static Session restore(
@@ -58,7 +61,10 @@ public class Session extends AggregateRoot {
     for (Performance per : performances) {
       map.put(per.getRole(), per);
     }
-    return new Session(scenario, currentContext, new ArrayList(interactions), id, map, locale);
+    Session session =
+        new Session(scenario, currentContext, new ArrayList(interactions), id, map, locale);
+    session.validate();
+    return session;
   }
 
   public void interact(String text, UUID role) {
@@ -66,8 +72,10 @@ public class Session extends AggregateRoot {
     if (performance != null) {
       UUID actorId = performance.getActor();
       interactions.add(Interaction.create("", text, "", role, actorId, currentContext));
+    } else {
+      throw new RuntimeException(String.format("Role %s not contained in performances.", role));
     }
-    // TODO: else warn or something
+    validate();
   }
 
   public void deleteInteraction(UUID interactionId) {
@@ -77,6 +85,7 @@ public class Session extends AggregateRoot {
         break;
       }
     }
+    validate();
   }
 
   public List<UUID> getFeaturedActors() {
@@ -109,5 +118,15 @@ public class Session extends AggregateRoot {
 
   public void setLocale(Locale locale) {
     this.locale = locale;
+    validate();
+  }
+
+  @Override
+  public boolean validate() {
+    if (scenario != null && currentContext != null && locale != null && !performances.isEmpty())
+      return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

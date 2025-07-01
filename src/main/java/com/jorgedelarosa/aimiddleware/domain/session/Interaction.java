@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -43,15 +44,18 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID context) {
-    return new Interaction(
-        thoughtText,
-        spokenText,
-        actionText,
-        Instant.now(),
-        role,
-        actor,
-        UUID.randomUUID(),
-        context);
+    Interaction interaction =
+        new Interaction(
+            thoughtText,
+            spokenText,
+            actionText,
+            Instant.now(),
+            role,
+            actor,
+            UUID.randomUUID(),
+            context);
+    interaction.validate();
+    return interaction;
   }
 
   public static Interaction restore(
@@ -63,15 +67,18 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID context) {
-    return new Interaction(
-        thoughtText,
-        spokenText,
-        actionText,
-        Instant.ofEpochMilli(timestamp),
-        role,
-        actor,
-        id,
-        context);
+    Interaction interaction =
+        new Interaction(
+            thoughtText,
+            spokenText,
+            actionText,
+            Instant.ofEpochMilli(timestamp),
+            role,
+            actor,
+            id,
+            context);
+    interaction.validate();
+    return interaction;
   }
 
   public String getThoughtText() {
@@ -100,5 +107,17 @@ public class Interaction extends Entity {
 
   public UUID getContext() {
     return context;
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(spokenText)
+        && timestamp != null
+        && role != null
+        && actor != null
+        && context != null) return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

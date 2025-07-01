@@ -16,8 +16,5 @@ public abstract class Entity {
     return entityId;
   }
 
-  @Override
-  public String toString() {
-    return entityId.toString();
-  }
+  public abstract boolean validate();
 }

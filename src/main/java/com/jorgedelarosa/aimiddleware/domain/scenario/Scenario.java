@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -22,17 +23,22 @@ public class Scenario extends AggregateRoot {
   }
 
   public static Scenario create(String name) {
-    return new Scenario(
-        name, new ArrayList<>(), new ArrayList<>(), Scenario.class, UUID.randomUUID());
+    Scenario scenario =
+        new Scenario(name, new ArrayList<>(), new ArrayList<>(), Scenario.class, UUID.randomUUID());
+    scenario.validate();
+    return scenario;
   }
 
   public static Scenario restore(UUID id, String name, List<Context> contexts, List<Role> roles) {
-
-    return new Scenario(name, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
+    Scenario scenario =
+        new Scenario(name, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
+    scenario.validate();
+    return scenario;
   }
 
   public void addNewContext(String name, String physicalDescription) {
     contexts.add(Context.create(name, physicalDescription));
+    validate();
   }
 
   public void modifyContext(UUID contextId, String name, String physicalDescription) {
@@ -43,6 +49,7 @@ public class Scenario extends AggregateRoot {
               e.setName(name);
               e.setPhysicalDescription(physicalDescription);
             });
+    validate();
   }
 
   public void deleteContext(UUID contextId) {
@@ -52,10 +59,12 @@ public class Scenario extends AggregateRoot {
         break;
       }
     }
+    validate();
   }
 
   public void addNewRole(String name, String details) {
     roles.add(Role.create(name, details));
+    validate();
   }
 
   public void modifyRole(UUID roleId, String name, String details) {
@@ -66,6 +75,7 @@ public class Scenario extends AggregateRoot {
               e.setName(name);
               e.setDetails(details);
             });
+    validate();
   }
 
   public void deleteRole(UUID roleId) {
@@ -75,6 +85,7 @@ public class Scenario extends AggregateRoot {
         break;
       }
     }
+    validate();
   }
 
   public String getName() {
@@ -91,5 +102,14 @@ public class Scenario extends AggregateRoot {
 
   public void setName(String name) {
     this.name = name;
+    validate();
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(name)) return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }

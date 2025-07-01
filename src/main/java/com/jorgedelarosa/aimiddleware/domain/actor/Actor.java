@@ -1,6 +1,8 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
+import com.jorgedelarosa.aimiddleware.domain.TwoArgsValidator;
+import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -10,8 +12,6 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-
-// TODO Add validation on all entities
 public class Actor extends AggregateRoot {
 
   private String name;
@@ -41,7 +41,10 @@ public class Actor extends AggregateRoot {
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    return new Actor(id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty());
+    Actor actor =
+        new Actor(id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty());
+    actor.validate();
+    return actor;
   }
 
   public static Actor restore(
@@ -51,7 +54,10 @@ public class Actor extends AggregateRoot {
       Optional<Mind> mind,
       List<Outfit> outfits,
       Optional<UUID> currentOutfit) {
-    return new Actor(id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit);
+    Actor actor =
+        new Actor(id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit);
+    actor.validate();
+    return actor;
   }
 
   public String getName() {
@@ -79,14 +85,17 @@ public class Actor extends AggregateRoot {
               "Outfit %s isn't present in the outfit list. Current outfit list size is %s",
               currentOutfit, outfits.size()));
     }
+    validate();
   }
 
   public void setName(String name) {
     this.name = name;
+    validate();
   }
 
   public void setPhysicalDescription(String physicalDescription) {
     this.physicalDescription = physicalDescription;
+    validate();
   }
 
   public void setPersonality(String personality) {
@@ -99,5 +108,18 @@ public class Actor extends AggregateRoot {
     } else {
       mind = Optional.empty();
     }
+    validate();
+  }
+
+  @Override
+  public boolean validate() {
+    if (Validator.strNotEmpty.validate(name)
+            && Validator.strNotEmpty.validate(physicalDescription)
+            && currentOutfit.isPresent()
+        ? TwoArgsValidator.existsIn.validate(currentOutfit.get(), outfits)
+        : true && mind.isPresent() ? mind.get().validate() : true) return true;
+    else
+      throw new RuntimeException(
+          String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
 }
