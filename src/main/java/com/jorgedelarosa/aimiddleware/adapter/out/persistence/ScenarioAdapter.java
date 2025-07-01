@@ -6,6 +6,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioRepository;
+import com.jorgedelarosa.aimiddleware.application.port.out.DeleteScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
@@ -26,7 +27,10 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class ScenarioAdapter
-    implements GetScenarioByIdOutPort, GetScenariosOutPort, SaveScenarioOutPort {
+    implements GetScenarioByIdOutPort,
+        GetScenariosOutPort,
+        SaveScenarioOutPort,
+        DeleteScenarioByIdOutPort {
 
   private final ScenarioRepository scenarioRepository;
   private final ContextRepository contextRepository;
@@ -63,6 +67,13 @@ public class ScenarioAdapter
         ScenarioMapper.INSTANCE.toContextEntity(scenario.getContexts(), scenario.getId()));
     roleRepository.saveAll(
         ScenarioMapper.INSTANCE.toRoleEntity(scenario.getRoles(), scenario.getId()));
+  }
+
+  @Override
+  public void delete(Scenario scenario) {
+    contextRepository.deleteAllByScenario(scenario.getId());
+    roleRepository.deleteAllByScenario(scenario.getId());
+    scenarioRepository.deleteById(scenario.getId());
   }
 
   @Mapper

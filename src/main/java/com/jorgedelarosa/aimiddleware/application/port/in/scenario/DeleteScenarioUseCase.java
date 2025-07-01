@@ -5,8 +5,8 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-public interface DeleteRoleUseCase {
+public interface DeleteScenarioUseCase {
   public void execute(Command cmd);
 
-  public record Command(UUID scenarioId, UUID roleId) {}
+  public record Command(UUID scenarioId) {}
 }

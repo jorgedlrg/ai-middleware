@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.DeleteContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.SaveContextUseCase;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
@@ -59,9 +61,8 @@ public class ContextEditorView extends VerticalLayout
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(saveContextListener());
 
-    Button deleteButton = new Button("Delete");
-    deleteButton.addThemeVariants(ButtonVariant.LUMO_WARNING);
-    deleteButton.addClickListener(deleteContextListener());
+    DeleteConfirmButton deleteButton =
+        new DeleteConfirmButton("Delete", name.getValue(), deleteContextListener());
 
     add(formLayout);
     add(new Div(saveButton, deleteButton));
@@ -81,8 +82,8 @@ public class ContextEditorView extends VerticalLayout
     };
   }
 
-  private ComponentEventListener<ClickEvent<Button>> deleteContextListener() {
-    return (ClickEvent<Button> t) -> {
+  private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteContextListener() {
+    return (ConfirmDialog.ConfirmEvent t) -> {
       deleteContextUseCase.execute(new DeleteContextUseCase.Command(scenario, context));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenario));
       Notification notification = Notification.show(name.getValue() + " deleted!");

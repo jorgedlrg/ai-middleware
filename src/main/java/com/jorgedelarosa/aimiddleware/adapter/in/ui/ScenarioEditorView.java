@@ -1,13 +1,17 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.DeleteScenarioUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.SaveScenarioUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
+import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -19,28 +23,23 @@ import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.Route;
 import java.util.Collections;
 import java.util.UUID;
+import lombok.RequiredArgsConstructor;
 
 /**
  * @author jorge
  */
 @Route(value = "scenarios", layout = MainView.class)
+@RequiredArgsConstructor
 public class ScenarioEditorView extends VerticalLayout
     implements HasDynamicTitle, HasUrlParameter<String> {
 
   private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
   private final SaveScenarioUseCase saveScenarioUseCase;
+  private final DeleteScenarioUseCase deleteScenarioUseCase;
 
   private String pageTitle;
   private GetScenarioDetailsUseCase.ScenarioDto scenarioDto;
-
   private TextField name;
-
-  public ScenarioEditorView(
-      GetScenarioDetailsUseCase getScenarioDetailsUseCase,
-      SaveScenarioUseCase saveScenarioUseCase) {
-    this.getScenarioDetailsUseCase = getScenarioDetailsUseCase;
-    this.saveScenarioUseCase = saveScenarioUseCase;
-  }
 
   private void rebuildEditor() {
     removeAll();
@@ -63,10 +62,6 @@ public class ScenarioEditorView extends VerticalLayout
     roleGrid.setItems(scenarioDto.roles());
     roleGrid.addItemClickListener(editRoleListener());
 
-    Button saveButton = new Button("Save");
-    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-    saveButton.addClickListener(saveScenarioListener());
-
     Button addContext = new Button("Add new Context");
     addContext.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addContext.addClickListener(addNewContextListener());
@@ -75,12 +70,19 @@ public class ScenarioEditorView extends VerticalLayout
     addRole.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addRole.addClickListener(addNewRoleListener());
 
+    Button saveButton = new Button("Save");
+    saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+    saveButton.addClickListener(saveScenarioListener());
+
+    DeleteConfirmButton deleteButton =
+        new DeleteConfirmButton("Delete", name.getValue(), deleteScenarioListener());
+
     add(name);
     add(contextGrid);
     add(addContext);
     add(roleGrid);
     add(addRole);
-    add(saveButton);
+    add(new Div(saveButton, deleteButton));
   }
 
   private ComponentEventListener<ItemClickEvent<GetScenarioDetailsUseCase.ContextDto>>
@@ -127,6 +129,15 @@ public class ScenarioEditorView extends VerticalLayout
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenarioId));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+    };
+  }
+
+  private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteScenarioListener() {
+    return (ConfirmDialog.ConfirmEvent t) -> {
+      deleteScenarioUseCase.execute(new DeleteScenarioUseCase.Command(scenarioDto.id()));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios-list"));
+      Notification notification = Notification.show(name.getValue() + " deleted!");
+      notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     };
   }
 

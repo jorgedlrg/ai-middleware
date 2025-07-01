@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.DeleteRoleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.SaveRoleUseCase;
@@ -7,6 +8,7 @@ import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
@@ -58,9 +60,8 @@ public class RoleEditorView extends VerticalLayout implements BeforeEnterObserve
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     saveButton.addClickListener(saveRoleListener());
 
-    Button deleteButton = new Button("Delete");
-    deleteButton.addThemeVariants(ButtonVariant.LUMO_WARNING);
-    deleteButton.addClickListener(deleteRoleListener());
+    DeleteConfirmButton deleteButton =
+        new DeleteConfirmButton("Delete", name.getValue(), deleteRoleListener());
 
     add(formLayout);
     add(new Div(saveButton, deleteButton));
@@ -79,8 +80,8 @@ public class RoleEditorView extends VerticalLayout implements BeforeEnterObserve
     };
   }
 
-  private ComponentEventListener<ClickEvent<Button>> deleteRoleListener() {
-    return (ClickEvent<Button> t) -> {
+  private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteRoleListener() {
+    return (ConfirmDialog.ConfirmEvent t) -> {
       deleteRoleUseCase.execute(new DeleteRoleUseCase.Command(scenario, role));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenario));
       Notification notification = Notification.show(name.getValue() + " deleted!");
