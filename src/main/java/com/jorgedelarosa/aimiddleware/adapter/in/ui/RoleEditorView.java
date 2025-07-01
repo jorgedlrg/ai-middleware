@@ -69,12 +69,9 @@ public class RoleEditorView extends VerticalLayout implements BeforeEnterObserve
 
   private ComponentEventListener<ClickEvent<Button>> saveRoleListener() {
     return (ClickEvent<Button> t) -> {
-      UUID roleId =
-          saveRoleUseCase.execute(
-              new SaveRoleUseCase.Command(scenario, role, name.getValue(), details.getValue()));
-      t.getSource()
-          .getUI()
-          .ifPresent(ui -> ui.navigate("scenarios/" + scenario + "/roles/" + roleId));
+      saveRoleUseCase.execute(
+          new SaveRoleUseCase.Command(scenario, role, name.getValue(), details.getValue()));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenario));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };

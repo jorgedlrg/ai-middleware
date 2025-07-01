@@ -70,13 +70,10 @@ public class ContextEditorView extends VerticalLayout
 
   private ComponentEventListener<ClickEvent<Button>> saveContextListener() {
     return (ClickEvent<Button> t) -> {
-      UUID contextId =
-          saveContextUseCase.execute(
-              new SaveContextUseCase.Command(
-                  scenario, context, name.getValue(), physicalDescription.getValue()));
-      t.getSource()
-          .getUI()
-          .ifPresent(ui -> ui.navigate("scenarios/" + scenario + "/contexts/" + contextId));
+      saveContextUseCase.execute(
+          new SaveContextUseCase.Command(
+              scenario, context, name.getValue(), physicalDescription.getValue()));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenario));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
