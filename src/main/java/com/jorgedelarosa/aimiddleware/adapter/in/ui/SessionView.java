@@ -91,12 +91,19 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     add(localeComboBox);
   }
 
+  private void reloadInteractions() {
+    sessionDetails =
+        getSessionDetailsUseCase.execute(new GetSessionDetailsUseCase.Command(session));
+    interactionList.setItems(sessionDetails.interactions());
+    interactionList.scrollToEnd();
+  }
+
   private void userInteractListener(MessageInput.SubmitEvent submitEvent) {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
             session, radioGroup.getValue().role(), submitEvent.getValue()));
 
-    render();
+    reloadInteractions();
   }
 
   private void machineInteractListener() {
@@ -104,7 +111,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
         new MachineInteractUseCase.Command(
             session, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
 
-    render();
+    reloadInteractions();
   }
 
   private void changeLocaleListener(Locale locale) {
@@ -113,7 +120,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
 
   private void deleteInteractionListener(UUID id) {
     deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
-    render();
+    reloadInteractions();
   }
 
   @Override
