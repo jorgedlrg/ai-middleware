@@ -59,6 +59,11 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     radioGroup.setItems(sessionDetails.performances());
     radioGroup.setValue(sessionDetails.performances().getFirst());
 
+    interactionList = new VirtualList<>();
+    interactionList.setRenderer(interactionRenderer);
+    interactionList.setItems(sessionDetails.interactions());
+    interactionList.scrollToEnd();
+
     MessageInput input =
         new MessageInput(
             submitEvent -> {
@@ -66,28 +71,23 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
             });
     input.setWidthFull();
 
-    Button machineButton = new Button("Generate Machine Interaction");
-    machineButton.addClickListener(e -> machineInteractListener());
-
-    interactionList = new VirtualList<>();
-    interactionList.setRenderer(interactionRenderer);
+    HorizontalLayout generatePanel = new HorizontalLayout();
+    for (GetSessionDetailsUseCase.PerformanceDto dto : sessionDetails.performances()) {
+      Button machineButton = new Button(dto.actorName());
+      machineButton.addClickListener(e -> machineInteractListener(dto.role()));
+      generatePanel.add(machineButton);
+    }
 
     ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
     localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
     localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
-    localeComboBox.setValue(
-        Locale.forLanguageTag(
-            "es")); // TODO: instead of 'retrieve interactions', retrieve the full session and REDO
-    // this view
+    localeComboBox.setValue(sessionDetails.locale());
     localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
-
-    interactionList.setItems(sessionDetails.interactions());
-    interactionList.scrollToEnd();
 
     add(radioGroup);
     add(interactionList);
     add(input);
-    add(machineButton);
+    add(generatePanel);
     add(localeComboBox);
   }
 
@@ -106,10 +106,8 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     reloadInteractions();
   }
 
-  private void machineInteractListener() {
-    machineInteractUseCase.execute(
-        new MachineInteractUseCase.Command(
-            session, UUID.fromString("655cfb3d-c740-48d2-ab4f-51e391c4deaf")));
+  private void machineInteractListener(UUID role) {
+    machineInteractUseCase.execute(new MachineInteractUseCase.Command(session, role));
 
     reloadInteractions();
   }
