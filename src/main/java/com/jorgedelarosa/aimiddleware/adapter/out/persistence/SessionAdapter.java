@@ -7,6 +7,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.PerformanceId;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.PerformanceRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionRepository;
+import com.jorgedelarosa.aimiddleware.application.port.out.DeleteSessionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
@@ -30,7 +31,7 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class SessionAdapter
-    implements GetSessionByIdOutPort, SaveSessionOutPort, GetSessionsOutPort {
+    implements GetSessionByIdOutPort, SaveSessionOutPort, GetSessionsOutPort, DeleteSessionOutPort {
 
   private final SessionRepository sessionRepository;
   private final InteractionRepository interactionRepository;
@@ -82,6 +83,13 @@ public class SessionAdapter
         interactions,
         performances,
         se.getLocale());
+  }
+
+  @Override
+  public void delete(Session session) {
+    interactionRepository.deleteAllBySession(session.getId());
+    performanceRepository.deleteAllByPerformanceIdSession(session.getId());
+    sessionRepository.deleteById(session.getId());
   }
 
   @Mapper

@@ -1,19 +1,25 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
@@ -40,6 +46,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   private final UpdateSessionUseCase updateSessionUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
   private final GetSessionDetailsUseCase getSessionDetailsUseCase;
+  private final DeleteSessionUseCase deleteSessionUseCase;
 
   private UUID session;
   private String pageTitle;
@@ -84,11 +91,15 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     localeComboBox.setValue(sessionDetails.locale());
     localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
 
+    DeleteConfirmButton deleteButton =
+        new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
+
     add(radioGroup);
     add(interactionList);
     add(input);
     add(generatePanel);
     add(localeComboBox);
+    add(deleteButton);
   }
 
   private void reloadInteractions() {
@@ -119,6 +130,15 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   private void deleteInteractionListener(UUID id) {
     deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
     reloadInteractions();
+  }
+
+  private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteSessionListener() {
+    return (ConfirmDialog.ConfirmEvent t) -> {
+      deleteSessionUseCase.execute(new DeleteSessionUseCase.Command(session));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions-list"));
+      Notification notification = Notification.show(session + " deleted!");
+      notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
+    };
   }
 
   @Override
