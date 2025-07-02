@@ -13,13 +13,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @AllArgsConstructor
 @Transactional
-public class UpdateSessionUseCaseImpl implements UpdateSessionUseCase {
+public class UpdateSessionLocaleUseCaseImpl implements UpdateSessionLocaleUseCase {
 
   private final GetSessionByIdOutPort getSessionByIdOutPort;
   private final SaveSessionOutPort saveSessionOutPort;
 
   @Override
-  public void execute(UpdateSessionUseCase.Command cmd) {
+  public void execute(UpdateSessionLocaleUseCase.Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.id()).orElseThrow();
 
     session.setLocale(cmd.locale());

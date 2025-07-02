@@ -16,6 +16,7 @@ public interface GetSessionDetailsUseCase {
 
   public record SessionDto(
       UUID session,
+      UUID scenario,
       UUID currentContext,
       Locale locale,
       List<PerformanceDto> performances,

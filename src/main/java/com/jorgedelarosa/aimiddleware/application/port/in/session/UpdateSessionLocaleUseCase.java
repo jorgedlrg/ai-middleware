@@ -6,7 +6,7 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-public interface UpdateSessionUseCase {
+public interface UpdateSessionLocaleUseCase {
 
   public void execute(Command cmd);
 

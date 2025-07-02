@@ -1,11 +1,13 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
+import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionLocaleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -43,14 +45,20 @@ import lombok.RequiredArgsConstructor;
 public class SessionView extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
-  private final UpdateSessionUseCase updateSessionUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
+
+  private final UpdateSessionLocaleUseCase updateSessionLocaleUseCase;
   private final GetSessionDetailsUseCase getSessionDetailsUseCase;
   private final DeleteSessionUseCase deleteSessionUseCase;
+  private final UpdateSessionContextUseCase updateSessionContextUseCase;
+
+  private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
+
+  private GetSessionDetailsUseCase.SessionDto sessionDetails;
+  private GetScenarioDetailsUseCase.ScenarioDto scenarioDetails;
 
   private UUID session;
   private String pageTitle;
-  private GetSessionDetailsUseCase.SessionDto sessionDetails;
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> radioGroup;
 
@@ -59,6 +67,20 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
 
     sessionDetails =
         getSessionDetailsUseCase.execute(new GetSessionDetailsUseCase.Command(session));
+    scenarioDetails =
+        getScenarioDetailsUseCase.execute(
+            new GetScenarioDetailsUseCase.Command(sessionDetails.scenario()));
+
+    ComboBox<GetScenarioDetailsUseCase.ContextDto> contextComboBox =
+        new ComboBox<>("Current context");
+    contextComboBox.setItems(scenarioDetails.contexts());
+    contextComboBox.setItemLabelGenerator(GetScenarioDetailsUseCase.ContextDto::name);
+    contextComboBox.setValue(
+        scenarioDetails.contexts().stream()
+            .filter(e -> e.id().equals(sessionDetails.currentContext()))
+            .findFirst()
+            .orElseThrow());
+    contextComboBox.addValueChangeListener(e -> changeContextListener(e.getValue()));
 
     radioGroup = new RadioButtonGroup<>();
     radioGroup.setLabel("You're:");
@@ -94,6 +116,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
 
+    add(contextComboBox);
     add(radioGroup);
     add(interactionList);
     add(input);
@@ -124,7 +147,12 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   }
 
   private void changeLocaleListener(Locale locale) {
-    updateSessionUseCase.execute(new UpdateSessionUseCase.Command(session, locale));
+    updateSessionLocaleUseCase.execute(new UpdateSessionLocaleUseCase.Command(session, locale));
+  }
+
+  private void changeContextListener(GetScenarioDetailsUseCase.ContextDto context) {
+    updateSessionContextUseCase.execute(
+        new UpdateSessionContextUseCase.Command(session, context.id()));
   }
 
   private void deleteInteractionListener(UUID id) {
@@ -144,9 +172,9 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
     session = UUID.fromString(event.getRouteParameters().get("sessionId").orElseThrow());
-    pageTitle = "Session - " + session;
 
     render();
+    pageTitle = "Session - " + scenarioDetails.name();
   }
 
   @Override

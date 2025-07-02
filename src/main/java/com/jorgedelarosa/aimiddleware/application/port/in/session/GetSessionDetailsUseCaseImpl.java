@@ -33,6 +33,7 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
     SessionDto dto =
         new SessionDto(
             session.getId(),
+            session.getScenario(),
             session.getCurrentContext(),
             session.getLocale(),
             session.getPerformances().stream()

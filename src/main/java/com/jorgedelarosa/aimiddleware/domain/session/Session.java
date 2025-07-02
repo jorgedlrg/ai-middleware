@@ -16,7 +16,7 @@ import java.util.UUID;
 public class Session extends AggregateRoot {
 
   private final UUID scenario;
-  private final UUID currentContext;
+  private UUID currentContext;
   private final List<Interaction> interactions;
   private final Map<UUID, Performance> performances;
   private Locale locale;
@@ -118,6 +118,11 @@ public class Session extends AggregateRoot {
 
   public void setLocale(Locale locale) {
     this.locale = locale;
+    validate();
+  }
+
+  public void setCurrentContext(UUID currentContext) {
+    this.currentContext = currentContext;
     validate();
   }
 
