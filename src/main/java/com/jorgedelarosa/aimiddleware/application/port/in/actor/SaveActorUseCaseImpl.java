@@ -25,6 +25,7 @@ public class SaveActorUseCaseImpl implements SaveActorUseCase {
     if (cmd.id() == null) {
       // CREATE
       actor = Actor.create(cmd.name(), cmd.physicalDescription(), cmd.personality());
+      actor.setPortrait(cmd.portrait());
     } else {
       // UPDATE
       actor = getActorByIdOutPort.query(cmd.id()).orElseThrow();
@@ -32,6 +33,7 @@ public class SaveActorUseCaseImpl implements SaveActorUseCase {
       actor.setName(cmd.name());
       actor.setPhysicalDescription(cmd.physicalDescription());
       actor.setPersonality(cmd.personality());
+      actor.setPortrait(cmd.portrait());
     }
 
     saveActorOutPort.save(actor);

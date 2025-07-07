@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.filesystem.AssetRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindEntity;
@@ -38,6 +39,7 @@ public class ActorAdapter
   private final ActorRepository actorRepository;
   private final MindRepository mindRepository;
   private final OutfitRepository outfitRepository;
+  private final AssetRepository assetRepository;
 
   @Override
   public Optional<Actor> query(UUID id) {
@@ -55,6 +57,7 @@ public class ActorAdapter
   }
 
   private Actor restoreActor(ActorEntity entity) {
+    byte[] portrait = assetRepository.load("actors/" + entity.getId() + "/portrait.png");
     return Actor.restore(
         entity.getId(),
         entity.getName(),
@@ -63,7 +66,8 @@ public class ActorAdapter
         outfitRepository.findAllByActor(entity.getId()).stream()
             .map((e) -> ActorMapper.INSTANCE.toOutfit(e))
             .toList(),
-        Optional.ofNullable(entity.getCurrentOutfit()));
+        Optional.ofNullable(entity.getCurrentOutfit()),
+        portrait);
   }
 
   @Override
@@ -71,12 +75,14 @@ public class ActorAdapter
     mindRepository.deleteById(actor.getId());
     actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
     actor.getMind().ifPresent(e -> mindRepository.save(ActorMapper.INSTANCE.toEntity(e)));
+    assetRepository.save("actors/" + actor.getId(), "/portrait.png", actor.getPortrait());
   }
 
   @Override
   public void delete(Actor actor) {
     mindRepository.deleteById(actor.getId());
     actorRepository.deleteById(actor.getId());
+    assetRepository.delete("actors/" + actor.getId());
   }
 
   @Mapper

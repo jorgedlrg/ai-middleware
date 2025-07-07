@@ -8,5 +8,5 @@ import java.util.UUID;
 public interface SaveActorUseCase {
   public UUID execute(Command cmd);
 
-  public record Command(UUID id, String name, String physicalDescription, String personality) {}
+  public record Command(UUID id, String name, String physicalDescription, String personality, byte[] portrait) {}
 }

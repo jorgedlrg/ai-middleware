@@ -63,7 +63,8 @@ public class ActorEditorView extends VerticalLayout
                   actorDto.id(),
                   actorEditorActorLayout.getNameValue(),
                   actorEditorActorLayout.getPhysicalDescriptionValue(),
-                  actorEditorActorLayout.getPersonalityValue()));
+                  actorEditorActorLayout.getPersonalityValue(),
+                  actorEditorActorLayout.getPortraitBytes()));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + actorId));
       Notification notification =
           Notification.show(actorEditorActorLayout.getNameValue() + " saved!");
@@ -88,7 +89,7 @@ public class ActorEditorView extends VerticalLayout
               new GetActorDetailsUseCase.Command(UUID.fromString(parameter)));
       pageTitle = "Actor Editor - " + actorDto.name();
     } else {
-      actorDto = new GetActorDetailsUseCase.ActorDto(null, "", "", Optional.empty());
+      actorDto = new GetActorDetailsUseCase.ActorDto(null, "", "", Optional.empty(), new byte[0]);
       pageTitle = "Actor Editor - new";
     }
     rebuildEditor();

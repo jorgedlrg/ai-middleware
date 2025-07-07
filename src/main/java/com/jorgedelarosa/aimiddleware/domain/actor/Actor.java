@@ -19,6 +19,7 @@ public class Actor extends AggregateRoot {
   private Optional<Mind> mind;
   private List<Outfit> outfits;
   private Optional<UUID> currentOutfit;
+  private byte[] portrait;
 
   private Actor(
       UUID id,
@@ -26,13 +27,15 @@ public class Actor extends AggregateRoot {
       String physicalDescription,
       Optional<Mind> mind,
       List<Outfit> outfits,
-      Optional<UUID> currentOutfit) {
+      Optional<UUID> currentOutfit,
+      byte[] portrait) {
     super(Actor.class, id);
     this.name = name;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
     this.outfits = outfits;
     this.currentOutfit = currentOutfit;
+    this.portrait = portrait;
   }
 
   public static Actor create(String name, String physicalDescription, String personality) {
@@ -42,7 +45,8 @@ public class Actor extends AggregateRoot {
       mind = Optional.of(Mind.create(id, personality));
     }
     Actor actor =
-        new Actor(id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty());
+        new Actor(
+            id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty(), new byte[0]);
     actor.validate();
     return actor;
   }
@@ -53,9 +57,11 @@ public class Actor extends AggregateRoot {
       String physicalDescription,
       Optional<Mind> mind,
       List<Outfit> outfits,
-      Optional<UUID> currentOutfit) {
+      Optional<UUID> currentOutfit,
+      byte[] portrait) {
     Actor actor =
-        new Actor(id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit);
+        new Actor(
+            id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit, portrait);
     actor.validate();
     return actor;
   }
@@ -74,6 +80,14 @@ public class Actor extends AggregateRoot {
 
   public Optional<Outfit> getCurrentOutfit() {
     return outfits.stream().filter((e) -> e.getId().equals(currentOutfit.get())).findFirst();
+  }
+
+  public byte[] getPortrait() {
+    return portrait;
+  }
+
+  public void setPortrait(byte[] portrait) {
+    this.portrait = portrait;
   }
 
   public void chooseOutfit(UUID currentOutfit) {
