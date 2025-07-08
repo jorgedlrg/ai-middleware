@@ -27,6 +27,10 @@ spring:
       path: /h2-console
       settings.trace: false
       settings.web-allow-others: false
+  servlet:
+    multipart:
+      max-file-size: -1
+      max-request-size: -1
 management:
   endpoint.health.enabled: true
   endpoints.web.exposure.include: health, metrics

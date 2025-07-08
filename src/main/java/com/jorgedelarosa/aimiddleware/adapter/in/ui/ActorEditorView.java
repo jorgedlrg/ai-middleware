@@ -57,7 +57,6 @@ public class ActorEditorView extends VerticalLayout
 
   private ComponentEventListener<ClickEvent<Button>> saveActorListener() {
     return (ClickEvent<Button> t) -> {
-      UUID actorId =
           saveActorUseCase.execute(
               new SaveActorUseCase.Command(
                   actorDto.id(),
@@ -65,7 +64,7 @@ public class ActorEditorView extends VerticalLayout
                   actorEditorActorLayout.getPhysicalDescriptionValue(),
                   actorEditorActorLayout.getPersonalityValue(),
                   actorEditorActorLayout.getPortraitBytes()));
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + actorId));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
       Notification notification =
           Notification.show(actorEditorActorLayout.getNameValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

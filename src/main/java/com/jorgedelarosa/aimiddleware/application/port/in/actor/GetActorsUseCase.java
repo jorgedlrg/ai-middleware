@@ -13,5 +13,5 @@ public interface GetActorsUseCase {
   // TODO: find by user
   public record Command() {}
 
-  public record ActorDto(UUID id, String name) {}
+  public record ActorDto(UUID id, String name, byte[] portrait) {}
 }

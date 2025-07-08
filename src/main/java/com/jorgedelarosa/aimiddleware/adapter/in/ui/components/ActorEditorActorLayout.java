@@ -8,13 +8,8 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
-import com.vaadin.flow.server.streams.DownloadEvent;
-import com.vaadin.flow.server.streams.DownloadHandler;
-import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.server.streams.UploadHandler;
 import com.vaadin.flow.server.streams.UploadMetadata;
-import java.io.ByteArrayInputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
@@ -35,10 +30,12 @@ public class ActorEditorActorLayout extends VerticalLayout {
     Image portrait;
     if (actorDto.portrait() != null && actorDto.portrait().length > 0) {
       portraitBytes = Arrays.copyOf(actorDto.portrait(), actorDto.portrait().length);
-      portrait = imageFromBytes("Portrait", portraitBytes);
+      portrait = new ByteImage("Portrait", portraitBytes);
     } else {
       portrait = new Image();
     }
+
+    portrait.setMaxHeight("480px");
 
     physicalDescription = new TextArea("Physical description");
     physicalDescription.setValue(actorDto.physicalDescription());
@@ -56,25 +53,12 @@ public class ActorEditorActorLayout extends VerticalLayout {
     upload.setMaxFiles(1);
 
     FormLayout formLayout = new FormLayout();
-    formLayout.add(new Span(name, portrait), 2);
+    formLayout.add(new Span(portrait, name), 2);
     formLayout.add(physicalDescription, 2);
     formLayout.add(personality, 2);
     formLayout.add(upload, 2);
 
     add(formLayout);
-  }
-
-  private Image imageFromBytes(String label, byte[] data) {
-    return new Image(
-        DownloadHandler.fromInputStream(
-            (DownloadEvent downloadEvent) -> {
-              try (OutputStream outputStream = downloadEvent.getOutputStream()) {
-                outputStream.write(data);
-              }
-              return new DownloadResponse(
-                  new ByteArrayInputStream(data), label, "image/png", data.length);
-            }),
-        label);
   }
 
   public String getNameValue() {
