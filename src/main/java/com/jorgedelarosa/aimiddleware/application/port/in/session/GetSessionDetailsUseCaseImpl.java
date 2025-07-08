@@ -70,7 +70,11 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
 
     default InteractionDto toDto(Interaction dom, Actor actor) {
       return new InteractionDto(
-          dom.getId(), dom.getTimestamp(), actor.getName(), dom.getSpokenText());
+          dom.getId(),
+          dom.getTimestamp(),
+          actor.getName(),
+          dom.getSpokenText(),
+          actor.getPortrait());
     }
   }
 }

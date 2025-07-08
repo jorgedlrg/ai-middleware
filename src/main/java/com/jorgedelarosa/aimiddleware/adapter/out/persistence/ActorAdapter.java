@@ -73,9 +73,14 @@ public class ActorAdapter
   @Override
   public void save(Actor actor) {
     mindRepository.deleteById(actor.getId());
+    assetRepository.delete("actors/" + actor.getId() + "/portrait.png");
+
     actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
     actor.getMind().ifPresent(e -> mindRepository.save(ActorMapper.INSTANCE.toEntity(e)));
-    assetRepository.save("actors/" + actor.getId(), "/portrait.png", actor.getPortrait());
+
+    if (actor.getPortrait().length > 0) {
+      assetRepository.save("actors/" + actor.getId(), "/portrait.png", actor.getPortrait());
+    }
   }
 
   @Override

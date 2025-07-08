@@ -88,6 +88,7 @@ public class Actor extends AggregateRoot {
 
   public void setPortrait(byte[] portrait) {
     this.portrait = portrait;
+    validate();
   }
 
   public void chooseOutfit(UUID currentOutfit) {
@@ -131,7 +132,7 @@ public class Actor extends AggregateRoot {
             && Validator.strNotEmpty.validate(physicalDescription)
             && currentOutfit.isPresent()
         ? TwoArgsValidator.existsIn.validate(currentOutfit.get(), outfits)
-        : true && mind.isPresent() ? mind.get().validate() : true) return true;
+        : true && mind.isPresent() ? mind.get().validate() : true && portrait != null) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

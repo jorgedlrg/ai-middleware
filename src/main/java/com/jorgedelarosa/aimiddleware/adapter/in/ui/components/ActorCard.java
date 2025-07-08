@@ -33,7 +33,7 @@ public class ActorCard extends Card {
     setTitle(new Div(dto.name()));
 
     Image portrait;
-    if (dto.portrait() != null && dto.portrait().length > 0) {
+    if (dto.portrait().length > 0) {
       portrait = new ByteImage("Portrait", dto.portrait());
       setMedia(portrait);
     } else {

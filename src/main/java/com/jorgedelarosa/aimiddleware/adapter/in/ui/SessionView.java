@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
@@ -11,14 +12,10 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionL
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -27,12 +24,10 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.radiobutton.RadioButtonGroup;
 import com.vaadin.flow.component.virtuallist.VirtualList;
 import com.vaadin.flow.data.renderer.ComponentRenderer;
-import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -196,36 +191,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
       interactionRenderer =
           new ComponentRenderer<>(
               interaction -> {
-                HorizontalLayout interactionLayout = new HorizontalLayout();
-                interactionLayout.setMargin(true);
-
-                Avatar avatar = new Avatar(interaction.actorName());
-                avatar.setHeight("64px");
-                avatar.setWidth("64px");
-                avatar.setColorIndex(Math.abs(interaction.actorName().hashCode()) % 5);
-
-                VerticalLayout messageLayout = new VerticalLayout();
-                messageLayout.setSpacing(false);
-                messageLayout.setPadding(false);
-                messageLayout
-                    .getElement()
-                    .appendChild(
-                        ElementFactory.createStrong(interaction.actorName()),
-                        ElementFactory.createLabel(interaction.timestamp().toString()));
-                messageLayout.add(new Div(new Text(interaction.spokenText())));
-
-                HorizontalLayout operationsLayout = new HorizontalLayout();
-                operationsLayout.setSpacing(false);
-                operationsLayout.setPadding(false);
-
-                Icon deleteIcon = LumoIcon.CROSS.create();
-                deleteIcon.setColor("red");
-                Button deleteButton = new Button(deleteIcon);
-                deleteButton.addClickListener(e -> deleteInteractionListener(interaction.id()));
-
-                operationsLayout.add(deleteButton);
-
-                interactionLayout.add(avatar, messageLayout, operationsLayout);
-                return interactionLayout;
+                InteractionLayout.OneUuidVoidOperator deleteListener = (id) -> deleteInteractionListener(id);
+                return new InteractionLayout(interaction, deleteListener);
               });
 }

@@ -24,5 +24,5 @@ public interface GetSessionDetailsUseCase {
 
   public record PerformanceDto(UUID actor, UUID role, String actorName, String roleName) {}
 
-  public record InteractionDto(UUID id, Instant timestamp, String actorName, String spokenText) {}
+  public record InteractionDto(UUID id, Instant timestamp, String actorName, String spokenText, byte[] portrait) {}
 }

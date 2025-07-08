@@ -32,6 +32,7 @@ public class ActorEditorActorLayout extends VerticalLayout {
       portraitBytes = Arrays.copyOf(actorDto.portrait(), actorDto.portrait().length);
       portrait = new ByteImage("Portrait", portraitBytes);
     } else {
+      portraitBytes = new byte[0];
       portrait = new Image();
     }
 
