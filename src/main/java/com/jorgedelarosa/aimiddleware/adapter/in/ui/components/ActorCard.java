@@ -35,12 +35,14 @@ public class ActorCard extends Card {
     Image portrait;
     if (dto.portrait().length > 0) {
       portrait = new ByteImage("Portrait", dto.portrait());
+      portrait.setWidth("330px");
       setMedia(portrait);
     } else {
       Icon icon = LumoIcon.PHOTO.create();
       icon.getStyle()
           .setColor("var(--lumo-primary-color)")
           .setBackgroundColor("var(--lumo-primary-color-10pct)");
+      icon.setSize("330px");
       setMedia(icon);
     }
 

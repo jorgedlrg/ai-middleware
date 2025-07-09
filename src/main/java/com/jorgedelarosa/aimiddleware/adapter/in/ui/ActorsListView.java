@@ -7,6 +7,7 @@ import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
@@ -39,6 +40,7 @@ public class ActorsListView extends VerticalLayout implements BeforeEnterObserve
       if (i % GRID_WIDTH == 0) {
         horizontalLayout = new HorizontalLayout();
         horizontalLayout.setPadding(true);
+        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
         add(horizontalLayout);
       }
       horizontalLayout.add(cards.get(i));
