@@ -95,13 +95,32 @@ public class Session extends AggregateRoot {
     validate();
   }
 
+  public void interactNext(String text, UUID role) {
+    Performance performance = performances.get(role);
+    if (performance != null) {
+      UUID actorId = performance.getActor();
+      Interaction parent = null;
+      if (lastInteraction != null) {
+        parent = lastInteraction.getParent().orElse(null);
+      }
+      Interaction newOne =
+          Interaction.create(
+              "", text, "", role, actorId, currentContext, Optional.ofNullable(parent));
+      interactions.add(newOne);
+      setLastInteraction(newOne);
+    } else {
+      throw new RuntimeException(String.format("Role %s not contained in performances.", role));
+    }
+    validate();
+  }
+
   /**
    * Returns the youngest of the same level Interactions that happened BEFORE the last one. i.e.: A
    * [B] CURRENT D E
    *
    * @return
    */
-  public Interaction getOlderInteraction() throws NoSuchElementException {
+  public Interaction getPreviousInteraction() throws NoSuchElementException {
     return interactions.stream()
         .filter(e -> e.getLevel().equals(lastInteraction.getLevel()))
         .filter(e -> e.getTimestamp().isBefore(lastInteraction.getTimestamp()))
@@ -116,7 +135,7 @@ public class Session extends AggregateRoot {
    *
    * @return
    */
-  public Interaction getYoungerInteraction() throws NoSuchElementException {
+  public Interaction getNextInteraction() throws NoSuchElementException {
     return interactions.stream()
         .filter(e -> e.getLevel().equals(lastInteraction.getLevel()))
         .filter(e -> e.getTimestamp().isAfter(lastInteraction.getTimestamp()))

@@ -7,6 +7,8 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteract
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInteractUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.NextInteractionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionLocaleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
@@ -46,6 +48,8 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
   private final GetSessionDetailsUseCase getSessionDetailsUseCase;
   private final DeleteSessionUseCase deleteSessionUseCase;
   private final UpdateSessionContextUseCase updateSessionContextUseCase;
+  private final PreviousInteractionUseCase previousInteractionUseCase;
+  private final NextInteractionUseCase nextInteractionUseCase;
 
   private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
 
@@ -150,6 +154,16 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
         new UpdateSessionContextUseCase.Command(session, context.id()));
   }
 
+  private void previousInteractionListener(UUID id) {
+    previousInteractionUseCase.execute(new PreviousInteractionUseCase.Command(session));
+    reloadInteractions();
+  }
+
+  private void nextInteractionListener(UUID id) {
+    nextInteractionUseCase.execute(new NextInteractionUseCase.Command(session));
+    reloadInteractions();
+  }
+
   private void deleteInteractionListener(UUID id) {
     deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
     reloadInteractions();
@@ -191,7 +205,13 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
       interactionRenderer =
           new ComponentRenderer<>(
               interaction -> {
-                InteractionLayout.OneUuidVoidOperator deleteListener = (id) -> deleteInteractionListener(id);
-                return new InteractionLayout(interaction, deleteListener);
+                InteractionLayout.OneUuidVoidOperator prevListener =
+                    (id) -> previousInteractionListener(id);
+                InteractionLayout.OneUuidVoidOperator nextListener =
+                    (id) -> nextInteractionListener(id);
+                InteractionLayout.OneUuidVoidOperator deleteListener =
+                    (id) -> deleteInteractionListener(id);
+                return new InteractionLayout(
+                    interaction, prevListener, nextListener, deleteListener);
               });
 }

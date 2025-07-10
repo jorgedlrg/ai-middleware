@@ -23,7 +23,10 @@ import java.util.UUID;
 public class InteractionLayout extends HorizontalLayout {
 
   public InteractionLayout(
-      GetSessionDetailsUseCase.InteractionDto dto, OneUuidVoidOperator deleteListener) {
+      GetSessionDetailsUseCase.InteractionDto dto,
+      OneUuidVoidOperator prevListener,
+      OneUuidVoidOperator nextListener,
+      OneUuidVoidOperator deleteListener) {
     super();
     setMargin(true);
 
@@ -63,11 +66,13 @@ public class InteractionLayout extends HorizontalLayout {
     operationsLayout.setPadding(false);
 
     Icon prevIcon = LumoIcon.ARROW_LEFT.create();
-    //prevIcon.setColor("red");
     Button prevButton = new Button(prevIcon);
+    prevButton.addClickListener(e -> prevListener.op(dto.id()));
+
     Icon nextIcon = LumoIcon.ARROW_RIGHT.create();
-    //nextIcon.setColor("red");
     Button nextButton = new Button(nextIcon);
+    nextButton.addClickListener(e -> nextListener.op(dto.id()));
+
     Icon deleteIcon = LumoIcon.CROSS.create();
     deleteIcon.setColor("red");
     Button deleteButton = new Button(deleteIcon);
