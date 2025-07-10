@@ -33,7 +33,7 @@ public class InteractionLayout extends HorizontalLayout {
       OneUuidVoidOperator nextListener,
       OneUuidVoidOperator deleteListener) {
     super();
-    setMargin(true);
+    //setMargin(true);
 
     Avatar avatar = new Avatar(dto.actorName());
     avatar.setHeight("96px");
@@ -57,6 +57,7 @@ public class InteractionLayout extends HorizontalLayout {
     }
 
     VerticalLayout messageLayout = new VerticalLayout();
+    messageLayout.setWidthFull();
     messageLayout.setSpacing(false);
     messageLayout.setPadding(false);
 
@@ -68,7 +69,9 @@ public class InteractionLayout extends HorizontalLayout {
             ElementFactory.createStrong(dto.actorName()),
             ElementFactory.createLabel(
                 zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN))));
-    messageLayout.add(new Div(new Text(dto.spokenText())));
+    Div text = new Div(new Text(dto.spokenText()));
+    text.setWidth("800px");
+    messageLayout.add(text);
 
     VerticalLayout operationsLayout = new VerticalLayout();
     operationsLayout.setSpacing(false);

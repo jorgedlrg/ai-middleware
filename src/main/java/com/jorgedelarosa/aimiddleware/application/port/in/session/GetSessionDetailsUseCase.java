@@ -22,7 +22,8 @@ public interface GetSessionDetailsUseCase {
       List<PerformanceDto> performances,
       List<InteractionDto> interactions) {}
 
-  public record PerformanceDto(UUID actor, UUID role, String actorName, String roleName) {}
+  public record PerformanceDto(
+      UUID actor, UUID role, String actorName, String roleName, byte[] portrait) {}
 
   public record InteractionDto(
       UUID id,

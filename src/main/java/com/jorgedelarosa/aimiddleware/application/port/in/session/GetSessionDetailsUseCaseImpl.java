@@ -68,7 +68,8 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
     SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
     default PerformanceDto toDto(Actor actor, Role role) {
-      return new PerformanceDto(actor.getId(), role.getId(), actor.getName(), role.getName());
+      return new PerformanceDto(
+          actor.getId(), role.getId(), actor.getName(), role.getName(), actor.getPortrait());
     }
 
     default InteractionDto toDto(Interaction dom, Actor actor, List<Interaction> siblings) {

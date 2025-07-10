@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ByteImage;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
@@ -17,7 +18,9 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -30,6 +33,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -91,6 +95,7 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     interactionList.setRenderer(interactionRenderer);
     interactionList.setItems(sessionDetails.interactions());
     interactionList.scrollToEnd();
+    interactionList.setWidthFull();
 
     MessageInput input =
         new MessageInput(
@@ -115,13 +120,46 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
 
-    add(contextComboBox);
-    add(radioGroup);
-    add(interactionList);
-    add(input);
-    add(generatePanel);
-    add(localeComboBox);
-    add(deleteButton);
+    HorizontalLayout threezoneLayout = new HorizontalLayout();
+    threezoneLayout.setPadding(true);
+    threezoneLayout.setSizeFull();
+    VerticalLayout left = new VerticalLayout();
+    left.setWidth("20%");
+    threezoneLayout.addToStart(left);
+    VerticalLayout right = new VerticalLayout();
+    right.setWidth("20%");
+    threezoneLayout.addToEnd(right);
+    for (int i = 0; i < sessionDetails.performances().size(); ++i) {
+      Component portrait;
+      if (sessionDetails.performances().get(i).portrait().length > 0) {
+        portrait = new ByteImage("Portrait", sessionDetails.performances().get(i).portrait());
+        ((ByteImage) portrait).setWidth("330px");
+      } else {
+        portrait = LumoIcon.PHOTO.create();
+        portrait
+            .getStyle()
+            .setColor("var(--lumo-primary-color)")
+            .setBackgroundColor("var(--lumo-primary-color-10pct)");
+        ((Icon) portrait).setSize("330px");
+      }
+      if (i % 2 == 0) {
+        left.add(portrait);
+      } else {
+        right.add(portrait);
+      }
+    }
+
+    VerticalLayout middle = new VerticalLayout();
+    middle.setWidth("60%");
+    middle.add(contextComboBox);
+    middle.add(radioGroup);
+    middle.add(interactionList);
+    middle.add(input);
+    middle.add(generatePanel);
+    middle.add(localeComboBox);
+    middle.add(deleteButton);
+    threezoneLayout.addToMiddle(middle);
+    add(threezoneLayout);
   }
 
   private void reloadInteractions() {
@@ -211,7 +249,9 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
                     (id) -> nextInteractionListener(id);
                 InteractionLayout.OneUuidVoidOperator deleteListener =
                     (id) -> deleteInteractionListener(id);
-                return new InteractionLayout(
+                InteractionLayout interactionLayout =  new InteractionLayout(
                     interaction, prevListener, nextListener, deleteListener);
+                interactionLayout.setWidthFull();
+                return interactionLayout;
               });
 }
