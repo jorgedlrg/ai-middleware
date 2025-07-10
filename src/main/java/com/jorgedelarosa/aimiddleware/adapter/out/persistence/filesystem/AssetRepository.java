@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Slf4j
 public class AssetRepository {
-  // TODO refine this Asset thing. Might it be an entity?
+  // TODO refine this Asset thing. Could it be a value object?
   private static final String PATH_TO_ASSETS =
       System.getProperty("user.home") + "/aimiddleware/assets";
 
@@ -30,7 +30,7 @@ public class AssetRepository {
     try {
       Files.write(new File(file).toPath(), data);
     } catch (IOException ex) {
-      log.warn(String.format("Error when saving %s", file));
+      log.error(String.format("Error when saving %s", file));
     }
   }
 
@@ -49,7 +49,7 @@ public class AssetRepository {
     try {
       bytes = Files.readAllBytes(new File(file).toPath());
     } catch (IOException ex) {
-      log.warn(String.format("Error when reading %s", file));
+      log.info(String.format("Error when reading %s", file));
     }
     return bytes;
   }
