@@ -131,7 +131,8 @@ public class SessionAdapter
     SessionEntity toEntity(Session session);
 
     default UUID map(Interaction value) {
-      return value.getId();
+      if (value != null) return value.getId();
+      else return null;
     }
 
     default UUID map(Scenario value) {

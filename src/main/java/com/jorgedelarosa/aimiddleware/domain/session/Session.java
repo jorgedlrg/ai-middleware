@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -21,7 +22,7 @@ public class Session extends AggregateRoot {
   private final List<Interaction> interactions;
   private final Map<UUID, Performance> performances;
   private Locale locale;
-  private Interaction lastInteraction;
+  private Interaction lastInteraction; // FIXME make optional
 
   private Session(
       UUID scenario,
@@ -198,6 +199,13 @@ public class Session extends AggregateRoot {
 
   public List<Interaction> getAllInteractions() {
     return List.copyOf(interactions);
+  }
+
+  public List<Interaction> getChildren(Interaction parent) {
+    // The first interactions have parent==null, therefore we use Objects.equals()
+    return interactions.stream()
+        .filter(e -> Objects.equals(e.getParent().orElse(null), parent))
+        .toList();
   }
 
   public List<Performance> getPerformances() {

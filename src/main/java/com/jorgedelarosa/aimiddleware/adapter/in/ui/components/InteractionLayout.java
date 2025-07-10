@@ -5,6 +5,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -15,12 +16,16 @@ import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 /**
  * @author jorge
  */
 public class InteractionLayout extends HorizontalLayout {
+  private static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
   public InteractionLayout(
       GetSessionDetailsUseCase.InteractionDto dto,
@@ -54,16 +59,24 @@ public class InteractionLayout extends HorizontalLayout {
     VerticalLayout messageLayout = new VerticalLayout();
     messageLayout.setSpacing(false);
     messageLayout.setPadding(false);
+
+    // TODO: Get zone from user browser (requires current view)
+    ZonedDateTime zdt = ZonedDateTime.ofInstant(dto.timestamp(), ZoneId.systemDefault());
     messageLayout
         .getElement()
         .appendChild(
             ElementFactory.createStrong(dto.actorName()),
-            ElementFactory.createLabel(dto.timestamp().toString()));
+            ElementFactory.createLabel(
+                zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN))));
     messageLayout.add(new Div(new Text(dto.spokenText())));
 
-    HorizontalLayout operationsLayout = new HorizontalLayout();
+    VerticalLayout operationsLayout = new VerticalLayout();
     operationsLayout.setSpacing(false);
     operationsLayout.setPadding(false);
+    HorizontalLayout buttonsLayout = new HorizontalLayout();
+    buttonsLayout.setSpacing(false);
+    buttonsLayout.setPadding(false);
+    operationsLayout.add(buttonsLayout);
 
     Icon prevIcon = LumoIcon.ARROW_LEFT.create();
     Button prevButton = new Button(prevIcon);
@@ -78,7 +91,8 @@ public class InteractionLayout extends HorizontalLayout {
     Button deleteButton = new Button(deleteIcon);
     deleteButton.addClickListener(e -> deleteListener.op(dto.id()));
 
-    operationsLayout.add(prevButton, nextButton, deleteButton);
+    buttonsLayout.add(prevButton, nextButton, deleteButton);
+    operationsLayout.add(new Span(dto.siblingNumber() + "/" + dto.totalSiblings()));
 
     add(avatar, messageLayout, operationsLayout);
   }

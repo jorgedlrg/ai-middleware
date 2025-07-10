@@ -8,6 +8,7 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import java.util.List;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
@@ -47,7 +48,9 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
                 .map(
                     (e) ->
                         SessionMapper.INSTANCE.toDto(
-                            e, getActorByIdOutPort.query(e.getActor()).orElseThrow()))
+                            e,
+                            getActorByIdOutPort.query(e.getActor()).orElseThrow(),
+                            session.getChildren(e.getParent().orElse(null))))
                 .toList());
 
     return dto;
@@ -68,13 +71,15 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
       return new PerformanceDto(actor.getId(), role.getId(), actor.getName(), role.getName());
     }
 
-    default InteractionDto toDto(Interaction dom, Actor actor) {
+    default InteractionDto toDto(Interaction dom, Actor actor, List<Interaction> siblings) {
       return new InteractionDto(
           dom.getId(),
           dom.getTimestamp(),
           actor.getName(),
           dom.getSpokenText(),
-          actor.getPortrait());
+          actor.getPortrait(),
+          siblings.indexOf(dom) + 1,
+          siblings.size());
     }
   }
 }
