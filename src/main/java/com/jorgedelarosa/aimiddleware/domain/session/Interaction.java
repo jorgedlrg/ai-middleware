@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.domain.session;
 import com.jorgedelarosa.aimiddleware.domain.Entity;
 import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -17,6 +18,8 @@ public class Interaction extends Entity {
   private final UUID role;
   private final UUID actor;
   private final UUID context;
+  private final Optional<Interaction> parent;
+  private final Integer level;
 
   private Interaction(
       String thoughtText,
@@ -26,7 +29,9 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID id,
-      UUID context) {
+      UUID context,
+      Optional<Interaction> parent,
+      Integer level) {
     super(id);
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
@@ -35,6 +40,8 @@ public class Interaction extends Entity {
     this.role = role;
     this.actor = actor;
     this.context = context;
+    this.parent = parent;
+    this.level = level;
   }
 
   public static Interaction create(
@@ -43,7 +50,12 @@ public class Interaction extends Entity {
       String actionText,
       UUID role,
       UUID actor,
-      UUID context) {
+      UUID context,
+      Optional<Interaction> parent) {
+    Integer level = 0;
+    if (parent.isPresent()) {
+      level = parent.get().getLevel() + 1;
+    }
     Interaction interaction =
         new Interaction(
             thoughtText,
@@ -53,7 +65,9 @@ public class Interaction extends Entity {
             role,
             actor,
             UUID.randomUUID(),
-            context);
+            context,
+            parent,
+            level);
     interaction.validate();
     return interaction;
   }
@@ -66,7 +80,12 @@ public class Interaction extends Entity {
       long timestamp,
       UUID role,
       UUID actor,
-      UUID context) {
+      UUID context,
+      Optional<Interaction> parent) {
+    Integer level = 0;
+    if (parent.isPresent()) {
+      level = parent.get().getLevel() + 1;
+    }
     Interaction interaction =
         new Interaction(
             thoughtText,
@@ -76,7 +95,9 @@ public class Interaction extends Entity {
             role,
             actor,
             id,
-            context);
+            context,
+            parent,
+            level);
     interaction.validate();
     return interaction;
   }
@@ -109,13 +130,23 @@ public class Interaction extends Entity {
     return context;
   }
 
+  public Optional<Interaction> getParent() {
+    return parent;
+  }
+
+  public Integer getLevel() {
+    return level;
+  }
+
   @Override
   public boolean validate() {
     if (Validator.strNotEmpty.validate(spokenText)
         && timestamp != null
         && role != null
         && actor != null
-        && context != null) return true;
+        && context != null
+        && parent != null
+        && level != null) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

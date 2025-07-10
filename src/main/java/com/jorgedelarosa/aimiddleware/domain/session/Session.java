@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,6 +21,7 @@ public class Session extends AggregateRoot {
   private final List<Interaction> interactions;
   private final Map<UUID, Performance> performances;
   private Locale locale;
+  private Interaction lastInteraction;
 
   private Session(
       UUID scenario,
@@ -27,13 +29,15 @@ public class Session extends AggregateRoot {
       List<Interaction> interactions,
       UUID id,
       Map<UUID, Performance> performances,
-      Locale locale) {
+      Locale locale,
+      Interaction lastInteraction) {
     super(Session.class, id);
     this.scenario = scenario;
     this.interactions = interactions;
     this.currentContext = currentContext;
     this.performances = performances;
     this.locale = locale;
+    this.lastInteraction = lastInteraction;
   }
 
   // TODO: Performances shouldn't be added this way. Do it with a method addPerformance, and apply
@@ -45,7 +49,8 @@ public class Session extends AggregateRoot {
       map.put(per.getRole(), per);
     }
     Session session =
-        new Session(scenario, currentContext, new ArrayList<>(), UUID.randomUUID(), map, locale);
+        new Session(
+            scenario, currentContext, new ArrayList<>(), UUID.randomUUID(), map, locale, null);
     session.validate();
     return session;
   }
@@ -56,13 +61,21 @@ public class Session extends AggregateRoot {
       UUID currentContext,
       List<Interaction> interactions,
       List<Performance> performances,
-      Locale locale) {
+      Locale locale,
+      Interaction lastInteraction) {
     Map<UUID, Performance> map = new HashMap<>();
     for (Performance per : performances) {
       map.put(per.getRole(), per);
     }
     Session session =
-        new Session(scenario, currentContext, new ArrayList(interactions), id, map, locale);
+        new Session(
+            scenario,
+            currentContext,
+            new ArrayList(interactions),
+            id,
+            map,
+            locale,
+            lastInteraction);
     session.validate();
     return session;
   }
@@ -71,16 +84,63 @@ public class Session extends AggregateRoot {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
-      interactions.add(Interaction.create("", text, "", role, actorId, currentContext));
+      Interaction newOne =
+          Interaction.create(
+              "", text, "", role, actorId, currentContext, Optional.ofNullable(lastInteraction));
+      interactions.add(newOne);
+      setLastInteraction(newOne);
     } else {
       throw new RuntimeException(String.format("Role %s not contained in performances.", role));
     }
     validate();
   }
 
+  /**
+   * Returns the youngest of the same level Interactions that happened BEFORE the last one. i.e.: A
+   * [B] CURRENT D E
+   *
+   * @return
+   */
+  public Interaction getOlderInteraction() throws NoSuchElementException {
+    return interactions.stream()
+        .filter(e -> e.getLevel().equals(lastInteraction.getLevel()))
+        .filter(e -> e.getTimestamp().isBefore(lastInteraction.getTimestamp()))
+        .sorted((p1, p2) -> p1.getTimestamp().compareTo(p2.getTimestamp()))
+        .toList()
+        .getLast();
+  }
+
+  /**
+   * Returns the oldest of the same level Interactions that happened AFTER the last one. i.e.: A B
+   * CURRENT [D] E
+   *
+   * @return
+   */
+  public Interaction getYoungerInteraction() throws NoSuchElementException {
+    return interactions.stream()
+        .filter(e -> e.getLevel().equals(lastInteraction.getLevel()))
+        .filter(e -> e.getTimestamp().isAfter(lastInteraction.getTimestamp()))
+        .sorted((p1, p2) -> p1.getTimestamp().compareTo(p2.getTimestamp()))
+        .toList()
+        .getFirst();
+  }
+
+  public void setLastInteraction(Interaction lastInteraction) {
+    this.lastInteraction = lastInteraction;
+    validate();
+  }
+
+  /**
+   * FIXME: Since the interactions now are saved as a tree, this current method might leave orphan
+   * Interactions. Purge orphan interactions
+   *
+   * @param interactionId
+   */
   public void deleteInteraction(UUID interactionId) {
     for (int i = 0; i < interactions.size(); ++i) {
       if (interactions.get(i).getId().equals(interactionId)) {
+        setLastInteraction(interactions.get(i).getParent().orElse(null));
+        // TODO: purge orfan interactions in domain. don't do this with the DB, it wouldn't be DDD
         interactions.remove(i);
         break;
       }
@@ -104,7 +164,20 @@ public class Session extends AggregateRoot {
     return currentContext;
   }
 
-  public List<Interaction> getInteractions() {
+  public List<Interaction> getCurrentInteractions() {
+    // Get the current list of interactions, based on the current lastInteraction, and from there,
+    // get the parent of each one
+    List<Interaction> reversedInteractions = new ArrayList<>();
+    for (Interaction current = lastInteraction;
+        current != null;
+        current = current.getParent().orElse(null)) {
+      reversedInteractions.add(current);
+    }
+
+    return reversedInteractions.reversed();
+  }
+
+  public List<Interaction> getAllInteractions() {
     return List.copyOf(interactions);
   }
 
@@ -124,6 +197,10 @@ public class Session extends AggregateRoot {
   public void setCurrentContext(UUID currentContext) {
     this.currentContext = currentContext;
     validate();
+  }
+
+  public Interaction getLastInteraction() {
+    return lastInteraction;
   }
 
   @Override

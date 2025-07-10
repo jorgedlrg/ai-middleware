@@ -43,7 +43,7 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
                             getActorByIdOutPort.query(e.getActor()).orElseThrow(),
                             findRole(scenario, e.getRole())))
                 .toList(),
-            session.getInteractions().stream()
+            session.getCurrentInteractions().stream()
                 .map(
                     (e) ->
                         SessionMapper.INSTANCE.toDto(

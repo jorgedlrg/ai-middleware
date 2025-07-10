@@ -49,7 +49,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
 
     List<GenerateMachineInteractionOutPort.PreviousMessage> previousMessages =
-        session.getInteractions().stream()
+        session.getCurrentInteractions().stream()
             .map(
                 (e) ->
                     MessageMapper.INSTANCE.toMessage(

@@ -18,4 +18,6 @@ public class InteractionEntity {
   private long timestamp;
   private String text;
   private UUID context;
+  private UUID parent;
+  private int level; //FIXME Maybe I don't need this, since it's calculated
 }

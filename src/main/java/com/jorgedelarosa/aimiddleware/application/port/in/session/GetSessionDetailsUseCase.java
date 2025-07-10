@@ -25,4 +25,5 @@ public interface GetSessionDetailsUseCase {
   public record PerformanceDto(UUID actor, UUID role, String actorName, String roleName) {}
 
   public record InteractionDto(UUID id, Instant timestamp, String actorName, String spokenText, byte[] portrait) {}
+  //TODO: idea. I could put a count in the Interaction to show how many siblings it has, and which one it is: like 1/4, 2/4.. etc
 }

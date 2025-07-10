@@ -14,9 +14,14 @@ import lombok.Data;
 @Data
 public class SessionEntity {
 
-   @Id private UUID id;
-   private UUID scenario;
-   @Column(name = "current_context")
-   private UUID currentContext;
-   private Locale locale;
+  @Id private UUID id;
+  private UUID scenario;
+
+  @Column(name = "current_context")
+  private UUID currentContext;
+
+  private Locale locale;
+
+  @Column(name = "last_interaction")
+  private UUID lastInteraction;
 }

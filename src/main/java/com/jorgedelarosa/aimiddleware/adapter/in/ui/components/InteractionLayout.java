@@ -62,12 +62,18 @@ public class InteractionLayout extends HorizontalLayout {
     operationsLayout.setSpacing(false);
     operationsLayout.setPadding(false);
 
+    Icon prevIcon = LumoIcon.ARROW_LEFT.create();
+    //prevIcon.setColor("red");
+    Button prevButton = new Button(prevIcon);
+    Icon nextIcon = LumoIcon.ARROW_RIGHT.create();
+    //nextIcon.setColor("red");
+    Button nextButton = new Button(nextIcon);
     Icon deleteIcon = LumoIcon.CROSS.create();
     deleteIcon.setColor("red");
     Button deleteButton = new Button(deleteIcon);
     deleteButton.addClickListener(e -> deleteListener.op(dto.id()));
 
-    operationsLayout.add(deleteButton);
+    operationsLayout.add(prevButton, nextButton, deleteButton);
 
     add(avatar, messageLayout, operationsLayout);
   }

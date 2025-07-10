@@ -16,6 +16,7 @@ import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -49,7 +50,7 @@ public class SessionAdapter
     performanceRepository.deleteAllByPerformanceIdSession(session.getId());
 
     List<InteractionEntity> interactions =
-        session.getInteractions().stream()
+        session.getAllInteractions().stream()
             .map((e) -> InteractionMapper.INSTANCE.toEntity(e, session.getId()))
             .toList();
     List<PerformanceEntity> performances =
@@ -66,23 +67,54 @@ public class SessionAdapter
     return sessionRepository.findAll().stream().map(e -> restoreSession(e)).toList();
   }
 
+  // TODO improve complexity
   private Session restoreSession(SessionEntity se) {
-    List<Interaction> interactions =
-        interactionRepository.findAllBySession(se.getId()).stream()
-            .map((e) -> InteractionMapper.INSTANCE.toDom(e))
-            .toList();
+    List<InteractionEntity> ies = interactionRepository.findAllBySession(se.getId());
+    List<Interaction> interactions = new ArrayList<>();
+    for (InteractionEntity entity : ies) {
+      Interaction parent = null;
+      if (entity.getParent() != null) {
+        parent =
+            interactions.stream()
+                .filter(e -> e.getId().equals(entity.getParent()))
+                .findFirst()
+                .orElseThrow();
+      }
+      Interaction interaction =
+          Interaction.restore(
+              entity.getId(),
+              "",
+              entity.getText(),
+              "",
+              entity.getTimestamp(),
+              entity.getRole(),
+              entity.getActor(),
+              entity.getContext(),
+              Optional.ofNullable(parent));
+      interactions.add(interaction);
+    }
+
     List<Performance> performances =
         performanceRepository.findAllByPerformanceIdSession(se.getId()).stream()
             .map((e) -> PerformanceMapper.INSTANCE.toValueObject(e))
             .toList();
 
+    Interaction lastInteraction = null;
+    if (se.getLastInteraction() != null) {
+      lastInteraction =
+          interactions.stream()
+              .filter(e -> e.getId().equals(se.getLastInteraction()))
+              .findFirst()
+              .orElseThrow();
+    }
     return Session.restore(
         se.getId(),
         se.getScenario(),
         se.getCurrentContext(),
         interactions,
         performances,
-        se.getLocale());
+        se.getLocale(),
+        lastInteraction);
   }
 
   @Override
@@ -98,6 +130,10 @@ public class SessionAdapter
 
     SessionEntity toEntity(Session session);
 
+    default UUID map(Interaction value) {
+      return value.getId();
+    }
+
     default UUID map(Scenario value) {
       return value.getId();
     }
@@ -107,21 +143,15 @@ public class SessionAdapter
   public interface InteractionMapper {
     InteractionMapper INSTANCE = Mappers.getMapper(InteractionMapper.class);
 
+    default UUID map(Optional<Interaction> value) {
+      if (value.isPresent()) {
+        return value.get().getId();
+      } else return null;
+    }
+
     @Mapping(source = "interaction.id", target = "id")
     @Mapping(source = "interaction.spokenText", target = "text")
     InteractionEntity toEntity(Interaction interaction, UUID session);
-
-    default Interaction toDom(InteractionEntity entity) {
-      return Interaction.restore(
-          entity.getId(),
-          "",
-          entity.getText(),
-          "",
-          entity.getTimestamp(),
-          entity.getRole(),
-          entity.getActor(),
-          entity.getContext());
-    }
 
     default long map(Instant value) {
       return value.toEpochMilli();
