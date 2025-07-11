@@ -18,7 +18,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
@@ -151,11 +150,11 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
 
     VerticalLayout middle = new VerticalLayout();
     middle.setWidth("60%");
-    middle.add(contextComboBox);
     middle.add(radioGroup);
     middle.add(interactionList);
     middle.add(input);
     middle.add(generatePanel);
+    middle.add(contextComboBox);
     middle.add(localeComboBox);
     middle.add(deleteButton);
     threezoneLayout.addToMiddle(middle);
