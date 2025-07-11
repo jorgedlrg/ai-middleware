@@ -33,7 +33,8 @@ public class InteractionLayout extends HorizontalLayout {
       OneUuidVoidOperator nextListener,
       OneUuidVoidOperator deleteListener) {
     super();
-    //setMargin(true);
+    setMargin(true);
+    setPadding(false);
 
     Avatar avatar = new Avatar(dto.actorName());
     avatar.setHeight("96px");
