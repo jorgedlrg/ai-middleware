@@ -2,8 +2,6 @@ package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatResponse;
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
