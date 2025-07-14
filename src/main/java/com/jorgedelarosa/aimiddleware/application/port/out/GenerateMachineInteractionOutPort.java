@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.application.port.out;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author jorge
@@ -13,7 +14,6 @@ public interface GenerateMachineInteractionOutPort {
 
   public record Command(
       Context currentContext,
-      List<Actor> actors,
       Actor you,
       List<PerformanceDto> performances,
       List<PreviousMessage> previousMessages,
@@ -23,5 +23,11 @@ public interface GenerateMachineInteractionOutPort {
 
   public record MachineResponse(String text) {}
 
-  public record PerformanceDto(String roleName, String actorName) {}
+  public record PerformanceDto(
+      String roleName,
+      String actorName,
+      String physicalDescription,
+      Optional<String> currentOutfit,
+      Optional<String> personality,
+      String roleDescription) {}
 }

@@ -62,12 +62,26 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   }
 
   private GenericChatMessage createPromptMessage(Command cmd) {
+    // Replace Performances in Role descriptions
+    List<PerformanceDto> performances =
+        cmd.performances().stream()
+            .map(
+                e ->
+                    new GenerateMachineInteractionOutPort.PerformanceDto(
+                        e.roleName(),
+                        e.actorName(),
+                        e.physicalDescription(),
+                        e.currentOutfit(),
+                        e.personality(),
+                        replacePerformances(e.roleDescription(), cmd.performances())))
+            .toList();
+
     Map<String, Object> templateVars = new HashMap();
     templateVars.put("name", cmd.currentContext().getName());
     templateVars.put(
         "description",
         replacePerformances(cmd.currentContext().getPhysicalDescription(), cmd.performances()));
-    templateVars.put("actors", cmd.actors());
+    templateVars.put("actors", performances);
     templateVars.put("previousMessages", cmd.previousMessages());
     templateVars.put("you", cmd.you().getName());
     templateVars.put("language", cmd.replyLanguage());

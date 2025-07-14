@@ -7,14 +7,15 @@ This is the current context, named [(${name})]:
 This scenario contains the following actors:
 [[# th:each="actor : ${actors}"]
     {
-      "name": [(${actor.name})], 
+      "name": [(${actor.actorName})], 
       "physical description": [(${actor.physicalDescription})]
       [# th:if="${actor.currentOutfit.present}"]
-      "outfit": [(${actor.currentOutfit.get.description})]
+      "outfit": [(${actor.currentOutfit.get})]
       [/]
-      [# th:if="${actor.mind.present}"]
-      "personality": [(${actor.mind.get.personality})]
+      [# th:if="${actor.personality.present}"]
+      "personality": [(${actor.personality.get})]
       [/]
+      "role": [(${actor.roleDescription})]
     }
 [/]]
 

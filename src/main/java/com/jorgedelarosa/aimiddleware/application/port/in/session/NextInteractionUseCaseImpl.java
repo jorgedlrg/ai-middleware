@@ -58,8 +58,6 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
               .query(session.getFeaturedActor(session.getLastInteraction().getRole()).get())
               .orElseThrow();
 
-      List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
-
       List<Interaction> previousInteractions = session.getCurrentInteractions();
       // Removes the last message, since we're regenerating it
       previousInteractions = previousInteractions.subList(0, previousInteractions.size() - 1);
@@ -75,6 +73,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                           e.getSpokenText()))
               .toList();
 
+      List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
       List<GenerateMachineInteractionOutPort.PerformanceDto> performances =
           session.getPerformances().stream()
               .map(
@@ -87,7 +86,6 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           generateMachineInteractionOutPort.execute(
               new GenerateMachineInteractionOutPort.Command(
                   currentContext,
-                  featuredActors,
                   actingActor,
                   performances,
                   previousMessages,
