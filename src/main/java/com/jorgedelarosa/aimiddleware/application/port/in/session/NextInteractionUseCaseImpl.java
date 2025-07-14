@@ -14,6 +14,7 @@ import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -91,7 +92,11 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   performances,
                   previousMessages,
                   session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
-      session.interactNext(response.text(), session.getLastInteraction().getRole());
+      session.interactNext(
+          response.text(),
+          session.getLastInteraction().getRole(),
+          Optional.of(response.mood()),
+          Optional.of(response.emoji()));
     }
     saveSessionOutPort.save(session);
   }

@@ -81,13 +81,21 @@ public class Session extends AggregateRoot {
     return session;
   }
 
-  public void interact(String text, UUID role) {
+  public void interact(String text, UUID role, Optional<String> mood, Optional<String> emoji) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
       Interaction newOne =
           Interaction.create(
-              "", text, "", role, actorId, currentContext, Optional.ofNullable(lastInteraction));
+              "",
+              text,
+              "",
+              role,
+              actorId,
+              currentContext,
+              Optional.ofNullable(lastInteraction),
+              mood,
+              emoji);
       interactions.add(newOne);
       setLastInteraction(newOne);
     } else {
@@ -96,7 +104,7 @@ public class Session extends AggregateRoot {
     validate();
   }
 
-  public void interactNext(String text, UUID role) {
+  public void interactNext(String text, UUID role, Optional<String> mood, Optional<String> emoji) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
@@ -106,7 +114,15 @@ public class Session extends AggregateRoot {
       }
       Interaction newOne =
           Interaction.create(
-              "", text, "", role, actorId, currentContext, Optional.ofNullable(parent));
+              "",
+              text,
+              "",
+              role,
+              actorId,
+              currentContext,
+              Optional.ofNullable(parent),
+              mood,
+              emoji);
       interactions.add(newOne);
       setLastInteraction(newOne);
     } else {
@@ -147,7 +163,8 @@ public class Session extends AggregateRoot {
 
   /**
    * FIXME: don't use a setter. this should be modified properly with other methods
-   * @param lastInteraction 
+   *
+   * @param lastInteraction
    */
   public void setLastInteraction(Interaction lastInteraction) {
     this.lastInteraction = lastInteraction;
@@ -162,7 +179,7 @@ public class Session extends AggregateRoot {
         getChildren(interactions.get(i)).stream().forEach(e -> deleteInteraction(e.getId()));
         // Now delete the interaction
         lastInteraction = parent;
-     
+
         if (lastInteraction == null) {
           // If we're going to remove the first interaction, remove the remaining interactions
           interactions.clear();

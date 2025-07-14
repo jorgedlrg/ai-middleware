@@ -67,7 +67,8 @@ public class InteractionLayout extends HorizontalLayout {
     messageLayout
         .getElement()
         .appendChild(
-            ElementFactory.createStrong(dto.actorName()),
+            ElementFactory.createStrong(dto.actorName() + " " + dto.emoji()),
+            ElementFactory.createLabel("(" + dto.mood() + ")"),
             ElementFactory.createLabel(
                 zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN))));
     Div text = new Div(new Text(dto.spokenText()));

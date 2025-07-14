@@ -19,5 +19,6 @@ public class InteractionEntity {
   private String text;
   private UUID context;
   private UUID parent;
-  private int level; //FIXME Maybe I don't need this, since it's calculated
+  private String mood;
+  private String emoji;
 }

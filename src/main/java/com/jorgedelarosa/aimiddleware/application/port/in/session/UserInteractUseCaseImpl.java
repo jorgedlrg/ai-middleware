@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,7 +23,7 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
   public void execute(Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
-    session.interact(cmd.text(), cmd.role());
+    session.interact(cmd.text(), cmd.role(), Optional.empty(), Optional.empty());
 
     saveSessionOutPort.save(session);
   }

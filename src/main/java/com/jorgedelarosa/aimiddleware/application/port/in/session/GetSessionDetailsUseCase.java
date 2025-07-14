@@ -32,5 +32,7 @@ public interface GetSessionDetailsUseCase {
       String spokenText,
       byte[] portrait,
       Integer siblingNumber,
-      Integer totalSiblings) {}
+      Integer totalSiblings,
+      String mood,
+      String emoji) {}
 }

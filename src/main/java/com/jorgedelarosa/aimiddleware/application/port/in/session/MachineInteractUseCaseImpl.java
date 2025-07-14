@@ -14,6 +14,7 @@ import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import lombok.AllArgsConstructor;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -75,7 +76,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 performances,
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
-    session.interact(response.text(), cmd.role());
+    session.interact(
+        response.text(), cmd.role(), Optional.of(response.mood()), Optional.of(response.emoji()));
 
     saveSessionOutPort.save(session);
   }

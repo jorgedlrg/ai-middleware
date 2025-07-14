@@ -20,6 +20,8 @@ public class Interaction extends Entity {
   private final UUID context;
   private final Optional<Interaction> parent;
   private final Integer level;
+  private final Optional<String> mood;
+  private final Optional<String> emoji;
 
   private Interaction(
       String thoughtText,
@@ -31,7 +33,9 @@ public class Interaction extends Entity {
       UUID id,
       UUID context,
       Optional<Interaction> parent,
-      Integer level) {
+      Integer level,
+      Optional<String> mood,
+      Optional<String> emoji) {
     super(id);
     this.thoughtText = thoughtText;
     this.spokenText = spokenText;
@@ -42,6 +46,8 @@ public class Interaction extends Entity {
     this.context = context;
     this.parent = parent;
     this.level = level;
+    this.mood = mood;
+    this.emoji = emoji;
   }
 
   public static Interaction create(
@@ -51,7 +57,9 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID context,
-      Optional<Interaction> parent) {
+      Optional<Interaction> parent,
+      Optional<String> mood,
+      Optional<String> emoji) {
     Integer level = 0;
     if (parent.isPresent()) {
       level = parent.get().getLevel() + 1;
@@ -67,7 +75,9 @@ public class Interaction extends Entity {
             UUID.randomUUID(),
             context,
             parent,
-            level);
+            level,
+            mood,
+            emoji);
     interaction.validate();
     return interaction;
   }
@@ -81,7 +91,9 @@ public class Interaction extends Entity {
       UUID role,
       UUID actor,
       UUID context,
-      Optional<Interaction> parent) {
+      Optional<Interaction> parent,
+      Optional<String> mood,
+      Optional<String> emoji) {
     Integer level = 0;
     if (parent.isPresent()) {
       level = parent.get().getLevel() + 1;
@@ -97,7 +109,9 @@ public class Interaction extends Entity {
             id,
             context,
             parent,
-            level);
+            level,
+            mood,
+            emoji);
     interaction.validate();
     return interaction;
   }
@@ -138,6 +152,14 @@ public class Interaction extends Entity {
     return level;
   }
 
+  public Optional<String> getMood() {
+    return mood;
+  }
+
+  public Optional<String> getEmoji() {
+    return emoji;
+  }
+
   @Override
   public boolean validate() {
     if (Validator.strNotEmpty.validate(spokenText)
@@ -146,7 +168,9 @@ public class Interaction extends Entity {
         && actor != null
         && context != null
         && parent != null
-        && level != null) return true;
+        && level != null
+        && mood != null
+        && emoji != null) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

@@ -9,12 +9,13 @@ import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompleti
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.StringTokenizer;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -27,6 +28,7 @@ import org.thymeleaf.context.Context;
  */
 @Component
 @AllArgsConstructor
+@Slf4j
 public class MachineInteractionAdapter implements GenerateMachineInteractionOutPort {
 
   private final OpenRouterClient openRouterClient;
@@ -37,31 +39,57 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   public MachineResponse execute(Command cmd) {
     String client = "openrouter";
 
-    List<GenericChatMessage> messages = new ArrayList<>();
-    messages.add(createPromptMessage(cmd));
-    GenericChatRequest req =
+    GenericChatRequest spokenTextReq =
         new GenericChatRequest(
-            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL, messages);
+            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
+            List.of(createSpokenTextPromptMessage(cmd)));
+    GenericChatRequest moodReq =
+        new GenericChatRequest(
+            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
+            List.of(createMoodPromptMessage(cmd)));
 
     MachineResponse machineResponse;
     switch (client) {
       case "openrouter" -> {
         OpenRouterChatCompletionResponse res =
             openRouterClient.chatCompletion(
-                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
-        machineResponse = new MachineResponse(res.choices().getFirst().message().content());
+                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(spokenTextReq));
+        OpenRouterChatCompletionResponse mood =
+            openRouterClient.chatCompletion(
+                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(moodReq));
+        StringTokenizer st =
+            new StringTokenizer(mood.choices().getFirst().message().content(), " ");
+        machineResponse =
+            new MachineResponse(
+                res.choices().getFirst().message().content(), st.nextToken(), st.nextToken());
       }
       case "ollama" -> {
         OllamaChatResponse res =
-            ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
-        machineResponse = new MachineResponse(res.message().content());
+            ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(spokenTextReq));
+        OllamaChatResponse mood =
+            ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(moodReq));
+        StringTokenizer st = new StringTokenizer(mood.message().content(), " ");
+        machineResponse =
+            new MachineResponse(res.message().content(), st.nextToken(), st.nextToken());
       }
       default -> throw new AssertionError();
     }
     return machineResponse;
   }
 
-  private GenericChatMessage createPromptMessage(Command cmd) {
+  private GenericChatMessage createSpokenTextPromptMessage(Command cmd) {
+    return new GenericChatMessage(
+        "user",
+        templateEngine.process("prompt", new Context(Locale.ENGLISH, createTemplateVars(cmd))));
+  }
+
+  private GenericChatMessage createMoodPromptMessage(Command cmd) {
+    return new GenericChatMessage(
+        "user",
+        templateEngine.process("promptMood", new Context(Locale.ENGLISH, createTemplateVars(cmd))));
+  }
+
+  private Map<String, Object> createTemplateVars(Command cmd) {
     // Replace Performances in Role descriptions
     List<PerformanceDto> performances =
         cmd.performances().stream()
@@ -88,8 +116,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     templateVars.put("you", cmd.you().getName());
     templateVars.put("language", cmd.replyLanguage());
 
-    return new GenericChatMessage(
-        "user", templateEngine.process("prompt", new Context(Locale.ENGLISH, templateVars)));
+    return templateVars;
   }
 
   /** TODO: Try to do this with Thymeleaf fragments */

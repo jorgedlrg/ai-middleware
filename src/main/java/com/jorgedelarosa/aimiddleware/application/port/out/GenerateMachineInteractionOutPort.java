@@ -20,10 +20,6 @@ public interface GenerateMachineInteractionOutPort {
       List<PreviousMessage> previousMessages,
       String replyLanguage) {}
 
-  public record PreviousMessage(String actorName, String message) {}
-
-  public record MachineResponse(String text) {}
-
   public record PerformanceDto(
       String roleName,
       String actorName,
@@ -31,4 +27,8 @@ public interface GenerateMachineInteractionOutPort {
       Optional<String> currentOutfit,
       Optional<String> personality,
       String roleDescription) {}
+
+  public record PreviousMessage(String actorName, String message) {}
+
+  public record MachineResponse(String text, String mood, String emoji) {}
 }

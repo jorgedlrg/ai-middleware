@@ -90,7 +90,9 @@ public class SessionAdapter
               entity.getRole(),
               entity.getActor(),
               entity.getContext(),
-              Optional.ofNullable(parent));
+              Optional.ofNullable(parent),
+              Optional.ofNullable(entity.getMood()),
+              Optional.ofNullable(entity.getEmoji()));
       interactions.add(interaction);
     }
 
@@ -156,6 +158,10 @@ public class SessionAdapter
 
     default long map(Instant value) {
       return value.toEpochMilli();
+    }
+
+    default String mapOptional(Optional<String> value) {
+      return value.orElse(null);
     }
   }
 

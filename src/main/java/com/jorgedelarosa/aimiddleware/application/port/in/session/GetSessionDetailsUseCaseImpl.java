@@ -80,7 +80,9 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
           dom.getSpokenText(),
           actor.getPortrait(),
           siblings.indexOf(dom) + 1,
-          siblings.size());
+          siblings.size(),
+          dom.getMood().orElse(""),
+          dom.getEmoji().orElse(""));
     }
   }
 }
