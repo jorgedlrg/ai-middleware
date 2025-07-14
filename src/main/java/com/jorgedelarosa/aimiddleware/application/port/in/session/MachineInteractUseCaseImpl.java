@@ -9,6 +9,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
@@ -59,12 +60,19 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                             .getName(),
                         e.getSpokenText()))
             .toList();
+
+    List<GenerateMachineInteractionOutPort.PerformanceDto> performances =
+        session.getPerformances().stream()
+            .map(e -> MessageMapper.INSTANCE.toDto(e, scenario, featuredActors))
+            .toList();
+
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
             new GenerateMachineInteractionOutPort.Command(
                 currentContext,
                 featuredActors,
                 actingActor,
+                performances,
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
     session.interact(response.text(), cmd.role());
@@ -79,6 +87,23 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     default GenerateMachineInteractionOutPort.PreviousMessage toMessage(
         String actorName, String message) {
       return new GenerateMachineInteractionOutPort.PreviousMessage(actorName, message);
+    }
+
+    default GenerateMachineInteractionOutPort.PerformanceDto toDto(
+        Performance performance, Scenario scenario, List<Actor> featuredActors) {
+      String roleName =
+          scenario.getRoles().stream()
+              .filter(r -> r.getId().equals(performance.getRole()))
+              .findFirst()
+              .orElseThrow()
+              .getName();
+      String actorName =
+          featuredActors.stream()
+              .filter(a -> a.getId().equals(performance.getActor()))
+              .findFirst()
+              .orElseThrow()
+              .getName();
+      return new GenerateMachineInteractionOutPort.PerformanceDto(roleName, actorName);
     }
   }
 }

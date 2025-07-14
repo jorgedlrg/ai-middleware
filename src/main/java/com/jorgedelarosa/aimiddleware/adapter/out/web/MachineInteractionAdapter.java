@@ -64,7 +64,9 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   private GenericChatMessage createPromptMessage(Command cmd) {
     Map<String, Object> templateVars = new HashMap();
     templateVars.put("name", cmd.currentContext().getName());
-    templateVars.put("description", cmd.currentContext().getPhysicalDescription());
+    templateVars.put(
+        "description",
+        replacePerformances(cmd.currentContext().getPhysicalDescription(), cmd.performances()));
     templateVars.put("actors", cmd.actors());
     templateVars.put("previousMessages", cmd.previousMessages());
     templateVars.put("you", cmd.you().getName());
@@ -72,6 +74,18 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     return new GenericChatMessage(
         "user", templateEngine.process("prompt", new Context(Locale.ENGLISH, templateVars)));
+  }
+
+  /** TODO: Try to do this with Thymeleaf fragments */
+  private String replacePerformances(
+      String text, List<GenerateMachineInteractionOutPort.PerformanceDto> performances) {
+    String replacedText = text;
+    for (PerformanceDto performance : performances) {
+      replacedText =
+          replacedText.replace("{{" + performance.roleName() + "}}", performance.actorName());
+    }
+
+    return replacedText;
   }
 
   @Mapper

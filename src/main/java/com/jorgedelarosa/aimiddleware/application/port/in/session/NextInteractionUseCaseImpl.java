@@ -9,6 +9,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
@@ -59,8 +60,11 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
 
       List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
 
+      List<Interaction> previousInteractions = session.getCurrentInteractions();
+      // Removes the last message, since we're regenerating it
+      previousInteractions = previousInteractions.subList(0, previousInteractions.size() - 1);
       List<GenerateMachineInteractionOutPort.PreviousMessage> previousMessages =
-          session.getCurrentInteractions().stream()
+          previousInteractions.stream()
               .map(
                   (e) ->
                       MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toMessage(
@@ -70,16 +74,22 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                               .getName(),
                           e.getSpokenText()))
               .toList();
-      previousMessages =
-          previousMessages.subList(
-              0,
-              previousMessages.size() - 1); // Removes the last message, since we're regenerating it
+
+      List<GenerateMachineInteractionOutPort.PerformanceDto> performances =
+          session.getPerformances().stream()
+              .map(
+                  e ->
+                      MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toDto(
+                          e, scenario, featuredActors))
+              .toList();
+
       GenerateMachineInteractionOutPort.MachineResponse response =
           generateMachineInteractionOutPort.execute(
               new GenerateMachineInteractionOutPort.Command(
                   currentContext,
                   featuredActors,
                   actingActor,
+                  performances,
                   previousMessages,
                   session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
       session.interactNext(response.text(), session.getLastInteraction().getRole());

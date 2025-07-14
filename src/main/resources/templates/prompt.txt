@@ -1,5 +1,8 @@
 You're in a fictional roleplay scenario.
-This is the current context, named [(${name})]: { [(${description})] }
+This is the current context, named [(${name})]:
+{
+    [(${description})]
+}
 
 This scenario contains the following actors:
 [[# th:each="actor : ${actors}"]

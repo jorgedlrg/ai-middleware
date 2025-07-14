@@ -15,10 +15,13 @@ public interface GenerateMachineInteractionOutPort {
       Context currentContext,
       List<Actor> actors,
       Actor you,
+      List<PerformanceDto> performances,
       List<PreviousMessage> previousMessages,
       String replyLanguage) {}
 
   public record PreviousMessage(String actorName, String message) {}
 
   public record MachineResponse(String text) {}
+
+  public record PerformanceDto(String roleName, String actorName) {}
 }

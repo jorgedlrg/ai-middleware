@@ -2,7 +2,6 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
-import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.NoSuchElementException;
 import lombok.AllArgsConstructor;

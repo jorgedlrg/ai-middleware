@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
-// TODO: this should belong to an user
+// TODO: probably users might need permissions to use an interaction
 /**
  * @author jorge
  */
@@ -145,6 +145,10 @@ public class Session extends AggregateRoot {
         .getFirst();
   }
 
+  /**
+   * FIXME: don't use a setter. this should be modified properly with other methods
+   * @param lastInteraction 
+   */
   public void setLastInteraction(Interaction lastInteraction) {
     this.lastInteraction = lastInteraction;
     validate();
@@ -153,11 +157,18 @@ public class Session extends AggregateRoot {
   public void deleteInteraction(UUID interactionId) {
     for (int i = 0; i < interactions.size(); ++i) {
       if (interactions.get(i).getId().equals(interactionId)) {
+        Interaction parent = interactions.get(i).getParent().orElse(null);
         // (recursively) Delete first its children
         getChildren(interactions.get(i)).stream().forEach(e -> deleteInteraction(e.getId()));
         // Now delete the interaction
-        setLastInteraction(interactions.get(i).getParent().orElse(null));
-        interactions.remove(i);
+        lastInteraction = parent;
+     
+        if (lastInteraction == null) {
+          // If we're going to remove the first interaction, remove the remaining interactions
+          interactions.clear();
+        } else {
+          interactions.remove(i);
+        }
         break;
       }
     }
@@ -228,9 +239,14 @@ public class Session extends AggregateRoot {
 
   @Override
   public boolean validate() {
-    if (scenario != null && currentContext != null && locale != null && !performances.isEmpty())
+    if (scenario != null
+        && currentContext != null
+        && locale != null
+        && !performances.isEmpty()
+        && ((interactions.isEmpty() && lastInteraction == null)
+            || (!interactions.isEmpty() && lastInteraction != null))) {
       return true;
-    else
+    } else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));
   }
