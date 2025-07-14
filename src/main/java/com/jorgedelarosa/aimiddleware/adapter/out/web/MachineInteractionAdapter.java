@@ -77,6 +77,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
             .toList();
 
     Map<String, Object> templateVars = new HashMap();
+    templateVars.put(
+        "scenarioDescription", replacePerformances(cmd.scenarioDescription(), performances));
     templateVars.put("name", cmd.currentContext().getName());
     templateVars.put(
         "description",

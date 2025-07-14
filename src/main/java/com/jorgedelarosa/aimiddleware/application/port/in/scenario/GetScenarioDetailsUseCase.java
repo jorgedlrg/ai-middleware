@@ -11,7 +11,7 @@ public interface GetScenarioDetailsUseCase {
 
   public record Command(UUID scenarioId) {}
 
-  public record ScenarioDto(UUID id, String name, List<ContextDto> contexts, List<RoleDto> roles) {}
+  public record ScenarioDto(UUID id, String name, String description, List<ContextDto> contexts, List<RoleDto> roles) {}
 
   public record ContextDto(UUID id, String name, String physicalDescription) {}
 

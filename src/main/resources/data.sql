@@ -3,7 +3,7 @@
  * Created: 22 may 2025
  */
 
-INSERT IGNORE INTO scenario VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a', 'development scenario');
+INSERT IGNORE INTO scenario VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a', 'development scenario', 'development scenario');
 
 INSERT IGNORE INTO role VALUES ('7376f89d-4ca7-423b-95f1-e29a8832ec4a','7376f89d-4ca7-423b-95f1-e29a8832ec4a','user','user');
 INSERT IGNORE INTO role VALUES ('655cfb3d-c740-48d2-ab4f-51e391c4deaf','7376f89d-4ca7-423b-95f1-e29a8832ec4a','misterious person in the room','misterious person in the room');

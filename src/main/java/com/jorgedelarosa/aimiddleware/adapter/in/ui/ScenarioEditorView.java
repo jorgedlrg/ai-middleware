@@ -15,6 +15,7 @@ import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.router.BeforeEvent;
 import com.vaadin.flow.router.HasDynamicTitle;
@@ -40,6 +41,7 @@ public class ScenarioEditorView extends VerticalLayout
   private String pageTitle;
   private GetScenarioDetailsUseCase.ScenarioDto scenarioDto;
   private TextField name;
+  private TextArea description;
 
   private void rebuildEditor() {
     removeAll();
@@ -47,6 +49,10 @@ public class ScenarioEditorView extends VerticalLayout
     name = new TextField("Name");
     name.setValue(scenarioDto.name());
     name.setRequired(true);
+    description = new TextArea("Description");
+    description.setValue(scenarioDto.description());
+    description.setRequired(true);
+    description.setWidthFull();
 
     Grid<GetScenarioDetailsUseCase.ContextDto> contextGrid =
         new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);
@@ -78,6 +84,7 @@ public class ScenarioEditorView extends VerticalLayout
         new DeleteConfirmButton("Delete", name.getValue(), deleteScenarioListener());
 
     add(name);
+    add(description);
     add(contextGrid);
     add(addContext);
     add(roleGrid);
@@ -125,7 +132,8 @@ public class ScenarioEditorView extends VerticalLayout
     return (ClickEvent<Button> t) -> {
       UUID scenarioId =
           saveScenarioUseCase.execute(
-              new SaveScenarioUseCase.Command(scenarioDto.id(), name.getValue()));
+              new SaveScenarioUseCase.Command(
+                  scenarioDto.id(), name.getValue(), description.getValue()));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios/" + scenarioId));
       Notification notification = Notification.show(name.getValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
@@ -151,7 +159,7 @@ public class ScenarioEditorView extends VerticalLayout
     } else {
       scenarioDto =
           new GetScenarioDetailsUseCase.ScenarioDto(
-              null, "", Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+              null, "", "", Collections.EMPTY_LIST, Collections.EMPTY_LIST);
       pageTitle = "Scenario Editor - new";
     }
     rebuildEditor();

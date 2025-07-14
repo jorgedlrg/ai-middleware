@@ -13,6 +13,7 @@ public interface GenerateMachineInteractionOutPort {
   public MachineResponse execute(Command cmd);
 
   public record Command(
+      String scenarioDescription,
       Context currentContext,
       Actor you,
       List<PerformanceDto> performances,

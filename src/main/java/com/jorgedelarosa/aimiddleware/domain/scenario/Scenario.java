@@ -12,26 +12,42 @@ import java.util.UUID;
 public class Scenario extends AggregateRoot {
 
   private String name;
+  private String description;
   private final List<Context> contexts;
   private final List<Role> roles;
 
-  private Scenario(String name, List<Context> contexts, List<Role> roles, Class clazz, UUID id) {
+  private Scenario(
+      String name,
+      String description,
+      List<Context> contexts,
+      List<Role> roles,
+      Class clazz,
+      UUID id) {
     super(clazz, id);
     this.name = name;
+    this.description = description;
     this.contexts = contexts;
     this.roles = roles;
   }
 
-  public static Scenario create(String name) {
+  public static Scenario create(String name, String description) {
     Scenario scenario =
-        new Scenario(name, new ArrayList<>(), new ArrayList<>(), Scenario.class, UUID.randomUUID());
+        new Scenario(
+            name,
+            description,
+            new ArrayList<>(),
+            new ArrayList<>(),
+            Scenario.class,
+            UUID.randomUUID());
     scenario.validate();
     return scenario;
   }
 
-  public static Scenario restore(UUID id, String name, List<Context> contexts, List<Role> roles) {
+  public static Scenario restore(
+      UUID id, String name, String description, List<Context> contexts, List<Role> roles) {
     Scenario scenario =
-        new Scenario(name, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
+        new Scenario(
+            name, description, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
     scenario.validate();
     return scenario;
   }
@@ -105,9 +121,18 @@ public class Scenario extends AggregateRoot {
     validate();
   }
 
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   @Override
   public boolean validate() {
-    if (Validator.strNotEmpty.validate(name)) return true;
+    if (Validator.strNotEmpty.validate(name) && Validator.strNotEmpty.validate(description))
+      return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

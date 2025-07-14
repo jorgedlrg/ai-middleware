@@ -85,6 +85,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
       GenerateMachineInteractionOutPort.MachineResponse response =
           generateMachineInteractionOutPort.execute(
               new GenerateMachineInteractionOutPort.Command(
+                  scenario.getDescription(),
                   currentContext,
                   actingActor,
                   performances,

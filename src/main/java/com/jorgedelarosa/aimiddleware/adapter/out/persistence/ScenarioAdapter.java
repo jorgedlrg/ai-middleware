@@ -55,7 +55,7 @@ public class ScenarioAdapter
         roleRepository.findAllByScenario(se.getId()).stream()
             .map((e) -> ScenarioMapper.INSTANCE.toDom(e))
             .toList();
-    return Scenario.restore(se.getId(), se.getName(), contexts, roles);
+    return Scenario.restore(se.getId(), se.getName(), se.getDescription(), contexts, roles);
   }
 
   @Override

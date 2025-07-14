@@ -1,4 +1,7 @@
 You're in a fictional roleplay scenario.
+This is the scenario description:
+[(${scenarioDescription})]
+
 This is the current context, named [(${name})]:
 {
     [(${description})]

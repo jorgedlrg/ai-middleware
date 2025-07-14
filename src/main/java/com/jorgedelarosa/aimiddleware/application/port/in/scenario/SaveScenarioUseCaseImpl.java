@@ -24,12 +24,13 @@ public class SaveScenarioUseCaseImpl implements SaveScenarioUseCase {
     Scenario scenario;
     if (cmd.id() == null) {
       // CREATE
-      scenario = Scenario.create(cmd.name());
+      scenario = Scenario.create(cmd.name(), cmd.description());
     } else {
       // UPDATE
       scenario = getScenarioByIdOutPort.query(cmd.id()).orElseThrow();
 
       scenario.setName(cmd.name());
+      scenario.setDescription(cmd.description());
     }
 
     scenarioOutPort.save(scenario);

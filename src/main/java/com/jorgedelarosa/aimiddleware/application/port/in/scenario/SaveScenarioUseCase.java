@@ -8,8 +8,5 @@ import java.util.UUID;
 public interface SaveScenarioUseCase {
   public UUID execute(Command cmd);
 
-  public record Command(UUID id, String name) {}
-
-  public record ContextDto(UUID id, String name, String physicalDescription) {}
-
+  public record Command(UUID id, String name, String description) {}
 }

@@ -69,6 +69,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     GenerateMachineInteractionOutPort.MachineResponse response =
         generateMachineInteractionOutPort.execute(
             new GenerateMachineInteractionOutPort.Command(
+                scenario.getDescription(),
                 currentContext,
                 actingActor,
                 performances,
