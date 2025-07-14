@@ -34,3 +34,5 @@ spring:
 management:
   endpoint.health.enabled: true
   endpoints.web.exposure.include: health, metrics
+# RestClient logging
+#logging.level.org.apache.hc.client5.http: DEBUG

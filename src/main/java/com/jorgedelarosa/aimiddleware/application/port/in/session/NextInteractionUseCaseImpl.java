@@ -10,6 +10,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
@@ -95,8 +96,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
       session.interactNext(
           response.text(),
           session.getLastInteraction().getRole(),
-          Optional.of(response.mood()),
-          Optional.of(response.emoji()));
+          Optional.of(Mood.valueOf(response.mood())));
     }
     saveSessionOutPort.save(session);
   }

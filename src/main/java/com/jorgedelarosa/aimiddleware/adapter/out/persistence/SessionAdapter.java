@@ -13,6 +13,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.time.Instant;
@@ -80,6 +81,10 @@ public class SessionAdapter
                 .findFirst()
                 .orElseThrow();
       }
+      Optional<Mood> mood = Optional.empty();
+      if (entity.getMood() != null) {
+        mood = Optional.ofNullable(Mood.valueOf(entity.getMood()));
+      }
       Interaction interaction =
           Interaction.restore(
               entity.getId(),
@@ -91,8 +96,7 @@ public class SessionAdapter
               entity.getActor(),
               entity.getContext(),
               Optional.ofNullable(parent),
-              Optional.ofNullable(entity.getMood()),
-              Optional.ofNullable(entity.getEmoji()));
+              mood);
       interactions.add(interaction);
     }
 
@@ -162,6 +166,12 @@ public class SessionAdapter
 
     default String mapOptional(Optional<String> value) {
       return value.orElse(null);
+    }
+
+    default String mapMood(Optional<Mood> value) {
+      if (value.isPresent()) {
+        return value.get().name();
+      } else return null;
     }
   }
 

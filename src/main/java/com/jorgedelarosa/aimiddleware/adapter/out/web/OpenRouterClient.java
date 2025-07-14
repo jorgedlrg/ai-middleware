@@ -2,8 +2,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
@@ -15,9 +14,8 @@ import org.springframework.web.client.RestClient;
  * @author jorge
  */
 @Component
+@Slf4j
 public class OpenRouterClient {
-
-  private final Logger logger = LoggerFactory.getLogger(OpenRouterClient.class);
 
   @Value("${openrouter.apikey}")
   private String apikey;
@@ -28,7 +26,7 @@ public class OpenRouterClient {
 
     String url = "https://openrouter.ai/api/v1/chat/completions";
 
-    logger.info("req: {}", req);
+    log.info("req: {}", req);
     RestClient customClient =
         RestClient.builder()
             .baseUrl(url)
@@ -48,7 +46,7 @@ public class OpenRouterClient {
             .retrieve()
             .body(OpenRouterChatCompletionResponse.class);
 
-    logger.info("res: {}", response);
+    log.info("res: {}", response);
 
     return response;
   }

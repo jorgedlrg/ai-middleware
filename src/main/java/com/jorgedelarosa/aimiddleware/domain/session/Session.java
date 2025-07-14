@@ -81,7 +81,7 @@ public class Session extends AggregateRoot {
     return session;
   }
 
-  public void interact(String text, UUID role, Optional<String> mood, Optional<String> emoji) {
+  public void interact(String text, UUID role, Optional<Mood> mood) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
@@ -94,8 +94,7 @@ public class Session extends AggregateRoot {
               actorId,
               currentContext,
               Optional.ofNullable(lastInteraction),
-              mood,
-              emoji);
+              mood);
       interactions.add(newOne);
       setLastInteraction(newOne);
     } else {
@@ -104,7 +103,7 @@ public class Session extends AggregateRoot {
     validate();
   }
 
-  public void interactNext(String text, UUID role, Optional<String> mood, Optional<String> emoji) {
+  public void interactNext(String text, UUID role, Optional<Mood> mood) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
@@ -114,15 +113,7 @@ public class Session extends AggregateRoot {
       }
       Interaction newOne =
           Interaction.create(
-              "",
-              text,
-              "",
-              role,
-              actorId,
-              currentContext,
-              Optional.ofNullable(parent),
-              mood,
-              emoji);
+              "", text, "", role, actorId, currentContext, Optional.ofNullable(parent), mood);
       interactions.add(newOne);
       setLastInteraction(newOne);
     } else {

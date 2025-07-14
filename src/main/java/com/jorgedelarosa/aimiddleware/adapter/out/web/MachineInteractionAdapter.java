@@ -9,11 +9,11 @@ import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompleti
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.StringTokenizer;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.mapstruct.Mapper;
@@ -31,6 +31,8 @@ import org.thymeleaf.context.Context;
 @Slf4j
 public class MachineInteractionAdapter implements GenerateMachineInteractionOutPort {
 
+  private static final int SPEECH_MAX_TOKENS = 120;
+  private static final int THOUGHT_MAX_TOKENS = 120;
   private final OpenRouterClient openRouterClient;
   private final OllamaClient ollamaClient;
   private final TemplateEngine templateEngine;
@@ -42,11 +44,13 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     GenericChatRequest spokenTextReq =
         new GenericChatRequest(
             client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
-            List.of(createSpokenTextPromptMessage(cmd)));
+            List.of(createSpeechPromptMessage(cmd)),
+            SPEECH_MAX_TOKENS);
     GenericChatRequest moodReq =
         new GenericChatRequest(
             client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
-            List.of(createMoodPromptMessage(cmd)));
+            List.of(createMoodPromptMessage(cmd)),
+            SPEECH_MAX_TOKENS);
 
     MachineResponse machineResponse;
     switch (client) {
@@ -57,39 +61,39 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         OpenRouterChatCompletionResponse mood =
             openRouterClient.chatCompletion(
                 ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(moodReq));
-        StringTokenizer st =
-            new StringTokenizer(mood.choices().getFirst().message().content(), " ");
         machineResponse =
             new MachineResponse(
-                res.choices().getFirst().message().content(), st.nextToken(), st.nextToken());
+                res.choices().getFirst().message().content().trim(),
+                mood.choices().getFirst().message().content().trim());
       }
       case "ollama" -> {
         OllamaChatResponse res =
             ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(spokenTextReq));
         OllamaChatResponse mood =
             ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(moodReq));
-        StringTokenizer st = new StringTokenizer(mood.message().content(), " ");
         machineResponse =
-            new MachineResponse(res.message().content(), st.nextToken(), st.nextToken());
+            new MachineResponse(res.message().content().trim(), mood.message().content().trim());
       }
       default -> throw new AssertionError();
     }
     return machineResponse;
   }
 
-  private GenericChatMessage createSpokenTextPromptMessage(Command cmd) {
+  private GenericChatMessage createSpeechPromptMessage(Command cmd) {
     return new GenericChatMessage(
         "user",
-        templateEngine.process("prompt", new Context(Locale.ENGLISH, createTemplateVars(cmd))));
+        templateEngine.process(
+            "prompt", new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd))));
   }
 
   private GenericChatMessage createMoodPromptMessage(Command cmd) {
     return new GenericChatMessage(
         "user",
-        templateEngine.process("promptMood", new Context(Locale.ENGLISH, createTemplateVars(cmd))));
+        templateEngine.process(
+            "promptMood", new Context(Locale.ENGLISH, createMoodTemplateVars(cmd))));
   }
 
-  private Map<String, Object> createTemplateVars(Command cmd) {
+  private Map<String, Object> createSpeechTemplateVars(Command cmd) {
     // Replace Performances in Role descriptions
     List<PerformanceDto> performances =
         cmd.performances().stream()
@@ -116,6 +120,14 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     templateVars.put("you", cmd.you().getName());
     templateVars.put("language", cmd.replyLanguage());
 
+    return templateVars;
+  }
+
+  private Map<String, Object> createMoodTemplateVars(Command cmd) {
+    Map<String, Object> templateVars = new HashMap();
+    templateVars.put("previousMessages", cmd.previousMessages());
+    templateVars.put("you", cmd.you().getName());
+    templateVars.put("moods", Mood.values());
     return templateVars;
   }
 

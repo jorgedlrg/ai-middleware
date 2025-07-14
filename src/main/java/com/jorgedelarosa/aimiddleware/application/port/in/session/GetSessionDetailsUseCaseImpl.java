@@ -73,6 +73,12 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
     }
 
     default InteractionDto toDto(Interaction dom, Actor actor, List<Interaction> siblings) {
+      String moodName = "";
+      String mooodEmoji = "";
+      if (dom.getMood().isPresent()) {
+        moodName = dom.getMood().get().name().toLowerCase();
+        mooodEmoji = dom.getMood().get().getEmoji();
+      }
       return new InteractionDto(
           dom.getId(),
           dom.getTimestamp(),
@@ -81,8 +87,8 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
           actor.getPortrait(),
           siblings.indexOf(dom) + 1,
           siblings.size(),
-          dom.getMood().orElse(""),
-          dom.getEmoji().orElse(""));
+          moodName,
+          mooodEmoji);
     }
   }
 }

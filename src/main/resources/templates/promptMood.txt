@@ -1,32 +1,11 @@
 You're in a fictional roleplay scenario.
-This is the scenario description:
-[(${scenarioDescription})]
-
-This is the current context, named [(${name})]:
-{
-    [(${description})]
-}
-
-This scenario contains the following actors:
-[[# th:each="actor : ${actors}"]
-    {
-      "name": [(${actor.actorName})], 
-      "physical description": [(${actor.physicalDescription})]
-      [# th:if="${actor.currentOutfit.present}"]
-      "outfit": [(${actor.currentOutfit.get})]
-      [/]
-      [# th:if="${actor.personality.present}"]
-      "personality": [(${actor.personality.get})]
-      [/]
-      "role": [(${actor.roleDescription})]
-    }
-[/]]
 
 This is what the actors have said so far:
 [[# th:each="previousMessage : ${previousMessages}"]
     [(${previousMessage.actorName})]: [(${previousMessage.message})]
 [/]]
 
-Given all this information, write in one word the mood of [(${you})] and it's corresponding emoji when they said the last message.
+Given all this information, write in one word the mood of [(${you})] for the last message.
+You can only use one of the following moods: {[[# th:each="mood : ${moods}"] [(${mood.name})], [/]]}
 
 VERY IMPORTANT: write your answer completely in English.

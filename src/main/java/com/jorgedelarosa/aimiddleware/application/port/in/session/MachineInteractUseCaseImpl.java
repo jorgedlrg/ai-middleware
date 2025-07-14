@@ -10,6 +10,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
@@ -76,8 +77,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 performances,
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
-    session.interact(
-        response.text(), cmd.role(), Optional.of(response.mood()), Optional.of(response.emoji()));
+    session.interact(response.text(), cmd.role(), Optional.of(Mood.valueOf(response.mood())));
 
     saveSessionOutPort.save(session);
   }

@@ -1,6 +1,10 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.web.dto;
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
+
 /**
  * @author jorge
  */
-public record OllamaChatResponse(String model,  OllamaChatMessage message) {}
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
+public record OllamaChatResponse(String model, OllamaChatMessage message) {}
