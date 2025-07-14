@@ -20,6 +20,6 @@ This is what the actors have said so far:
     [(${previousMessage.actorName})]: [(${previousMessage.message})]
 [/]]
 
-You're playing the actor [(${you})]. Talk as you were that actor.
+You're playing the actor [(${you})]. Talk as you were that actor, writing what the actor would say. Do not emote.
 
-VERY IMPORTANT: write your answer in [(${language})].
+VERY IMPORTANT: write your answer completely in [(${language})].

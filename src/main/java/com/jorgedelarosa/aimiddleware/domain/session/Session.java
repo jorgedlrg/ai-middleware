@@ -150,17 +150,13 @@ public class Session extends AggregateRoot {
     validate();
   }
 
-  /**
-   * FIXME: Since the interactions now are saved as a tree, this current method might leave orphan
-   * Interactions. Purge orphan interactions
-   *
-   * @param interactionId
-   */
   public void deleteInteraction(UUID interactionId) {
     for (int i = 0; i < interactions.size(); ++i) {
       if (interactions.get(i).getId().equals(interactionId)) {
+        // (recursively) Delete first its children
+        getChildren(interactions.get(i)).stream().forEach(e -> deleteInteraction(e.getId()));
+        // Now delete the interaction
         setLastInteraction(interactions.get(i).getParent().orElse(null));
-        // TODO: purge orfan interactions in domain. don't do this with the DB, it wouldn't be DDD
         interactions.remove(i);
         break;
       }
