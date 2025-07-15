@@ -4,6 +4,8 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDeta
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.details.Details;
+import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.icon.Icon;
@@ -73,6 +75,12 @@ public class InteractionLayout extends HorizontalLayout {
     if (dto.mood() != null && !dto.mood().equals("")) {
       messageLayout.add(new Div(new Text(dto.mood())));
     }
+    Div thoughtText = new Div(new Text(dto.thoughtText()));
+    thoughtText.setWidth("800px");
+    Details thoughts = new Details("Thoughts", thoughtText);
+    thoughts.setOpened(true);
+    thoughts.addThemeVariants(DetailsVariant.SMALL);
+    messageLayout.add(thoughts);
     Div text = new Div(new Text(dto.spokenText()));
     text.setWidth("800px");
     messageLayout.add(text);

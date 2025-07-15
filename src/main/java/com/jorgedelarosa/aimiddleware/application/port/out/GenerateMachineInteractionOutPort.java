@@ -30,5 +30,5 @@ public interface GenerateMachineInteractionOutPort {
 
   public record PreviousMessage(String actorName, String message) {}
 
-  public record MachineResponse(String text, String mood) {}
+  public record MachineResponse(String thoughts, String speech, String mood) {}
 }

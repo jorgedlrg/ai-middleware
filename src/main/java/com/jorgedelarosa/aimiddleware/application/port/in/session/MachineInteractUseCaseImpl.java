@@ -78,7 +78,10 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
     session.interact(
-        response.text(), cmd.role(), Optional.of(Mood.valueOf(response.mood().toUpperCase())));
+        response.thoughts(),
+        response.speech(),
+        cmd.role(),
+        Optional.of(Mood.valueOf(response.mood().toUpperCase())));
 
     saveSessionOutPort.save(session);
   }

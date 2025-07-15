@@ -23,7 +23,7 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
   public void execute(Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
-    session.interact(cmd.text(), cmd.role(), Optional.empty());
+    session.interact("", cmd.text(), cmd.role(), Optional.empty());
 
     saveSessionOutPort.save(session);
   }

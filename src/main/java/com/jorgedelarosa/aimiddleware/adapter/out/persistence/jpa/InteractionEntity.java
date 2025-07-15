@@ -20,4 +20,5 @@ public class InteractionEntity {
   private UUID context;
   private UUID parent;
   private String mood;
+  private String thoughts;
 }

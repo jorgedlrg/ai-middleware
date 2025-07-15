@@ -29,6 +29,7 @@ public interface GetSessionDetailsUseCase {
       UUID id,
       Instant timestamp,
       String actorName,
+      String thoughtText,
       String spokenText,
       byte[] portrait,
       Integer siblingNumber,

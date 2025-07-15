@@ -81,23 +81,7 @@ public class SessionAdapter
                 .findFirst()
                 .orElseThrow();
       }
-      Optional<Mood> mood = Optional.empty();
-      if (entity.getMood() != null) {
-        mood = Optional.ofNullable(Mood.valueOf(entity.getMood()));
-      }
-      Interaction interaction =
-          Interaction.restore(
-              entity.getId(),
-              "",
-              entity.getText(),
-              "",
-              entity.getTimestamp(),
-              entity.getRole(),
-              entity.getActor(),
-              entity.getContext(),
-              Optional.ofNullable(parent),
-              mood);
-      interactions.add(interaction);
+      interactions.add(InteractionMapper.INSTANCE.toDom(entity, parent));
     }
 
     List<Performance> performances =
@@ -158,7 +142,26 @@ public class SessionAdapter
 
     @Mapping(source = "interaction.id", target = "id")
     @Mapping(source = "interaction.spokenText", target = "text")
+    @Mapping(source = "interaction.thoughtText", target = "thoughts")
     InteractionEntity toEntity(Interaction interaction, UUID session);
+
+    default Interaction toDom(InteractionEntity entity, Interaction parent) {
+      Optional<Mood> mood = Optional.empty();
+      if (entity.getMood() != null) {
+        mood = Optional.ofNullable(Mood.valueOf(entity.getMood()));
+      }
+      return Interaction.restore(
+          entity.getId(),
+          entity.getThoughts(),
+          entity.getText(),
+          "",
+          entity.getTimestamp(),
+          entity.getRole(),
+          entity.getActor(),
+          entity.getContext(),
+          Optional.ofNullable(parent),
+          mood);
+    }
 
     default long map(Instant value) {
       return value.toEpochMilli();

@@ -83,6 +83,7 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
           dom.getId(),
           dom.getTimestamp(),
           actor.getName(),
+          dom.getThoughtText(),
           dom.getSpokenText(),
           actor.getPortrait(),
           siblings.indexOf(dom) + 1,

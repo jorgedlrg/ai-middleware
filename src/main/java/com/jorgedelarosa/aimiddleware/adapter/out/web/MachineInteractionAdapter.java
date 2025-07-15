@@ -47,11 +47,18 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         new GenericChatRequest(
             client.equals("openrouter") ? OpenRouterClient.MODEL_GEMMA_3_27B : ollamaClient.MODEL,
             List.of(createMoodPromptMessage(cmd)));
+    GenericChatRequest thoughtsReq =
+        new GenericChatRequest(
+            client.equals("openrouter") ? OpenRouterClient.MODEL_GEMMA_3_27B : ollamaClient.MODEL,
+            List.of(createThoughtsPromptMessage(cmd)));
 
     MachineResponse machineResponse;
     switch (client) {
       case "openrouter" -> {
-        OpenRouterChatCompletionResponse res =
+        OpenRouterChatCompletionResponse thoughts =
+            openRouterClient.chatCompletion(
+                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(thoughtsReq));
+        OpenRouterChatCompletionResponse speech =
             openRouterClient.chatCompletion(
                 ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(spokenTextReq));
         OpenRouterChatCompletionResponse mood =
@@ -59,7 +66,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                 ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(moodReq));
         machineResponse =
             new MachineResponse(
-                res.choices().getFirst().message().content().trim(),
+                thoughts.choices().getFirst().message().content().trim(),
+                speech.choices().getFirst().message().content().trim(),
                 mood.choices().getFirst().message().content().trim());
       }
       case "ollama" -> {
@@ -68,7 +76,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         OllamaChatResponse mood =
             ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(moodReq));
         machineResponse =
-            new MachineResponse(res.message().content().trim(), mood.message().content().trim());
+            new MachineResponse(
+                "", res.message().content().trim(), mood.message().content().trim());
       }
       default -> throw new AssertionError();
     }
@@ -89,7 +98,28 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
             "promptMood", new Context(Locale.ENGLISH, createMoodTemplateVars(cmd))));
   }
 
+  private GenericChatMessage createThoughtsPromptMessage(Command cmd) {
+    return new GenericChatMessage(
+        "user",
+        templateEngine.process(
+            "promptThoughts", new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd))));
+  }
+
   private Map<String, Object> createSpeechTemplateVars(Command cmd) {
+
+    Map<String, Object> templateVars = createThoughtsTemplateVars(cmd);
+    return templateVars;
+  }
+
+  private Map<String, Object> createMoodTemplateVars(Command cmd) {
+    Map<String, Object> templateVars = new HashMap();
+    templateVars.put("previousMessages", cmd.previousMessages());
+    templateVars.put("you", cmd.you().getName());
+    templateVars.put("moods", Mood.values());
+    return templateVars;
+  }
+
+  private Map<String, Object> createThoughtsTemplateVars(Command cmd) {
     // Replace Performances in Role descriptions
     List<PerformanceDto> performances =
         cmd.performances().stream()
@@ -116,14 +146,6 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     templateVars.put("you", cmd.you().getName());
     templateVars.put("language", cmd.replyLanguage());
 
-    return templateVars;
-  }
-
-  private Map<String, Object> createMoodTemplateVars(Command cmd) {
-    Map<String, Object> templateVars = new HashMap();
-    templateVars.put("previousMessages", cmd.previousMessages());
-    templateVars.put("you", cmd.you().getName());
-    templateVars.put("moods", Mood.values());
     return templateVars;
   }
 

@@ -1,0 +1,32 @@
+You're in a fictional roleplay scenario.
+This is the scenario description:
+[(${scenarioDescription})]
+
+This is the current context, named [(${name})]:
+{
+    [(${description})]
+}
+
+This scenario contains the following actors:
+[[# th:each="actor : ${actors}"]
+    {
+      "name": [(${actor.actorName})], 
+      "physical description": [(${actor.physicalDescription})]
+      [# th:if="${actor.currentOutfit.present}"]
+      "outfit": [(${actor.currentOutfit.get})]
+      [/]
+      [# th:if="${actor.personality.present}"]
+      "personality": [(${actor.personality.get})]
+      [/]
+      "role": [(${actor.roleDescription})]
+    }
+[/]]
+
+This is what the actors have said so far:
+[[# th:each="previousMessage : ${previousMessages}"]
+    [(${previousMessage.actorName})]: [(${previousMessage.message})]
+[/]]
+
+You're playing the actor [(${you})]. Write BRIEFLY what the actor is thinking at the moment. Do not speak, do not perform any actions, just write the actor thoughts. And remember, BRIEFLY.
+
+VERY IMPORTANT: write your answer completely in [(${language})].
