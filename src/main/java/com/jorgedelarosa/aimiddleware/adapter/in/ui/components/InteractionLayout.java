@@ -7,7 +7,6 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -59,10 +58,10 @@ public class InteractionLayout extends HorizontalLayout {
       avatar.setColorIndex(Math.abs(dto.actorName().hashCode()) % 5);
     }
 
-    VerticalLayout messageLayout = new VerticalLayout();
-    messageLayout.setWidthFull();
-    messageLayout.setSpacing(false);
-    messageLayout.setPadding(false);
+    VerticalLayout detailsLayout = new VerticalLayout();
+    detailsLayout.setWidthFull();
+    detailsLayout.setSpacing(false);
+    detailsLayout.setPadding(false);
 
     Icon prevIcon = LumoIcon.ARROW_LEFT.create();
     Button prevButton = new Button(prevIcon);
@@ -99,35 +98,56 @@ public class InteractionLayout extends HorizontalLayout {
                     zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)))),
             buttonsLayout);
     nameLayout.addClassNames(LumoUtility.Width.FULL, LumoUtility.JustifyContent.BETWEEN);
-    messageLayout.add(nameLayout);
+    detailsLayout.add(nameLayout);
 
     String mood = "";
     if (dto.mood() != null && !dto.mood().equals("")) {
       mood = "(" + dto.mood() + ")";
     }
     Div thoughtText = new Div(new Text(dto.thoughtText()));
-    thoughtText.setWidth("800px");
     Details thoughts = new Details("Thoughts " + mood + dto.emoji(), thoughtText);
     thoughts.setOpened(true);
     thoughts.addThemeVariants(DetailsVariant.SMALL);
-    messageLayout.add(thoughts);
+    thoughts.addClassNames(LumoUtility.Margin.NONE);
+    detailsLayout.add(thoughts);
+
+    HorizontalLayout header = new HorizontalLayout();
+    header.addClassNames(LumoUtility.Width.FULL, LumoUtility.Padding.SMALL);
+    header.add(avatar, detailsLayout);
+
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.addClassNames(
+        LumoUtility.Margin.NONE, LumoUtility.Padding.NONE, LumoUtility.Display.BLOCK);
+    verticalLayout.add(header);
     if (dto.actionText() != null && !dto.actionText().equals("")) {
       Div action = new Div(new Text(dto.actionText()));
       action.addClassNames(
-          LumoUtility.Background.CONTRAST_5, LumoUtility.TextColor.PRIMARY, LumoUtility.Width.AUTO);
-      messageLayout.add(action);
+          LumoUtility.TextColor.SECONDARY,
+          LumoUtility.FontSize.SMALL,
+          LumoUtility.Margin.NONE,
+          LumoUtility.Padding.Vertical.NONE,
+          LumoUtility.Padding.Horizontal.XLARGE);
+      verticalLayout.add(action);
     }
     Div text = new Div(new Text(dto.spokenText()));
-    text.addClassNames(LumoUtility.Width.FULL);
-    messageLayout.add(text);
+    text.addClassNames(
+        LumoUtility.Background.BASE,
+        LumoUtility.BorderRadius.LARGE,
+        LumoUtility.TextColor.BODY,
+        LumoUtility.Margin.NONE,
+        LumoUtility.Padding.Vertical.SMALL,
+        LumoUtility.Padding.Horizontal.MEDIUM,
+        LumoUtility.FontWeight.MEDIUM);
+    verticalLayout.add(text);
 
-    add(avatar, messageLayout);
+    add(verticalLayout);
     addClassNames(
         LumoUtility.Border.ALL,
         LumoUtility.BorderColor.CONTRAST,
         LumoUtility.BorderRadius.LARGE,
         LumoUtility.Margin.XSMALL,
-        LumoUtility.Background.BASE);
+        LumoUtility.Padding.NONE,
+        LumoUtility.Background.CONTRAST_5);
   }
 
   /**

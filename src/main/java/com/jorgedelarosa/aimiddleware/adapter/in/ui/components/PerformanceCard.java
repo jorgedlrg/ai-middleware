@@ -4,7 +4,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDeta
 import com.vaadin.flow.component.ClickNotifier;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.card.Card;
-import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
 import com.vaadin.flow.component.icon.Icon;
@@ -24,7 +23,6 @@ public class PerformanceCard extends Card implements ClickNotifier<Component> {
     Component portrait;
     if (dto.portrait().length > 0) {
       portrait = new ByteImage("Portrait", dto.portrait());
-      ((ByteImage) portrait).setWidth("330px");
     } else {
       portrait = LumoIcon.PHOTO.create();
       portrait
@@ -48,12 +46,10 @@ public class PerformanceCard extends Card implements ClickNotifier<Component> {
     header.add(new H2(dto.actorName()), subtitle);
     setHeader(header);
 
-    Tooltip tooltip =
-        Tooltip.forComponent(this)
-            .withText("Click to generate interaction!")
-            .withPosition(Tooltip.TooltipPosition.END);
-    
+    Tooltip.forComponent(this)
+        .withText("Click to generate interaction!")
+        .withPosition(Tooltip.TooltipPosition.END);
+
     addClickListener(e -> machineInteractionListener.op(dto.role()));
-    addThemeVariants(CardVariant.LUMO_ELEVATED);
   }
 }

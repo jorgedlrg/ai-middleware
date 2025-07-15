@@ -96,7 +96,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     interactionList.setItems(sessionDetails.interactions());
     interactionList.scrollToEnd();
     interactionList.addClassNames(
-        LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE, LumoUtility.Background.CONTRAST_5);
+        LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE, LumoUtility.Background.BASE);
 
     MessageInput input =
         new MessageInput(
@@ -119,12 +119,10 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
 
     VerticalLayout left = new VerticalLayout();
     left.setWidth("20%");
-    left.addClassNames(
-        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
+    left.addClassNames(LumoUtility.Overflow.AUTO);
     VerticalLayout right = new VerticalLayout();
     right.setWidth("20%");
-    right.addClassNames(
-        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
+    right.addClassNames(LumoUtility.Overflow.AUTO);
 
     for (int i = 0; i < sessionDetails.performances().size(); ++i) {
       Card performanceCard =
@@ -139,8 +137,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
 
     VerticalLayout middle = new VerticalLayout();
     middle.setWidth("60%");
-    middle.addClassNames(
-        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
+    middle.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY);
     middle.add(radioGroup);
     middle.add(interactionList);
     middle.add(input);
@@ -152,10 +149,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     add(middle);
     add(right);
     addClassNames(
-        LumoUtility.Display.FLEX,
-        LumoUtility.JustifyContent.EVENLY,
-        LumoUtility.Border.ALL,
-        LumoUtility.Height.FULL);
+        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Height.FULL);
   }
 
   private void reloadInteractions() {
