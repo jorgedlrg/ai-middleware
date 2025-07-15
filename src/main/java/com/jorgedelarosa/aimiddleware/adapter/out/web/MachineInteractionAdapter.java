@@ -88,7 +88,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     return new GenericChatMessage(
         "user",
         templateEngine.process(
-            "prompt", new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd))));
+            "promptSpeech", new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd))));
   }
 
   private GenericChatMessage createMoodPromptMessage(Command cmd) {
