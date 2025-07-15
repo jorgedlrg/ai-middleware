@@ -95,6 +95,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
       session.interactNext(
           response.thoughts(),
+          response.action(),
           response.speech(),
           session.getLastInteraction().getRole(),
           Optional.of(Mood.valueOf(response.mood().toUpperCase())));

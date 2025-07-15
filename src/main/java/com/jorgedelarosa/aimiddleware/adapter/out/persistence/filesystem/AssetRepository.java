@@ -49,7 +49,7 @@ public class AssetRepository {
     try {
       bytes = Files.readAllBytes(new File(file).toPath());
     } catch (IOException ex) {
-      log.info(String.format("Error when reading %s", file));
+      log.debug(String.format("Error when reading %s", file));
     }
     return bytes;
   }

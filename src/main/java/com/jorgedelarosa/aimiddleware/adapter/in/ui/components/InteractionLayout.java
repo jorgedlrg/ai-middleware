@@ -16,6 +16,7 @@ import com.vaadin.flow.server.streams.DownloadEvent;
 import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.theme.lumo.LumoIcon;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import java.io.ByteArrayInputStream;
 import java.io.OutputStream;
 import java.time.ZoneId;
@@ -72,15 +73,22 @@ public class InteractionLayout extends HorizontalLayout {
             ElementFactory.createStrong(dto.actorName() + " " + dto.emoji()),
             ElementFactory.createLabel(
                 zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN))));
+    String mood = "";
     if (dto.mood() != null && !dto.mood().equals("")) {
-      messageLayout.add(new Div(new Text(dto.mood())));
+      mood = "(" + dto.mood() + ")";
     }
     Div thoughtText = new Div(new Text(dto.thoughtText()));
     thoughtText.setWidth("800px");
-    Details thoughts = new Details("Thoughts", thoughtText);
+    Details thoughts = new Details("Thoughts " + mood + dto.emoji(), thoughtText);
     thoughts.setOpened(true);
     thoughts.addThemeVariants(DetailsVariant.SMALL);
     messageLayout.add(thoughts);
+    if (dto.actionText() != null && !dto.actionText().equals("")) {
+      Div action = new Div(new Text(dto.actionText()));
+      action.setWidth("800px");
+      action.addClassNames(LumoUtility.Background.PRIMARY, LumoUtility.TextColor.PRIMARY_CONTRAST, LumoUtility.Display.FLEX);
+      messageLayout.add(action);
+    }
     Div text = new Div(new Text(dto.spokenText()));
     text.setWidth("800px");
     messageLayout.add(text);

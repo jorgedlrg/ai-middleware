@@ -31,11 +31,7 @@ You're playing the actor [(${you})], and this is what [(${you})] is currently th
 {
     [(${currentThoughts})]
 }
-and this is what [(${you})] is currently doing:
-{
-    [(${currentAction})]
-}
 
-Talk as you were [(${you})]. Bear in mind [(${you})]'s current thoughts and what the actor is doing while speaking. Write what the actor would say. Do not emote. Don't write actions.
+Now, write (very briefly, 1 or 2 sentences, no more) what [(${you})] is doing after having those thoughts. [(${you})] might also talk while performing that action, but don't write what they're talking, ONLY the actions.
 
-VERY IMPORTANT: Do not emote. Don't write actions. Write your answer completely in [(${language})].
+VERY IMPORTANT: write your answer completely in [(${language})].

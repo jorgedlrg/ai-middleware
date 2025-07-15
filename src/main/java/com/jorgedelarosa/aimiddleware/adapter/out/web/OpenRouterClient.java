@@ -24,14 +24,14 @@ public class OpenRouterClient {
   public static final String MODEL_GEMMA_3_27B = "google/gemma-3-27b-it";
   public static final String DEEPSEEK_V3 = "deepseek/deepseek-chat-v3-0324";
 
+  private static final String URL = "https://openrouter.ai/api/v1/chat/completions";
+
   public OpenRouterChatCompletionResponse chatCompletion(OpenRouterChatCompletionRequest req) {
 
-    String url = "https://openrouter.ai/api/v1/chat/completions";
-
-    log.info("req: {}", req);
+    log.debug("req: {}", req);
     RestClient customClient =
         RestClient.builder()
-            .baseUrl(url)
+            .baseUrl(URL)
             .requestFactory(new HttpComponentsClientHttpRequestFactory())
             .messageConverters(
                 converters -> converters.add(new MappingJackson2HttpMessageConverter()))
@@ -47,8 +47,6 @@ public class OpenRouterClient {
             .body(req)
             .retrieve()
             .body(OpenRouterChatCompletionResponse.class);
-
-    log.info("res: {}", response);
 
     return response;
   }

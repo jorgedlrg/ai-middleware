@@ -23,7 +23,8 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
   public void execute(Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
-    session.interact("", cmd.text(), cmd.role(), Optional.empty());
+    // TODO: REFINE. maybe make the user send actions and thoughts, if necessary
+    session.interact("", "", cmd.text(), cmd.role(), Optional.empty());
 
     saveSessionOutPort.save(session);
   }

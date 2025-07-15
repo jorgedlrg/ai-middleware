@@ -30,6 +30,7 @@ public interface GetSessionDetailsUseCase {
       Instant timestamp,
       String actorName,
       String thoughtText,
+      String actionText,
       String spokenText,
       byte[] portrait,
       Integer siblingNumber,

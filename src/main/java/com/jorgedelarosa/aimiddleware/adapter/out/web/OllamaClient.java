@@ -20,7 +20,7 @@ public class OllamaClient {
   @Value("${ollama.host}")
   private String host;
 
-  public String MODEL = "gemma3:12b";
+  public static final String GEMMA3_12B = "gemma3:12b";
 
   // TODO: add text completion instead of chat completion. it might be better for formatted
   // processing.
@@ -29,7 +29,7 @@ public class OllamaClient {
 
     String url = host + "/api/chat";
 
-    log.info("req: {}", req);
+    log.debug("req: {}", req);
     RestClient customClient =
         RestClient.builder()
             .baseUrl(url)
@@ -45,8 +45,6 @@ public class OllamaClient {
             .body(req)
             .retrieve()
             .body(OllamaChatResponse.class);
-
-    log.info("res: {}", response);
 
     return response;
   }

@@ -64,7 +64,7 @@ public class Interaction extends Entity {
         new Interaction(
             thoughtText != null ? thoughtText : "",
             spokenText,
-            actionText != null ? thoughtText : "",
+            actionText != null ? actionText : "",
             Instant.now(),
             role,
             actor,
@@ -96,7 +96,7 @@ public class Interaction extends Entity {
         new Interaction(
             thoughtText != null ? thoughtText : "",
             spokenText,
-            actionText != null ? thoughtText : "",
+            actionText != null ? actionText : "",
             Instant.ofEpochMilli(timestamp),
             role,
             actor,

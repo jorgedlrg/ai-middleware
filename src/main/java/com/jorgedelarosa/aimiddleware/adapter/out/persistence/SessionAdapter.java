@@ -143,6 +143,7 @@ public class SessionAdapter
     @Mapping(source = "interaction.id", target = "id")
     @Mapping(source = "interaction.spokenText", target = "text")
     @Mapping(source = "interaction.thoughtText", target = "thoughts")
+    @Mapping(source = "interaction.actionText", target = "action")
     InteractionEntity toEntity(Interaction interaction, UUID session);
 
     default Interaction toDom(InteractionEntity entity, Interaction parent) {
@@ -154,7 +155,7 @@ public class SessionAdapter
           entity.getId(),
           entity.getThoughts(),
           entity.getText(),
-          "",
+          entity.getAction(),
           entity.getTimestamp(),
           entity.getRole(),
           entity.getActor(),
