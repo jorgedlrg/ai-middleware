@@ -1,8 +1,8 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ByteImage;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.PerformanceCard;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
@@ -13,13 +13,14 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousIntera
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionLocaleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.ComponentUtil;
+import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Span;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.messages.MessageInput;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
@@ -32,7 +33,7 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoIcon;
+import com.vaadin.flow.theme.lumo.LumoUtility;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +43,7 @@ import lombok.RequiredArgsConstructor;
  */
 @Route(value = "sessions/:sessionId?", layout = MainView.class)
 @RequiredArgsConstructor
-public class SessionView extends VerticalLayout implements HasDynamicTitle, BeforeEnterObserver {
+public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
@@ -94,7 +95,8 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     interactionList.setRenderer(interactionRenderer);
     interactionList.setItems(sessionDetails.interactions());
     interactionList.scrollToEnd();
-    interactionList.setWidthFull();
+    interactionList.addClassNames(
+        LumoUtility.Border.ALL, LumoUtility.BorderRadius.LARGE, LumoUtility.Background.CONTRAST_5);
 
     MessageInput input =
         new MessageInput(
@@ -102,13 +104,6 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
               userInteractListener(submitEvent);
             });
     input.setWidthFull();
-
-    HorizontalLayout generatePanel = new HorizontalLayout();
-    for (GetSessionDetailsUseCase.PerformanceDto dto : sessionDetails.performances()) {
-      Button machineButton = new Button(dto.actorName());
-      machineButton.addClickListener(e -> machineInteractListener(dto.role()));
-      generatePanel.add(machineButton);
-    }
 
     ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
     localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
@@ -119,46 +114,48 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
 
-    HorizontalLayout threezoneLayout = new HorizontalLayout();
-    threezoneLayout.setPadding(true);
-    threezoneLayout.setSizeFull();
+    setPadding(false);
+    setSpacing(false);
+
     VerticalLayout left = new VerticalLayout();
     left.setWidth("20%");
-    threezoneLayout.addToStart(left);
+    left.addClassNames(
+        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
     VerticalLayout right = new VerticalLayout();
     right.setWidth("20%");
-    threezoneLayout.addToEnd(right);
+    right.addClassNames(
+        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
+
     for (int i = 0; i < sessionDetails.performances().size(); ++i) {
-      Component portrait;
-      if (sessionDetails.performances().get(i).portrait().length > 0) {
-        portrait = new ByteImage("Portrait", sessionDetails.performances().get(i).portrait());
-        ((ByteImage) portrait).setWidth("330px");
-      } else {
-        portrait = LumoIcon.PHOTO.create();
-        portrait
-            .getStyle()
-            .setColor("var(--lumo-primary-color)")
-            .setBackgroundColor("var(--lumo-primary-color-10pct)");
-        ((Icon) portrait).setSize("330px");
-      }
+      Card performanceCard =
+          new PerformanceCard(
+              sessionDetails.performances().get(i), (id) -> machineInteractListener(id));
       if (i % 2 == 0) {
-        left.add(portrait);
+        left.add(performanceCard);
       } else {
-        right.add(portrait);
+        right.add(performanceCard);
       }
     }
 
     VerticalLayout middle = new VerticalLayout();
     middle.setWidth("60%");
+    middle.addClassNames(
+        LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY, LumoUtility.Border.ALL);
     middle.add(radioGroup);
     middle.add(interactionList);
     middle.add(input);
-    middle.add(generatePanel);
     middle.add(contextComboBox);
     middle.add(localeComboBox);
     middle.add(deleteButton);
-    threezoneLayout.addToMiddle(middle);
-    add(threezoneLayout);
+
+    add(left);
+    add(middle);
+    add(right);
+    addClassNames(
+        LumoUtility.Display.FLEX,
+        LumoUtility.JustifyContent.EVENLY,
+        LumoUtility.Border.ALL,
+        LumoUtility.Height.FULL);
   }
 
   private void reloadInteractions() {
@@ -248,9 +245,8 @@ public class SessionView extends VerticalLayout implements HasDynamicTitle, Befo
                     (id) -> nextInteractionListener(id);
                 InteractionLayout.OneUuidVoidOperator deleteListener =
                     (id) -> deleteInteractionListener(id);
-                InteractionLayout interactionLayout =  new InteractionLayout(
-                    interaction, prevListener, nextListener, deleteListener);
-                interactionLayout.setWidthFull();
+                InteractionLayout interactionLayout =
+                    new InteractionLayout(interaction, prevListener, nextListener, deleteListener);
                 return interactionLayout;
               });
 }

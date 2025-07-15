@@ -7,11 +7,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.dom.ElementFactory;
 import com.vaadin.flow.server.streams.DownloadEvent;
 import com.vaadin.flow.server.streams.DownloadHandler;
 import com.vaadin.flow.server.streams.DownloadResponse;
@@ -65,42 +64,6 @@ public class InteractionLayout extends HorizontalLayout {
     messageLayout.setSpacing(false);
     messageLayout.setPadding(false);
 
-    // TODO: Get zone from user browser (requires current view)
-    ZonedDateTime zdt = ZonedDateTime.ofInstant(dto.timestamp(), ZoneId.systemDefault());
-    messageLayout
-        .getElement()
-        .appendChild(
-            ElementFactory.createStrong(dto.actorName() + " " + dto.emoji()),
-            ElementFactory.createLabel(
-                zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN))));
-    String mood = "";
-    if (dto.mood() != null && !dto.mood().equals("")) {
-      mood = "(" + dto.mood() + ")";
-    }
-    Div thoughtText = new Div(new Text(dto.thoughtText()));
-    thoughtText.setWidth("800px");
-    Details thoughts = new Details("Thoughts " + mood + dto.emoji(), thoughtText);
-    thoughts.setOpened(true);
-    thoughts.addThemeVariants(DetailsVariant.SMALL);
-    messageLayout.add(thoughts);
-    if (dto.actionText() != null && !dto.actionText().equals("")) {
-      Div action = new Div(new Text(dto.actionText()));
-      action.setWidth("800px");
-      action.addClassNames(LumoUtility.Background.PRIMARY, LumoUtility.TextColor.PRIMARY_CONTRAST, LumoUtility.Display.FLEX);
-      messageLayout.add(action);
-    }
-    Div text = new Div(new Text(dto.spokenText()));
-    text.setWidth("800px");
-    messageLayout.add(text);
-
-    VerticalLayout operationsLayout = new VerticalLayout();
-    operationsLayout.setSpacing(false);
-    operationsLayout.setPadding(false);
-    HorizontalLayout buttonsLayout = new HorizontalLayout();
-    buttonsLayout.setSpacing(false);
-    buttonsLayout.setPadding(false);
-    operationsLayout.add(buttonsLayout);
-
     Icon prevIcon = LumoIcon.ARROW_LEFT.create();
     Button prevButton = new Button(prevIcon);
     prevButton.addClickListener(e -> prevListener.op(dto.id()));
@@ -114,10 +77,57 @@ public class InteractionLayout extends HorizontalLayout {
     Button deleteButton = new Button(deleteIcon);
     deleteButton.addClickListener(e -> deleteListener.op(dto.id()));
 
-    buttonsLayout.add(prevButton, nextButton, deleteButton);
-    operationsLayout.add(new Span(dto.siblingNumber() + "/" + dto.totalSiblings()));
+    HorizontalLayout buttonsLayout = new HorizontalLayout();
+    buttonsLayout.setSpacing(false);
+    buttonsLayout.addClassNames(LumoUtility.Border.NONE, LumoUtility.AlignItems.CENTER);
+    buttonsLayout.add(
+        new Div(new Text(dto.siblingNumber() + "/" + dto.totalSiblings())),
+        prevButton,
+        nextButton,
+        deleteButton);
 
-    add(avatar, messageLayout, operationsLayout);
+    // TODO: Get zone from user browser (requires current view)
+    ZonedDateTime zdt = ZonedDateTime.ofInstant(dto.timestamp(), ZoneId.systemDefault());
+
+    Div name = new Div(new Text(dto.actorName() + " " + dto.emoji()));
+    name.addClassNames(LumoUtility.FontWeight.BOLD, LumoUtility.FontSize.LARGE);
+    HorizontalLayout nameLayout =
+        new HorizontalLayout(
+            new Div(
+                name,
+                new Text(
+                    zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)))),
+            buttonsLayout);
+    nameLayout.addClassNames(LumoUtility.Width.FULL, LumoUtility.JustifyContent.BETWEEN);
+    messageLayout.add(nameLayout);
+
+    String mood = "";
+    if (dto.mood() != null && !dto.mood().equals("")) {
+      mood = "(" + dto.mood() + ")";
+    }
+    Div thoughtText = new Div(new Text(dto.thoughtText()));
+    thoughtText.setWidth("800px");
+    Details thoughts = new Details("Thoughts " + mood + dto.emoji(), thoughtText);
+    thoughts.setOpened(true);
+    thoughts.addThemeVariants(DetailsVariant.SMALL);
+    messageLayout.add(thoughts);
+    if (dto.actionText() != null && !dto.actionText().equals("")) {
+      Div action = new Div(new Text(dto.actionText()));
+      action.addClassNames(
+          LumoUtility.Background.CONTRAST_5, LumoUtility.TextColor.PRIMARY, LumoUtility.Width.AUTO);
+      messageLayout.add(action);
+    }
+    Div text = new Div(new Text(dto.spokenText()));
+    text.addClassNames(LumoUtility.Width.FULL);
+    messageLayout.add(text);
+
+    add(avatar, messageLayout);
+    addClassNames(
+        LumoUtility.Border.ALL,
+        LumoUtility.BorderColor.CONTRAST,
+        LumoUtility.BorderRadius.LARGE,
+        LumoUtility.Margin.XSMALL,
+        LumoUtility.Background.BASE);
   }
 
   /**
