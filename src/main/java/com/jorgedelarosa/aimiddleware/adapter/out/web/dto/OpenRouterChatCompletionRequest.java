@@ -9,4 +9,4 @@ import java.util.List;
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public record OpenRouterChatCompletionRequest(
-    String model, List<OpenRouterChatCompletionMessage> messages, Integer maxTokens) {}
+    String model, List<OpenRouterChatCompletionMessage> messages) {}

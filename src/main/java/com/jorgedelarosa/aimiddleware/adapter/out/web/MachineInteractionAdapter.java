@@ -31,8 +31,6 @@ import org.thymeleaf.context.Context;
 @Slf4j
 public class MachineInteractionAdapter implements GenerateMachineInteractionOutPort {
 
-  private static final int SPEECH_MAX_TOKENS = 120;
-  private static final int THOUGHT_MAX_TOKENS = 120;
   private final OpenRouterClient openRouterClient;
   private final OllamaClient ollamaClient;
   private final TemplateEngine templateEngine;
@@ -43,14 +41,12 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
     GenericChatRequest spokenTextReq =
         new GenericChatRequest(
-            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
-            List.of(createSpeechPromptMessage(cmd)),
-            SPEECH_MAX_TOKENS);
+            client.equals("openrouter") ? OpenRouterClient.MODEL_GEMMA_3_27B : ollamaClient.MODEL,
+            List.of(createSpeechPromptMessage(cmd)));
     GenericChatRequest moodReq =
         new GenericChatRequest(
-            client.equals("openrouter") ? openRouterClient.MODEL : ollamaClient.MODEL,
-            List.of(createMoodPromptMessage(cmd)),
-            SPEECH_MAX_TOKENS);
+            client.equals("openrouter") ? OpenRouterClient.MODEL_GEMMA_3_27B : ollamaClient.MODEL,
+            List.of(createMoodPromptMessage(cmd)));
 
     MachineResponse machineResponse;
     switch (client) {
