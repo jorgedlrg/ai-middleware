@@ -13,10 +13,8 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousIntera
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionLocaleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -41,7 +39,7 @@ import lombok.RequiredArgsConstructor;
 /**
  * @author jorge
  */
-@Route(value = "sessions/:sessionId?", layout = MainView.class)
+@Route(value = "sessions/:sessionId?/interact", layout = MainView.class)
 @RequiredArgsConstructor
 public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;

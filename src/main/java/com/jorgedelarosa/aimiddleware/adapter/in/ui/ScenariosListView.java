@@ -1,9 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
-import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemClickEvent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -32,7 +30,6 @@ public class ScenariosListView extends VerticalLayout {
     fillSessionsGrid();
 
     add(scenariosGrid);
-    add(new Button("New Scenario", newScenarioListener()));
   }
 
   private void fillSessionsGrid() {
@@ -43,12 +40,6 @@ public class ScenariosListView extends VerticalLayout {
       editScenarioListener() {
     return (ItemClickEvent<GetScenariosUseCase.ScenarioDto> t) -> {
       t.getColumn().getUI().ifPresent(ui -> ui.navigate("scenarios/" + t.getItem().id()));
-    };
-  }
-
-  private ComponentEventListener<ClickEvent<Button>> newScenarioListener() {
-    return (ClickEvent<Button> t) -> {
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("scenarios"));
     };
   }
 }

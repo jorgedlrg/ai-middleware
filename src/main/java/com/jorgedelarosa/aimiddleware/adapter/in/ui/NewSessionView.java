@@ -138,7 +138,7 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
                   selectedContext.id(),
                   new ArrayList(performances.values()),
                   selectedLocale));
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId));
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId + "/interact"));
       Notification notification = Notification.show("Session " + sessionId + " created!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };

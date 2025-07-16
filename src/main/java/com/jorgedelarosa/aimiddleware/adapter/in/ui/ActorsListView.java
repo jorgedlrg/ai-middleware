@@ -4,9 +4,6 @@ import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorCard;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteActorUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase.ActorDto;
-import com.vaadin.flow.component.ClickEvent;
-import com.vaadin.flow.component.ComponentEventListener;
-import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -45,14 +42,6 @@ public class ActorsListView extends VerticalLayout implements BeforeEnterObserve
       }
       horizontalLayout.add(cards.get(i));
     }
-
-    add(new Button("New Actor", newActorListener()));
-  }
-
-  private ComponentEventListener<ClickEvent<Button>> newActorListener() {
-    return (ClickEvent<Button> t) -> {
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors"));
-    };
   }
 
   @Override

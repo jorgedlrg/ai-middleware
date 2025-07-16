@@ -1,7 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.SideNavigation;
 import com.vaadin.flow.component.Component;
-import com.vaadin.flow.component.ComponentUtil;
 import com.vaadin.flow.component.HasElement;
 import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -10,18 +10,13 @@ import com.vaadin.flow.component.html.H1;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.tabs.Tab;
-import com.vaadin.flow.component.tabs.Tabs;
-import com.vaadin.flow.component.tabs.TabsVariant;
 import com.vaadin.flow.router.AfterNavigationEvent;
 import com.vaadin.flow.router.AfterNavigationObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouteAlias;
-import com.vaadin.flow.router.RouterLink;
 import java.util.List;
-import java.util.Optional;
 
 // From https://vaadin.com/docs/latest/flow/application/main-view
 
@@ -35,7 +30,6 @@ import java.util.Optional;
 @PageTitle("Main")
 public class MainView extends AppLayout implements AfterNavigationObserver {
 
-  private final Tabs menu;
   private H1 viewTitle;
 
   public MainView() {
@@ -44,21 +38,7 @@ public class MainView extends AppLayout implements AfterNavigationObserver {
 
     addToNavbar(true, createHeaderContent());
 
-    // Put the menu in the drawer
-    menu = createMenu();
-    addToDrawer(createDrawerContent(menu));
-  }
-
-  private Tabs createMenu() {
-    final Tabs tabs = new Tabs();
-    tabs.setOrientation(Tabs.Orientation.VERTICAL);
-    tabs.addThemeVariants(TabsVariant.LUMO_MINIMAL);
-    tabs.setId("tabs");
-    tabs.add(
-        createTab("Actors", ActorsListView.class),
-        createTab("Scenarios", ScenariosListView.class),
-        createTab("Sessions", SessionsListView.class));
-    return tabs;
+    addToDrawer(createDrawerContent());
   }
 
   private Component createHeaderContent() {
@@ -85,7 +65,7 @@ public class MainView extends AppLayout implements AfterNavigationObserver {
     return layout;
   }
 
-  private Component createDrawerContent(Tabs menu) {
+  private Component createDrawerContent() {
     VerticalLayout layout = new VerticalLayout();
 
     // Configure styling for the drawer
@@ -100,40 +80,16 @@ public class MainView extends AppLayout implements AfterNavigationObserver {
     logoLayout.setId("logo");
     logoLayout.setAlignItems(FlexComponent.Alignment.CENTER);
     // logoLayout.add(new Image("images/logo.png", "My Project logo")); // TODO
-    logoLayout.add(new H1("AI Roleplay Middleware"));
+    logoLayout.add(new H1("Artifantasy"));
 
     // Display the logo and the menu in the drawer
-    layout.add(logoLayout, menu);
+    layout.add(logoLayout, new SideNavigation());
     return layout;
-  }
-
-  private static Tab createTab(String text, Class<? extends Component> navigationTarget) {
-    final Tab tab = new Tab();
-    tab.add(new RouterLink(text, navigationTarget));
-    ComponentUtil.setData(tab, Class.class, navigationTarget);
-    return tab;
-  }
-
-  private static Tab createTab(String text, Class navigationTarget, String pathParam) {
-    final Tab tab = new Tab();
-    tab.add(new RouterLink(text, navigationTarget, pathParam));
-    ComponentUtil.setData(tab, Class.class, navigationTarget);
-    return tab;
   }
 
   @Override
   protected void afterNavigation() {
     super.afterNavigation();
-
-    // Select the tab corresponding to currently shown view
-    getTabForComponent(getContent()).ifPresent(menu::setSelectedTab);
-  }
-
-  private Optional<Tab> getTabForComponent(Component component) {
-    return menu.getChildren()
-        .filter(tab -> ComponentUtil.getData(tab, Class.class).equals(component.getClass()))
-        .findFirst()
-        .map(Tab.class::cast);
   }
 
   @Override
