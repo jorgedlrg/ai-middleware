@@ -12,7 +12,7 @@ public interface GetActorDetailsUseCase {
   public record Command(UUID actorId) {}
 
   public record ActorDto(
-      UUID id, String name, String physicalDescription, Optional<MindDto> mind, byte[] portrait) {}
+      UUID id, String name, String physicalDescription, Optional<MindDto> mind, byte[] portrait, Optional<UUID> currentOutfit) {}
 
   public record MindDto(String personality) {}
 }

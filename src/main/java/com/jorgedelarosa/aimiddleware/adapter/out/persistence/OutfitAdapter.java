@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutfitReposito
 import com.jorgedelarosa.aimiddleware.application.port.mapper.OutfitMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.DeleteOutfitOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveOutfitOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
@@ -19,7 +20,11 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class OutfitAdapter
-    implements GetOutfitsOutPort, DeleteOutfitOutPort, GetOutfitByIdOutPort, SaveOutfitOutPort {
+    implements GetOutfitsOutPort,
+        DeleteOutfitOutPort,
+        GetOutfitByIdOutPort,
+        SaveOutfitOutPort,
+        GetOutfitListByIdOutPort {
 
   private final OutfitRepository outfitRepository;
 
@@ -41,5 +46,12 @@ public class OutfitAdapter
   @Override
   public void save(Outfit outfit) {
     outfitRepository.save(OutfitMapper.INSTANCE.toEntity(outfit));
+  }
+
+  @Override
+  public List<Outfit> query(List<UUID> ids) {
+    return outfitRepository.findAllById(ids).stream()
+        .map(e -> OutfitMapper.INSTANCE.toDom(e))
+        .toList();
   }
 }

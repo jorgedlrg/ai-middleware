@@ -3,10 +3,12 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
+import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
@@ -35,6 +37,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
   private final GetScenarioByIdOutPort getScenarioByIdOutPort;
   private final GetActorByIdOutPort getActorByIdOutPort;
   private final GetActorListByIdOutPort getActorListByIdOutPort;
+  private final GetOutfitListByIdOutPort getOutfitListByIdOutPort;
   private final GenerateMachineInteractionOutPort generateMachineInteractionOutPort;
 
   @Override
@@ -76,12 +79,18 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
               .toList();
 
       List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
+      List<Outfit> wornOutfits =
+          getOutfitListByIdOutPort.query(
+              featuredActors.stream()
+                  .filter(e -> e.getCurrentOutfit().isPresent())
+                  .map(e -> e.getCurrentOutfit().get())
+                  .toList());
       List<GenerateMachineInteractionOutPort.PerformanceDto> performances =
           session.getPerformances().stream()
               .map(
                   e ->
                       MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toDto(
-                          e, scenario, featuredActors))
+                          e, scenario, featuredActors, wornOutfits))
               .toList();
 
       GenerateMachineInteractionOutPort.MachineResponse response =

@@ -79,8 +79,8 @@ public class Actor extends AggregateRoot {
     validate();
   }
 
-  public void chooseOutfit(UUID currentOutfit) {
-    this.currentOutfit = Optional.of(currentOutfit);
+  public void chooseOutfit(UUID newOutfit) {
+    this.currentOutfit = Optional.ofNullable(newOutfit);
     validate();
   }
 

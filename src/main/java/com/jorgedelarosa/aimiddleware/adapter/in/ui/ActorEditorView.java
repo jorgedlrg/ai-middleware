@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorL
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteActorUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetOutfitsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -34,6 +35,7 @@ public class ActorEditorView extends VerticalLayout
   private final GetActorDetailsUseCase getActorDetailsUseCase;
   private final SaveActorUseCase saveActorUseCase;
   private final DeleteActorUseCase deleteActorUseCase;
+  private final GetOutfitsUseCase getOutfitsUseCase;
 
   private GetActorDetailsUseCase.ActorDto actorDto;
   private String pageTitle;
@@ -43,7 +45,9 @@ public class ActorEditorView extends VerticalLayout
   private void rebuildEditor() {
     removeAll();
 
-    actorEditorActorLayout = new ActorEditorActorLayout(actorDto);
+    actorEditorActorLayout =
+        new ActorEditorActorLayout(
+            actorDto, getOutfitsUseCase.execute(new GetOutfitsUseCase.Command()));
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -57,13 +61,14 @@ public class ActorEditorView extends VerticalLayout
 
   private ComponentEventListener<ClickEvent<Button>> saveActorListener() {
     return (ClickEvent<Button> t) -> {
-          saveActorUseCase.execute(
-              new SaveActorUseCase.Command(
-                  actorDto.id(),
-                  actorEditorActorLayout.getNameValue(),
-                  actorEditorActorLayout.getPhysicalDescriptionValue(),
-                  actorEditorActorLayout.getPersonalityValue(),
-                  actorEditorActorLayout.getPortraitBytes()));
+      saveActorUseCase.execute(
+          new SaveActorUseCase.Command(
+              actorDto.id(),
+              actorEditorActorLayout.getNameValue(),
+              actorEditorActorLayout.getPhysicalDescriptionValue(),
+              actorEditorActorLayout.getPersonalityValue(),
+              actorEditorActorLayout.getPortraitBytes(),
+              actorEditorActorLayout.getOutfitValue()));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
       Notification notification =
           Notification.show(actorEditorActorLayout.getNameValue() + " saved!");
@@ -88,7 +93,9 @@ public class ActorEditorView extends VerticalLayout
               new GetActorDetailsUseCase.Command(UUID.fromString(parameter)));
       pageTitle = "Actor Editor - " + actorDto.name();
     } else {
-      actorDto = new GetActorDetailsUseCase.ActorDto(null, "", "", Optional.empty(), new byte[0]);
+      actorDto =
+          new GetActorDetailsUseCase.ActorDto(
+              null, "", "", Optional.empty(), new byte[0], Optional.empty());
       pageTitle = "Actor Editor - new";
     }
     rebuildEditor();

@@ -11,7 +11,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.MachineInterac
 import com.jorgedelarosa.aimiddleware.application.port.in.session.NextInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionLocaleUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -32,7 +31,6 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import java.util.Locale;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -46,7 +44,6 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private final MachineInteractUseCase machineInteractUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
 
-  private final UpdateSessionLocaleUseCase updateSessionLocaleUseCase;
   private final GetSessionDetailsUseCase getSessionDetailsUseCase;
   private final DeleteSessionUseCase deleteSessionUseCase;
   private final UpdateSessionContextUseCase updateSessionContextUseCase;
@@ -103,12 +100,6 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
             });
     input.setWidthFull();
 
-    ComboBox<Locale> localeComboBox = new ComboBox<>("Answer language");
-    localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
-    localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
-    localeComboBox.setValue(sessionDetails.locale());
-    localeComboBox.addValueChangeListener(e -> changeLocaleListener(e.getValue()));
-
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
 
@@ -140,7 +131,6 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     middle.add(interactionList);
     middle.add(input);
     middle.add(contextComboBox);
-    middle.add(localeComboBox);
     middle.add(deleteButton);
 
     add(left);
@@ -169,10 +159,6 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     machineInteractUseCase.execute(new MachineInteractUseCase.Command(session, role));
 
     reloadInteractions();
-  }
-
-  private void changeLocaleListener(Locale locale) {
-    updateSessionLocaleUseCase.execute(new UpdateSessionLocaleUseCase.Command(session, locale));
   }
 
   private void changeContextListener(GetScenarioDetailsUseCase.ContextDto context) {
