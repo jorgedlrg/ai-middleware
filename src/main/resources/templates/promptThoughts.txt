@@ -24,7 +24,7 @@ This scenario contains the following actors:
 
 This is what the actors have said so far:
 [[# th:each="previousMessage : ${previousMessages}"]
-    [(${previousMessage.actorName})]: [(${previousMessage.message})]
+    [(${previousMessage.actorName})]: *[(${previousMessage.action})]* [(${previousMessage.speech})]
 [/]]
 
 You're playing the actor [(${you})]. Write BRIEFLY what the actor is thinking at the moment. Do not speak, do not perform any actions, just write the actor thoughts. And remember, BRIEFLY.

@@ -28,7 +28,7 @@ public interface GenerateMachineInteractionOutPort {
       Optional<String> personality,
       String roleDescription) {}
 
-  public record PreviousMessage(String actorName, String message) {}
+  public record PreviousMessage(String actorName, String action, String speech) {}
 
   public record MachineResponse(String thoughts, String action, String speech, String mood) {}
 }

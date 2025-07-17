@@ -10,6 +10,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
@@ -59,7 +60,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                             .query(session.getFeaturedActor(e.getRole()).get())
                             .orElseThrow()
                             .getName(),
-                        e.getSpokenText()))
+                        e))
             .toList();
 
     List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
@@ -92,8 +93,9 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
     default GenerateMachineInteractionOutPort.PreviousMessage toMessage(
-        String actorName, String message) {
-      return new GenerateMachineInteractionOutPort.PreviousMessage(actorName, message);
+        String actorName, Interaction interaction) {
+      return new GenerateMachineInteractionOutPort.PreviousMessage(
+          actorName, interaction.getActionText(), interaction.getSpokenText());
     }
 
     default GenerateMachineInteractionOutPort.PerformanceDto toDto(

@@ -24,7 +24,7 @@ This scenario contains the following actors:
 
 This is what the actors have said so far:
 [[# th:each="previousMessage : ${previousMessages}"]
-    [(${previousMessage.actorName})]: [(${previousMessage.message})]
+    [(${previousMessage.actorName})]: *[(${previousMessage.action})]* [(${previousMessage.speech})]
 [/]]
 
 You're playing the actor [(${you})], and this is what [(${you})] is currently thinking:

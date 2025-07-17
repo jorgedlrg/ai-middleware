@@ -72,7 +72,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                               .query(session.getFeaturedActor(e.getRole()).get())
                               .orElseThrow()
                               .getName(),
-                          e.getSpokenText()))
+                          e))
               .toList();
 
       List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());
