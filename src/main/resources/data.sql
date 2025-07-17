@@ -23,4 +23,4 @@ INSERT IGNORE INTO actor VALUES ('47c4b97f-c273-4a07-8dab-ab6336c15ae6', 'Alfons
 
 INSERT IGNORE INTO mind VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40','Talks as an old, funny pirate. He likes telling jokes and old sea stories.');
 
-INSERT IGNORE INTO outfit VALUES ('79dd7db9-2d83-4b0f-8321-579c413ec9fc','857fa610-b987-454c-96c3-bbf5354f13a0','a boat-shaped paper hat');
+INSERT IGNORE INTO outfit VALUES ('79dd7db9-2d83-4b0f-8321-579c413ec9fc','boat shaped paper hat','a boat-shaped paper hat');

@@ -3,6 +3,8 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorsListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.NewSessionView;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitEditorView;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenarioEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenariosListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.SessionsListView;
@@ -22,6 +24,11 @@ public class SideNavigation extends Div {
     SideNavItem actors =
         new SideNavItem("Actors", ActorsListView.class, VaadinIcon.FAMILY.create());
     actors.addItem(new SideNavItem("New actor", ActorEditorView.class, VaadinIcon.PLUS.create()));
+    SideNavItem outfits =
+        new SideNavItem("Outfits", OutfitListView.class, VaadinIcon.GLASSES.create());
+    outfits.addItem(
+        new SideNavItem("New outfit", OutfitEditorView.class, VaadinIcon.PLUS.create()));
+    actors.addItem(outfits);
     mainSection.addItem(actors);
 
     SideNavItem scenarios =
@@ -40,7 +47,7 @@ public class SideNavigation extends Div {
     SideNav userSection = new SideNav("User");
 
     SideNavItem settings = new SideNavItem("Settings");
-    settings.setPrefixComponent(VaadinIcon.COG.create());
+    settings.setPrefixComponent(VaadinIcon.TOOLS.create());
     userSection.addItem(settings);
 
     Div navWrapper = new Div(mainSection, userSection);

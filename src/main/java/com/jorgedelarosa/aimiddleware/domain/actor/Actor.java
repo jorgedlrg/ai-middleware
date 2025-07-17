@@ -1,11 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
-import com.jorgedelarosa.aimiddleware.domain.TwoArgsValidator;
 import com.jorgedelarosa.aimiddleware.domain.Validator;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -17,7 +13,6 @@ public class Actor extends AggregateRoot {
   private String name;
   private String physicalDescription;
   private Optional<Mind> mind;
-  private List<Outfit> outfits;
   private Optional<UUID> currentOutfit;
   private byte[] portrait;
 
@@ -26,14 +21,12 @@ public class Actor extends AggregateRoot {
       String name,
       String physicalDescription,
       Optional<Mind> mind,
-      List<Outfit> outfits,
       Optional<UUID> currentOutfit,
       byte[] portrait) {
     super(Actor.class, id);
     this.name = name;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
-    this.outfits = outfits;
     this.currentOutfit = currentOutfit;
     this.portrait = portrait;
   }
@@ -44,9 +37,7 @@ public class Actor extends AggregateRoot {
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    Actor actor =
-        new Actor(
-            id, name, physicalDescription, mind, new ArrayList<>(), Optional.empty(), new byte[0]);
+    Actor actor = new Actor(id, name, physicalDescription, mind, Optional.empty(), new byte[0]);
     actor.validate();
     return actor;
   }
@@ -56,12 +47,9 @@ public class Actor extends AggregateRoot {
       String name,
       String physicalDescription,
       Optional<Mind> mind,
-      List<Outfit> outfits,
       Optional<UUID> currentOutfit,
       byte[] portrait) {
-    Actor actor =
-        new Actor(
-            id, name, physicalDescription, mind, new ArrayList(outfits), currentOutfit, portrait);
+    Actor actor = new Actor(id, name, physicalDescription, mind, currentOutfit, portrait);
     actor.validate();
     return actor;
   }
@@ -78,8 +66,8 @@ public class Actor extends AggregateRoot {
     return mind;
   }
 
-  public Optional<Outfit> getCurrentOutfit() {
-    return outfits.stream().filter((e) -> e.getId().equals(currentOutfit.get())).findFirst();
+  public Optional<UUID> getCurrentOutfit() {
+    return currentOutfit;
   }
 
   public byte[] getPortrait() {
@@ -92,14 +80,7 @@ public class Actor extends AggregateRoot {
   }
 
   public void chooseOutfit(UUID currentOutfit) {
-    if (outfits.stream().filter((e) -> e.getId().equals(currentOutfit)).findFirst().isPresent()) {
-      this.currentOutfit = Optional.of(currentOutfit);
-    } else {
-      throw new NoSuchElementException(
-          String.format(
-              "Outfit %s isn't present in the outfit list. Current outfit list size is %s",
-              currentOutfit, outfits.size()));
-    }
+    this.currentOutfit = Optional.of(currentOutfit);
     validate();
   }
 
@@ -130,9 +111,10 @@ public class Actor extends AggregateRoot {
   public boolean validate() {
     if (Validator.strNotEmpty.validate(name)
             && Validator.strNotEmpty.validate(physicalDescription)
-            && currentOutfit.isPresent()
-        ? TwoArgsValidator.existsIn.validate(currentOutfit.get(), outfits)
-        : true && mind.isPresent() ? mind.get().validate() : true && portrait != null) return true;
+            && currentOutfit != null
+            && mind.isPresent()
+        ? mind.get().validate()
+        : true && portrait != null) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

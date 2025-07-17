@@ -13,6 +13,6 @@ import lombok.Data;
 public class OutfitEntity {
 
   @Id private UUID id;
-  private UUID actor;
+  private String name;
   private String description;
 }

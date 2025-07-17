@@ -114,7 +114,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
           role.getName(),
           actor.getName(),
           actor.getPhysicalDescription(),
-          actor.getCurrentOutfit().map(e -> e.getDescription()),
+          Optional.empty(),
           actor.getMind().map(e -> e.getPersonality()),
           role.getDetails());
     }
