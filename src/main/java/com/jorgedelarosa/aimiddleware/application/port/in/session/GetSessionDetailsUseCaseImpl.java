@@ -7,6 +7,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.UUID;
@@ -42,7 +43,8 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
                     e ->
                         SessionMapper.INSTANCE.toDto(
                             getActorByIdOutPort.query(e.getActor()).orElseThrow(),
-                            findRole(scenario, e.getRole())))
+                            findRole(scenario, e.getRole()),
+                            session.getCurrentInteractions()))
                 .toList(),
             session.getCurrentInteractions().stream()
                 .map(
@@ -67,9 +69,22 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
   public interface SessionMapper {
     SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
 
-    default PerformanceDto toDto(Actor actor, Role role) {
+    default PerformanceDto toDto(Actor actor, Role role, List<Interaction> interactions) {
+      byte[] portrait;
+      List<Interaction> actorInteractions =
+          interactions.stream().filter(e -> e.getActor().equals(actor.getId())).toList();
+      if (!actorInteractions.isEmpty()) {
+        if (actorInteractions.getLast().getMood().isPresent()) {
+          portrait = actor.getMoodPortrait(actorInteractions.getLast().getMood().get());
+        } else {
+          portrait = actor.getPortrait();
+        }
+      } else {
+        portrait = actor.getPortrait();
+      }
+
       return new PerformanceDto(
-          actor.getId(), role.getId(), actor.getName(), role.getName(), actor.getPortrait());
+          actor.getId(), role.getId(), actor.getName(), role.getName(), portrait);
     }
 
     default InteractionDto toDto(Interaction dom, Actor actor, List<Interaction> siblings) {

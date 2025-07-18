@@ -38,8 +38,8 @@ public class InteractionLayout extends HorizontalLayout {
     setPadding(false);
 
     Avatar avatar = new Avatar(dto.actorName());
-    avatar.setHeight("96px");
-    avatar.setWidth("96px");
+    avatar.setHeight("112px");
+    avatar.setWidth("112px");
 
     if (dto.portrait().length > 0) {
       avatar.setImageHandler(
