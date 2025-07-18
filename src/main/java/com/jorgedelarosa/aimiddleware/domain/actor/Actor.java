@@ -2,7 +2,12 @@ package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import com.jorgedelarosa.aimiddleware.domain.Validator;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.UUID;
 
 /**
@@ -15,6 +20,7 @@ public class Actor extends AggregateRoot {
   private Optional<Mind> mind;
   private Optional<UUID> currentOutfit;
   private byte[] portrait;
+  private final Map<Mood, List<byte[]>> moodPortraits;
 
   private Actor(
       UUID id,
@@ -22,13 +28,15 @@ public class Actor extends AggregateRoot {
       String physicalDescription,
       Optional<Mind> mind,
       Optional<UUID> currentOutfit,
-      byte[] portrait) {
+      byte[] portrait,
+      Map<Mood, List<byte[]>> moodPortraits) {
     super(Actor.class, id);
     this.name = name;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
     this.currentOutfit = currentOutfit;
     this.portrait = portrait;
+    this.moodPortraits = moodPortraits;
   }
 
   public static Actor create(String name, String physicalDescription, String personality) {
@@ -37,7 +45,9 @@ public class Actor extends AggregateRoot {
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    Actor actor = new Actor(id, name, physicalDescription, mind, Optional.empty(), new byte[0]);
+    Actor actor =
+        new Actor(
+            id, name, physicalDescription, mind, Optional.empty(), new byte[0], new HashMap<>());
     actor.validate();
     return actor;
   }
@@ -48,8 +58,10 @@ public class Actor extends AggregateRoot {
       String physicalDescription,
       Optional<Mind> mind,
       Optional<UUID> currentOutfit,
-      byte[] portrait) {
-    Actor actor = new Actor(id, name, physicalDescription, mind, currentOutfit, portrait);
+      byte[] portrait,
+      Map<Mood, List<byte[]>> moodPortraits) {
+    Actor actor =
+        new Actor(id, name, physicalDescription, mind, currentOutfit, portrait, moodPortraits);
     actor.validate();
     return actor;
   }
@@ -107,6 +119,16 @@ public class Actor extends AggregateRoot {
     validate();
   }
 
+  public byte[] getMoodPortrait(Mood mood) {
+    List<byte[]> assets = moodPortraits.get(mood);
+    if (assets != null && !assets.isEmpty()) {
+      int index = new Random().nextInt(assets.size());
+      return assets.get(index);
+    } else {
+      return portrait;
+    }
+  }
+
   @Override
   public boolean validate() {
     if (Validator.strNotEmpty.validate(name)
@@ -114,7 +136,7 @@ public class Actor extends AggregateRoot {
             && currentOutfit != null
             && mind.isPresent()
         ? mind.get().validate()
-        : true && portrait != null) return true;
+        : true && portrait != null && moodPortraits != null) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));

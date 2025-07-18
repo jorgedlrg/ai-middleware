@@ -12,7 +12,10 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Mind;
+import com.jorgedelarosa.aimiddleware.domain.session.Mood;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
@@ -54,13 +57,21 @@ public class ActorAdapter
 
   private Actor restoreActor(ActorEntity entity) {
     byte[] portrait = assetRepository.load("actors/" + entity.getId() + "/portrait.png");
+    Map<Mood, List<byte[]>> moodPortraits = new HashMap<>();
+    for (Mood mood : Mood.values()) {
+      moodPortraits.put(
+          mood,
+          assetRepository.loadAssets("actors/" + entity.getId() + "/" + mood.name().toLowerCase()));
+    }
+
     return Actor.restore(
         entity.getId(),
         entity.getName(),
         entity.getPhysicalDescription(),
         mindRepository.findById(entity.getId()).map(e -> ActorMapper.INSTANCE.toMind(e)),
         Optional.ofNullable(entity.getCurrentOutfit()),
-        portrait);
+        portrait,
+        moodPortraits);
   }
 
   @Override

@@ -3,6 +3,9 @@ package com.jorgedelarosa.aimiddleware.adapter.out.persistence.filesystem;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
@@ -52,5 +55,26 @@ public class AssetRepository {
       log.debug(String.format("Error when reading %s", file));
     }
     return bytes;
+  }
+
+  public List<byte[]> loadAssets(String directory) {
+    List<byte[]> assets = new ArrayList<>();
+    File dir = Paths.get(PATH_TO_ASSETS + "/" + directory).toFile();
+    if (dir.isDirectory()) {
+      File[] files = dir.listFiles();
+      for (File file : files) {
+        try {
+          byte[] bytes = Files.readAllBytes(file.toPath());
+          assets.add(bytes);
+        } catch (IOException ex) {
+          log.debug(String.format("Error when reading %s", file.getAbsolutePath()));
+        }
+      }
+
+    } else {
+      log.debug(String.format("%s is not a directory", dir.getAbsolutePath()));
+    }
+
+    return assets;
   }
 }

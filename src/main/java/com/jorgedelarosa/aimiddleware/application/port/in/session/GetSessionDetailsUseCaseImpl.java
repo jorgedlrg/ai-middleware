@@ -79,6 +79,12 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
         moodName = dom.getMood().get().name().toLowerCase();
         mooodEmoji = dom.getMood().get().getEmoji();
       }
+      byte[] portrait;
+      if (dom.getMood().isPresent()) {
+        portrait = actor.getMoodPortrait(dom.getMood().get());
+      } else {
+        portrait = actor.getPortrait();
+      }
       return new InteractionDto(
           dom.getId(),
           dom.getTimestamp(),
@@ -86,7 +92,7 @@ public class GetSessionDetailsUseCaseImpl implements GetSessionDetailsUseCase {
           dom.getThoughtText(),
           dom.getActionText(),
           dom.getSpokenText(),
-          actor.getPortrait(),
+          portrait,
           siblings.indexOf(dom) + 1,
           siblings.size(),
           moodName,
