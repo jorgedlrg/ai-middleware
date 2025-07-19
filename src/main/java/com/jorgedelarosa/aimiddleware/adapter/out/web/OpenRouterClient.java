@@ -20,9 +20,8 @@ public class OpenRouterClient {
   @Value("${openrouter.apikey}")
   private String apikey;
 
-  public static final String MODEL_GEMMA_3_12B = "google/gemma-3-12b-it";
-  public static final String MODEL_GEMMA_3_27B = "google/gemma-3-27b-it";
-  public static final String DEEPSEEK_V3 = "deepseek/deepseek-chat-v3-0324";
+  @Value("${openrouter.model}")
+  private String model;
 
   private static final String URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -49,5 +48,9 @@ public class OpenRouterClient {
             .body(OpenRouterChatCompletionResponse.class);
 
     return response;
+  }
+
+  public String getModel() {
+    return model;
   }
 }

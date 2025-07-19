@@ -141,8 +141,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     String text;
     switch (TEXT_GEN_CLIENT) {
       case "openrouter" -> {
-        GenericChatRequest req =
-            new GenericChatRequest(OpenRouterClient.MODEL_GEMMA_3_12B, List.of(msg));
+        GenericChatRequest req = new GenericChatRequest(openRouterClient.getModel(), List.of(msg));
         OpenRouterChatCompletionResponse response =
             openRouterClient.chatCompletion(
                 ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
