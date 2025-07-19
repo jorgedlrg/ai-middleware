@@ -17,7 +17,6 @@ import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import java.util.Optional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -107,7 +106,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           response.action(),
           response.speech(),
           session.getLastInteraction().getRole(),
-          Optional.of(Mood.valueOf(response.mood().toUpperCase())));
+          Mood.optionalValueOf(response.mood().toUpperCase()));
     }
     saveSessionOutPort.save(session);
   }

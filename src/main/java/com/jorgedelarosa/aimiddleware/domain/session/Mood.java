@@ -1,8 +1,12 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
+import java.util.Optional;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author jorge
  */
+@Slf4j
 public enum Mood {
   HAPPY("😊"),
   SAD("😢"),
@@ -46,5 +50,16 @@ public enum Mood {
 
   public String getEmoji() {
     return emoji;
+  }
+
+  public static Optional<Mood> optionalValueOf(String mood) {
+    Mood result = null;
+    try {
+      result = Mood.valueOf(mood.toUpperCase());
+    } catch (IllegalArgumentException e) {
+      log.warn(String.format("%s is not a valid Mood value. Returning empty.", mood.toUpperCase()));
+    }
+
+    return Optional.ofNullable(result);
   }
 }
