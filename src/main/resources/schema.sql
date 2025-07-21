@@ -23,3 +23,7 @@ CREATE TABLE IF NOT EXISTS actor (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NU
 CREATE TABLE IF NOT EXISTS mind (actor UUID NOT NULL PRIMARY KEY, personality LONGTEXT NOT NULL);
 
 CREATE TABLE IF NOT EXISTS outfit (id UUID NOT NULL PRIMARY KEY, name TEXT NOT NULL, description LONGTEXT NOT NULL);
+
+CREATE TABLE IF NOT EXISTS usertable (id UUID NOT NULL PRIMARY KEY, string TEXT NOT NULL);
+
+CREATE TABLE IF NOT EXISTS settings (userid UUID NOT NULL PRIMARY KEY,textgen_provider TEXT NOT NULL, openrouter_apikey TEXT, openrouter_model TEXT, ollama_host TEXT, ollama_model TEXT, actions_enabled BIT NOT NULL, mood_enabled BIT NOT NULL, thoughts_enabled BIT NOT NULL);
