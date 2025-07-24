@@ -6,6 +6,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPo
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
@@ -14,9 +15,11 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import com.jorgedelarosa.aimiddleware.domain.user.User;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -30,6 +33,10 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 @Slf4j
 public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
+  private final UUID userId =
+      UUID.fromString(
+          "857fa610-b987-454c-96c3-bbf5354f13a0"); // FIXME, get this from security context.. when I
+  // implement it
 
   private final GetSessionByIdOutPort getSessionByIdOutPort;
   private final SaveSessionOutPort saveSessionOutPort;
@@ -38,6 +45,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
   private final GetActorListByIdOutPort getActorListByIdOutPort;
   private final GetOutfitListByIdOutPort getOutfitListByIdOutPort;
   private final GenerateMachineInteractionOutPort generateMachineInteractionOutPort;
+  private final GetUserByIdOutPort getUserByIdOutPort;
 
   @Override
   public void execute(Command cmd) {
@@ -92,6 +100,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                           e, scenario, featuredActors, wornOutfits))
               .toList();
 
+      User user = getUserByIdOutPort.query(userId).orElseThrow();
       GenerateMachineInteractionOutPort.MachineResponse response =
           generateMachineInteractionOutPort.execute(
               new GenerateMachineInteractionOutPort.Command(
@@ -100,7 +109,9 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   actingActor,
                   performances,
                   previousMessages,
-                  session.getLocale().getDisplayLanguage(Locale.ENGLISH)));
+                  session.getLocale().getDisplayLanguage(Locale.ENGLISH),
+                  GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
+                      user.getSettings())));
       session.interactNext(
           response.thoughts(),
           response.action(),

@@ -31,42 +31,51 @@ import org.thymeleaf.context.Context;
 @Slf4j
 public class MachineInteractionAdapter implements GenerateMachineInteractionOutPort {
 
-  private final OpenRouterClient openRouterClient;
-  private final OllamaClient ollamaClient;
   private final TemplateEngine templateEngine;
-  private final String TEXT_GEN_CLIENT = "openrouter";
 
   @Override
   public MachineResponse execute(Command cmd) {
-    String thoughts =
-        doInference(
-            new GenericChatMessage(
-                "user",
-                templateEngine.process(
-                    "promptThoughts",
-                    new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd)))));
-    String action =
-        doInference(
-            new GenericChatMessage(
-                "user",
-                templateEngine.process(
-                    "promptAction",
-                    new Context(Locale.ENGLISH, createActionTemplateVars(cmd, thoughts)))));
+    String thoughts = "";
+    String action = "";
+    String mood = null;
+    if (cmd.settings().thoughtsEnabled()) {
+      thoughts =
+          doInference(
+              new GenericChatMessage(
+                  "user",
+                  templateEngine.process(
+                      "promptThoughts",
+                      new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd)))),
+              cmd.settings());
+    }
+    if (cmd.settings().actionsEnabled()) {
+      action =
+          doInference(
+              new GenericChatMessage(
+                  "user",
+                  templateEngine.process(
+                      "promptAction",
+                      new Context(Locale.ENGLISH, createActionTemplateVars(cmd, thoughts)))),
+              cmd.settings());
+    }
     String speech =
         doInference(
             new GenericChatMessage(
                 "user",
                 templateEngine.process(
                     "promptSpeech",
-                    new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd, thoughts, action)))));
-    String mood =
-        doInference(
-            new GenericChatMessage(
-                "user",
-                templateEngine.process(
-                    "promptMood",
-                    new Context(Locale.ENGLISH, createMoodTemplateVars(cmd, thoughts, speech)))));
-
+                    new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd, thoughts, action)))),
+            cmd.settings());
+    if (cmd.settings().moodEnabled()) {
+      mood =
+          doInference(
+              new GenericChatMessage(
+                  "user",
+                  templateEngine.process(
+                      "promptMood",
+                      new Context(Locale.ENGLISH, createMoodTemplateVars(cmd, thoughts, speech)))),
+              cmd.settings());
+    }
     return new MachineResponse(thoughts, action, speech, mood);
   }
 
@@ -137,20 +146,22 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     return replacedText;
   }
 
-  private String doInference(GenericChatMessage msg) {
+  private String doInference(
+      GenericChatMessage msg, GenerateMachineInteractionOutPort.TextGenSettingsDto settings) {
     String text;
-    switch (TEXT_GEN_CLIENT) {
+    switch (settings.textgenProvider()) {
       case "openrouter" -> {
-        GenericChatRequest req = new GenericChatRequest(openRouterClient.getModel(), List.of(msg));
+        GenericChatRequest req = new GenericChatRequest(settings.openrouterModel(), List.of(msg));
+        OpenRouterClient client = new OpenRouterClient(settings.openrouterApikey());
         OpenRouterChatCompletionResponse response =
-            openRouterClient.chatCompletion(
-                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
+            client.chatCompletion(ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
         text = response.choices().getFirst().message().content();
       }
       case "ollama" -> {
-        GenericChatRequest req = new GenericChatRequest(OllamaClient.GEMMA3_12B, List.of(msg));
+        GenericChatRequest req = new GenericChatRequest(settings.ollamaModel(), List.of(msg));
+        OllamaClient client = new OllamaClient(settings.ollamaHost());
         OllamaChatResponse response =
-            ollamaClient.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
+            client.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
         text = response.message().content();
       }
       default -> throw new AssertionError();

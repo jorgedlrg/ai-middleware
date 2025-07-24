@@ -2,25 +2,21 @@ package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 /**
  * @author jorge
  */
-@Component
 @Slf4j
+@RequiredArgsConstructor
 public class OllamaClient {
 
-  @Value("${ollama.host}")
-  private String host;
-
-  public static final String GEMMA3_12B = "gemma3:12b";
+  private final String host;
 
   // TODO: add text completion instead of chat completion. it might be better for formatted
   // processing.

@@ -2,26 +2,21 @@ package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
-import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
 /**
  * @author jorge
  */
-@Component
 @Slf4j
+@RequiredArgsConstructor
 public class OpenRouterClient {
 
-  @Value("${openrouter.apikey}")
-  private String apikey;
-
-  @Value("${openrouter.model}")
-  private String model;
+  private final String apikey;
 
   private static final String URL = "https://openrouter.ai/api/v1/chat/completions";
 
@@ -48,9 +43,5 @@ public class OpenRouterClient {
             .body(OpenRouterChatCompletionResponse.class);
 
     return response;
-  }
-
-  public String getModel() {
-    return model;
   }
 }

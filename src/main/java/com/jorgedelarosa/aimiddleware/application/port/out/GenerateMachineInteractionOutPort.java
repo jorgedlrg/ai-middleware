@@ -1,9 +1,17 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SettingsEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.UserEntity;
+import com.jorgedelarosa.aimiddleware.application.port.in.user.GetUserSettingsUseCase;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
+import com.jorgedelarosa.aimiddleware.domain.user.Settings;
+import com.jorgedelarosa.aimiddleware.domain.user.User;
 import java.util.List;
 import java.util.Optional;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
+import org.mapstruct.factory.Mappers;
 
 /**
  * @author jorge
@@ -18,7 +26,8 @@ public interface GenerateMachineInteractionOutPort {
       Actor you,
       List<PerformanceDto> performances,
       List<PreviousMessage> previousMessages,
-      String replyLanguage) {}
+      String replyLanguage,
+      TextGenSettingsDto settings) {}
 
   public record PerformanceDto(
       String roleName,
@@ -31,4 +40,21 @@ public interface GenerateMachineInteractionOutPort {
   public record PreviousMessage(String actorName, String action, String speech) {}
 
   public record MachineResponse(String thoughts, String action, String speech, String mood) {}
+
+  public record TextGenSettingsDto(
+      String textgenProvider,
+      String openrouterApikey,
+      String openrouterModel,
+      String ollamaHost,
+      String ollamaModel,
+      boolean actionsEnabled,
+      boolean moodEnabled,
+      boolean thoughtsEnabled) {}
+
+  @Mapper
+  public interface TextGenMapper {
+    TextGenMapper INSTANCE = Mappers.getMapper(TextGenMapper.class);
+
+    TextGenSettingsDto toSettingsEntity(Settings dom);
+  }
 }

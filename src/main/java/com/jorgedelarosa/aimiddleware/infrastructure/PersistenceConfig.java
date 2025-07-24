@@ -15,9 +15,8 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @Configuration
 @EnableTransactionManagement
 public class PersistenceConfig {
-  
-  @Autowired
-  private DataSource dataSource;
+
+  @Autowired private DataSource dataSource;
 
   @Bean
   public LocalContainerEntityManagerFactoryBean entityManagerFactory() {
@@ -30,6 +29,4 @@ public class PersistenceConfig {
 
     return em;
   }
-
- 
 }
