@@ -10,28 +10,35 @@ import java.util.UUID;
 public class User extends AggregateRoot {
 
   private final String email;
+  private final Settings settings;
 
-  private User(UUID id, String email) {
+  private User(UUID id, String email, Settings settings) {
     super(User.class, id);
     this.email = email;
+    this.settings = settings;
     validate();
   }
 
-  public static User restore(UUID id, String email) {
-    return new User(id, email);
+  public static User restore(UUID id, String email, Settings settings) {
+    return new User(id, email, settings);
   }
 
   public static User create(String email) {
-    return new User(UUID.randomUUID(), email);
+    UUID userId = UUID.randomUUID();
+    return new User(userId, email, Settings.create(userId, "ollama"));
   }
 
   public String getEmail() {
     return email;
   }
 
+  public Settings getSettings() {
+    return settings;
+  }
+
   @Override
   public final boolean validate() {
     // TODO: validate email format
-    return Validator.strNotEmpty.validate(email);
+    return Validator.strNotEmpty.validate(email) && settings != null;
   }
 }
