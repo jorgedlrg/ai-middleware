@@ -8,6 +8,7 @@ import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenarioEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenariosListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.SessionsListView;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.UserSettingsView;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.sidenav.SideNav;
@@ -46,8 +47,7 @@ public class SideNavigation extends Div {
 
     SideNav userSection = new SideNav("User");
 
-    SideNavItem settings = new SideNavItem("Settings");
-    settings.setPrefixComponent(VaadinIcon.TOOLS.create());
+    SideNavItem settings = new SideNavItem("Settings",UserSettingsView.class,VaadinIcon.TOOLS.create());
     userSection.addItem(settings);
 
     Div navWrapper = new Div(mainSection, userSection);
