@@ -104,7 +104,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
         response.action(),
         response.speech(),
         cmd.role(),
-        Mood.optionalValueOf(response.mood().toUpperCase()));
+        Mood.optionalValueOf(response.mood()));
 
     saveSessionOutPort.save(session);
   }

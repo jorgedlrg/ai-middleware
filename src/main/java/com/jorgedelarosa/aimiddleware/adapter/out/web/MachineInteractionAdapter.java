@@ -35,8 +35,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
   @Override
   public MachineResponse execute(Command cmd) {
-    String thoughts = "";
-    String action = "";
+    String thoughts = null;
+    String action = null;
     String mood = null;
     if (cmd.settings().thoughtsEnabled()) {
       thoughts =

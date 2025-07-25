@@ -1,9 +1,9 @@
 You're in a fictional roleplay scenario.
 
-You're playing the actor [(${you})], and this is what [(${you})] is currently thinking:
+You're playing the actor [(${you})][# th:if="${currentThoughts}!=null"], and this is what [(${you})] is currently thinking:
 {
     [(${currentThoughts})]
-}
+}[/]
 And this is the last thing [(${you})] said:
 {
     [(${lastSpeech})]

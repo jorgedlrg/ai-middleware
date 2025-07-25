@@ -117,7 +117,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           response.action(),
           response.speech(),
           session.getLastInteraction().getRole(),
-          Mood.optionalValueOf(response.mood().toUpperCase()));
+          Mood.optionalValueOf(response.mood()));
     }
     saveSessionOutPort.save(session);
   }

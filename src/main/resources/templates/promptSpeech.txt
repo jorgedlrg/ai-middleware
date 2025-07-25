@@ -27,14 +27,14 @@ This is what the actors have said so far:
     [(${previousMessage.actorName})]: *[(${previousMessage.action})]* [(${previousMessage.speech})]
 [/]]
 
-You're playing the actor [(${you})], and this is what [(${you})] is currently thinking:
+You're playing the actor [(${you})][# th:if="${currentThoughts}!=null"], and this is what [(${you})] is currently thinking:
 {
     [(${currentThoughts})]
-}
-and this is what [(${you})] is currently doing:
+}[/]
+[# th:if="${currentAction}!=null"]and this is what [(${you})] is currently doing:
 {
     [(${currentAction})]
-}
+}[/]
 
 Talk as you were [(${you})]. Bear in mind [(${you})]'s current thoughts and what the actor is doing while speaking. Write what the actor would say. Do not emote. Don't write actions.
 

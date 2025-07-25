@@ -53,13 +53,16 @@ public enum Mood {
   }
 
   public static Optional<Mood> optionalValueOf(String mood) {
-    Mood result = null;
-    try {
-      result = Mood.valueOf(mood.toUpperCase());
-    } catch (IllegalArgumentException e) {
-      log.warn(String.format("%s is not a valid Mood value. Returning empty.", mood.toUpperCase()));
+    if (mood != null) {
+      Mood result = null;
+      try {
+        result = Mood.valueOf(mood.toUpperCase());
+      } catch (IllegalArgumentException e) {
+        log.warn(String.format("%s is not a valid Mood value. Returning empty.", mood));
+      }
+      return Optional.ofNullable(result);
+    } else {
+      return Optional.empty();
     }
-
-    return Optional.ofNullable(result);
   }
 }
