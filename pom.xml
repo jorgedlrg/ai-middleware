@@ -11,8 +11,8 @@
     <groupId>com.jorgedelarosa</groupId>
     <artifactId>aimiddleware</artifactId>
     <version>0.0.1-SNAPSHOT</version>
-    <name>aimiddleware</name>
-    <description>AI middleware</description>
+    <name>artifantasy</name>
+    <description>Artifantasy</description>
     <url/>
     <licenses>
         <license/>
@@ -58,6 +58,11 @@
             <groupId>com.h2database</groupId>
             <artifactId>h2</artifactId>
             <scope>runtime</scope>
+        </dependency>
+        
+        <dependency>
+            <groupId>org.liquibase</groupId>
+            <artifactId>liquibase-core</artifactId>
         </dependency>
         
         <dependency>
@@ -143,6 +148,18 @@
                             <version>0.2.0</version>
                         </path>
                     </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.liquibase</groupId>
+                <artifactId>liquibase-maven-plugin</artifactId>
+                <configuration>
+                    <driver>org.h2.Driver</driver>
+                    <url>jdbc:h2:~/aimiddleware/mydb;MODE=MySQL</url>
+                    <username>sa</username>
+                    <password>sa</password>
+                    <changeLogFile>changelog.h2.sql</changeLogFile>
+                    <outputChangeLogFile>src/main/resources/changelog.h2.sql</outputChangeLogFile>
                 </configuration>
             </plugin>
         </plugins>
