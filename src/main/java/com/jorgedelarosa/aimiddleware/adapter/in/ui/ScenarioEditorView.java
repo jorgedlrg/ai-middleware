@@ -56,15 +56,15 @@ public class ScenarioEditorView extends VerticalLayout
 
     Grid<GetScenarioDetailsUseCase.ContextDto> contextGrid =
         new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);
-    contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::id).setHeader("id");
     contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::name).setHeader("name");
+    contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::physicalDescription).setHeader("physical description");
     contextGrid.setItems(scenarioDto.contexts());
     contextGrid.addItemClickListener(editContextListener());
 
     Grid<GetScenarioDetailsUseCase.RoleDto> roleGrid =
         new Grid<>(GetScenarioDetailsUseCase.RoleDto.class, false);
-    roleGrid.addColumn(GetScenarioDetailsUseCase.RoleDto::id).setHeader("id");
     roleGrid.addColumn(GetScenarioDetailsUseCase.RoleDto::name).setHeader("name");
+    roleGrid.addColumn(GetScenarioDetailsUseCase.RoleDto::details).setHeader("details");
     roleGrid.setItems(scenarioDto.roles());
     roleGrid.addItemClickListener(editRoleListener());
 
