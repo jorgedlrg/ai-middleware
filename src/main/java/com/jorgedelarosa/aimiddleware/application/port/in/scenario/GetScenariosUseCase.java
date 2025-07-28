@@ -13,5 +13,5 @@ public interface GetScenariosUseCase {
   // TODO: find by user
   public record Command() {}
 
-  public record ScenarioDto(UUID id, String name, Integer contexts, Integer roles) {}
+  public record ScenarioDto(UUID id, String name, Integer contexts, Integer roles, Integer introductions) {}
 }

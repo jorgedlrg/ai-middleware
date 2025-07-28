@@ -26,6 +26,9 @@ public class ScenariosListView extends VerticalLayout {
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::name).setHeader("Scenario");
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::contexts).setHeader("# contexts");
     scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::roles).setHeader("# roles");
+    scenariosGrid
+        .addColumn(GetScenariosUseCase.ScenarioDto::introductions)
+        .setHeader("# introductions");
     scenariosGrid.addItemClickListener(editScenarioListener());
     fillSessionsGrid();
 

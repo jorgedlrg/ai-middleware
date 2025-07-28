@@ -168,6 +168,10 @@ public class Scenario extends AggregateRoot {
     return List.copyOf(roles);
   }
 
+  public List<Introduction> getIntroductions() {
+    return List.copyOf(introductions);
+  }
+
   public void setName(String name) {
     this.name = name;
     validate();

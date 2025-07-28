@@ -78,11 +78,14 @@ public class ScenarioAdapter
   public void save(Scenario scenario) {
     contextRepository.deleteAllByScenario(scenario.getId());
     roleRepository.deleteAllByScenario(scenario.getId());
+    introductionRepository.deleteAllByScenario(scenario.getId());
     scenarioRepository.save(ScenarioMapper.INSTANCE.toEntity(scenario));
     contextRepository.saveAll(
         ScenarioMapper.INSTANCE.toContextEntity(scenario.getContexts(), scenario.getId()));
     roleRepository.saveAll(
         ScenarioMapper.INSTANCE.toRoleEntity(scenario.getRoles(), scenario.getId()));
+    introductionRepository.saveAll(
+        ScenarioMapper.INSTANCE.toIntroEntity(scenario.getIntroductions(), scenario.getId()));
   }
 
   @Override

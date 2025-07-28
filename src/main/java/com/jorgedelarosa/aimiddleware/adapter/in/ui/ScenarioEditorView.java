@@ -43,7 +43,7 @@ public class ScenarioEditorView extends VerticalLayout
   private TextField name;
   private TextArea description;
 
-  private void rebuildEditor() {
+  private void render() {
     removeAll();
 
     name = new TextField("Name");
@@ -57,7 +57,9 @@ public class ScenarioEditorView extends VerticalLayout
     Grid<GetScenarioDetailsUseCase.ContextDto> contextGrid =
         new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);
     contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::name).setHeader("name");
-    contextGrid.addColumn(GetScenarioDetailsUseCase.ContextDto::physicalDescription).setHeader("physical description");
+    contextGrid
+        .addColumn(GetScenarioDetailsUseCase.ContextDto::physicalDescription)
+        .setHeader("physical description");
     contextGrid.setItems(scenarioDto.contexts());
     contextGrid.addItemClickListener(editContextListener());
 
@@ -68,6 +70,17 @@ public class ScenarioEditorView extends VerticalLayout
     roleGrid.setItems(scenarioDto.roles());
     roleGrid.addItemClickListener(editRoleListener());
 
+    Grid<GetScenarioDetailsUseCase.IntroductionDto> introGrid =
+        new Grid<>(GetScenarioDetailsUseCase.IntroductionDto.class, false);
+    introGrid
+        .addColumn(GetScenarioDetailsUseCase.IntroductionDto::contextName)
+        .setHeader("context");
+    introGrid
+        .addColumn(GetScenarioDetailsUseCase.IntroductionDto::performerName)
+        .setHeader("performer");
+    introGrid.setItems(scenarioDto.introductions());
+    introGrid.addItemClickListener(editIntroductionListener());
+
     Button addContext = new Button("Add new Context");
     addContext.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addContext.addClickListener(addNewContextListener());
@@ -75,6 +88,10 @@ public class ScenarioEditorView extends VerticalLayout
     Button addRole = new Button("Add new Role");
     addRole.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
     addRole.addClickListener(addNewRoleListener());
+
+    Button addIntro = new Button("Add new Introduction");
+    addIntro.addThemeVariants(ButtonVariant.LUMO_TERTIARY);
+    addIntro.addClickListener(addNewIntroductionListener());
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -89,6 +106,8 @@ public class ScenarioEditorView extends VerticalLayout
     add(addContext);
     add(roleGrid);
     add(addRole);
+    add(introGrid);
+    add(addIntro);
     add(new Div(saveButton, deleteButton));
   }
 
@@ -112,6 +131,18 @@ public class ScenarioEditorView extends VerticalLayout
     };
   }
 
+  private ComponentEventListener<ItemClickEvent<GetScenarioDetailsUseCase.IntroductionDto>>
+      editIntroductionListener() {
+    return (ItemClickEvent<GetScenarioDetailsUseCase.IntroductionDto> t) -> {
+      t.getColumn()
+          .getUI()
+          .ifPresent(
+              ui ->
+                  ui.navigate(
+                      "scenarios/" + scenarioDto.id() + "/introductions/" + t.getItem().id()));
+    };
+  }
+
   private ComponentEventListener<ClickEvent<Button>> addNewContextListener() {
     return (ClickEvent<Button> t) -> {
       t.getSource()
@@ -125,6 +156,14 @@ public class ScenarioEditorView extends VerticalLayout
       t.getSource()
           .getUI()
           .ifPresent(ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/roles"));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> addNewIntroductionListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource()
+          .getUI()
+          .ifPresent(ui -> ui.navigate("scenarios/" + scenarioDto.id() + "/introductions"));
     };
   }
 
@@ -159,10 +198,10 @@ public class ScenarioEditorView extends VerticalLayout
     } else {
       scenarioDto =
           new GetScenarioDetailsUseCase.ScenarioDto(
-              null, "", "", Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+              null, "", "", Collections.EMPTY_LIST, Collections.EMPTY_LIST, Collections.EMPTY_LIST);
       pageTitle = "Scenario Editor - new";
     }
-    rebuildEditor();
+    render();
   }
 
   @Override

@@ -9,4 +9,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface IntroductionRepository extends JpaRepository<IntroductionEntity, UUID> {
   List<IntroductionEntity> findAllByScenario(UUID scenario);
+
+  void deleteAllByScenario(UUID scenario);
 }
