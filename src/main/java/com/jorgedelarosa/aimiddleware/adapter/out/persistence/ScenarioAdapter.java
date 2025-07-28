@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextRepository;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.IntroductionRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioRepository;
@@ -10,6 +11,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPor
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
+import com.jorgedelarosa.aimiddleware.domain.scenario.Introduction;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import java.util.List;
@@ -32,6 +34,7 @@ public class ScenarioAdapter
   private final ScenarioRepository scenarioRepository;
   private final ContextRepository contextRepository;
   private final RoleRepository roleRepository;
+  private final IntroductionRepository introductionRepository;
 
   @Override
   public Optional<Scenario> query(UUID id) {
@@ -52,7 +55,23 @@ public class ScenarioAdapter
         roleRepository.findAllByScenario(se.getId()).stream()
             .map((e) -> ScenarioMapper.INSTANCE.toDom(e))
             .toList();
-    return Scenario.restore(se.getId(), se.getName(), se.getDescription(), contexts, roles);
+    List<Introduction> introductions =
+        introductionRepository.findAllByScenario(se.getId()).stream()
+            .map(
+                (e) ->
+                    ScenarioMapper.INSTANCE.toDom(
+                        e,
+                        roles.stream()
+                            .filter(r -> r.getId().equals(e.getPerformer()))
+                            .findFirst()
+                            .orElseThrow(),
+                        contexts.stream()
+                            .filter(c -> c.getId().equals(e.getContext()))
+                            .findFirst()
+                            .orElseThrow()))
+            .toList();
+    return Scenario.restore(
+        se.getId(), se.getName(), se.getDescription(), contexts, roles, introductions);
   }
 
   @Override

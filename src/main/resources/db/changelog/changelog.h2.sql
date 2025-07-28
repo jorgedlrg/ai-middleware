@@ -37,3 +37,6 @@ INSERT INTO outfit VALUES ('79dd7db9-2d83-4b0f-8321-579c413ec9fc','boat shaped p
 
 INSERT INTO usertable VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0','developer@developer.com');
 INSERT INTO settings VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0','ollama',null,'google/gemma-3-12b-it','http://localhost:11434','gemma3:12b',true,true,true);
+
+-- changeset jorge:1753719375802-2
+CREATE TABLE introduction (id UUID NOT NULL PRIMARY KEY, scenario UUID NOT NULL, spoken_text LONGTEXT NOT NULL, thought_text LONGTEXT, action_text LONGTEXT, role UUID NOT NULL, context UUID NOT NULL);

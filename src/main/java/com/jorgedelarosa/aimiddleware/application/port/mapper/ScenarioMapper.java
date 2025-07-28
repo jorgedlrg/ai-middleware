@@ -1,14 +1,17 @@
 package com.jorgedelarosa.aimiddleware.application.port.mapper;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextEntity;
+import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.IntroductionEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
+import com.jorgedelarosa.aimiddleware.domain.scenario.Introduction;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
@@ -47,5 +50,15 @@ public interface ScenarioMapper {
 
   default Role toDom(RoleEntity entity) {
     return Role.restore(entity.getId(), entity.getName(), entity.getDetails());
+  }
+
+  default Introduction toDom(IntroductionEntity entity, Role performer, Context context) {
+    return Introduction.restore(
+        entity.getId(),
+        entity.getSpokenText(),
+        Optional.ofNullable(entity.getThoughtText()),
+        Optional.ofNullable(entity.getActionText()),
+        performer,
+        context);
   }
 }

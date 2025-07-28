@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -15,12 +16,14 @@ public class Scenario extends AggregateRoot {
   private String description;
   private final List<Context> contexts;
   private final List<Role> roles;
+  private final List<Introduction> introductions;
 
   private Scenario(
       String name,
       String description,
       List<Context> contexts,
       List<Role> roles,
+      List<Introduction> introductions,
       Class clazz,
       UUID id) {
     super(clazz, id);
@@ -28,6 +31,7 @@ public class Scenario extends AggregateRoot {
     this.description = description;
     this.contexts = contexts;
     this.roles = roles;
+    this.introductions = introductions;
   }
 
   public static Scenario create(String name, String description) {
@@ -37,6 +41,7 @@ public class Scenario extends AggregateRoot {
             description,
             new ArrayList<>(),
             new ArrayList<>(),
+            new ArrayList<>(),
             Scenario.class,
             UUID.randomUUID());
     scenario.validate();
@@ -44,10 +49,21 @@ public class Scenario extends AggregateRoot {
   }
 
   public static Scenario restore(
-      UUID id, String name, String description, List<Context> contexts, List<Role> roles) {
+      UUID id,
+      String name,
+      String description,
+      List<Context> contexts,
+      List<Role> roles,
+      List<Introduction> introductions) {
     Scenario scenario =
         new Scenario(
-            name, description, new ArrayList(contexts), new ArrayList(roles), Scenario.class, id);
+            name,
+            description,
+            new ArrayList(contexts),
+            new ArrayList(roles),
+            new ArrayList(introductions),
+            Scenario.class,
+            id);
     scenario.validate();
     return scenario;
   }
@@ -98,6 +114,42 @@ public class Scenario extends AggregateRoot {
     for (int i = 0; i < roles.size(); ++i) {
       if (roles.get(i).getId().equals(roleId)) {
         roles.remove(i);
+        break;
+      }
+    }
+    validate();
+  }
+
+  public void addNewIntroduction(
+      String spokenText,
+      Optional<String> thoughtText,
+      Optional<String> actionText,
+      Role performer,
+      Context context) {
+    introductions.add(Introduction.create(spokenText, thoughtText, actionText, performer, context));
+    validate();
+  }
+
+  public void modifyIntroduction(
+      UUID introductionId,
+      String spokenText,
+      Optional<String> thoughtText,
+      Optional<String> actionText) {
+    introductions.stream()
+        .filter(e -> e.getId().equals(introductionId))
+        .forEach(
+            e -> {
+              e.setActionText(actionText);
+              e.setSpokenText(spokenText);
+              e.setThoughtText(thoughtText);
+            });
+    validate();
+  }
+
+  public void deleteIntroduction(UUID introductionId) {
+    for (int i = 0; i < introductions.size(); ++i) {
+      if (introductions.get(i).getId().equals(introductionId)) {
+        introductions.remove(i);
         break;
       }
     }
