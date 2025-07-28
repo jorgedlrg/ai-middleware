@@ -1,10 +1,8 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.scenario;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.ScenarioMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 /**
@@ -18,14 +16,7 @@ public class GetScenarioDetailsUseCaseImpl implements GetScenarioDetailsUseCase 
 
   @Override
   public ScenarioDto execute(Command cmd) {
-    return ScenarioMapper.INSTANCE.toDto(
+    return ScenarioMapper.INSTANCE.toDetailsDto(
         getScenarioByIdOutPort.query(cmd.scenarioId()).orElseThrow());
-  }
-
-  @Mapper
-  public interface ScenarioMapper {
-    ScenarioMapper INSTANCE = Mappers.getMapper(ScenarioMapper.class);
-
-    GetScenarioDetailsUseCase.ScenarioDto toDto(Scenario dom);
   }
 }

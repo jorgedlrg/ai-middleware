@@ -1,11 +1,11 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ContextRepository;
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.RoleRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ScenarioRepository;
+import com.jorgedelarosa.aimiddleware.application.port.mapper.ScenarioMapper;
+import com.jorgedelarosa.aimiddleware.application.port.out.DeleteScenarioOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenariosOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveScenarioOutPort;
@@ -16,10 +16,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
-import com.jorgedelarosa.aimiddleware.application.port.out.DeleteScenarioOutPort;
 
 /**
  * @author jorge
@@ -74,32 +71,5 @@ public class ScenarioAdapter
     contextRepository.deleteAllByScenario(scenario.getId());
     roleRepository.deleteAllByScenario(scenario.getId());
     scenarioRepository.deleteById(scenario.getId());
-  }
-
-  @Mapper
-  public interface ScenarioMapper {
-    ScenarioMapper INSTANCE = Mappers.getMapper(ScenarioMapper.class);
-
-    ScenarioEntity toEntity(Scenario dom);
-
-    default List<ContextEntity> toContextEntity(List<Context> dom, UUID scenario) {
-      return dom.stream().map(e -> toEntity(e, scenario)).toList();
-    }
-
-    default List<RoleEntity> toRoleEntity(List<Role> dom, UUID scenario) {
-      return dom.stream().map(e -> toEntity(e, scenario)).toList();
-    }
-
-    ContextEntity toEntity(Context dom, UUID scenario);
-
-    RoleEntity toEntity(Role dom, UUID scenario);
-
-    default Context toDom(ContextEntity entity) {
-      return Context.restore(entity.getId(), entity.getName(), entity.getPhysicalDescription());
-    }
-
-    default Role toDom(RoleEntity entity) {
-      return Role.restore(entity.getId(), entity.getName(), entity.getDetails());
-    }
   }
 }
