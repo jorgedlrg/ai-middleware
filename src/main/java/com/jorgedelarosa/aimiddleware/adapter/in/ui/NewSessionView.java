@@ -100,7 +100,6 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       if (selectedContext != null) {
         ComboBox<GetScenarioDetailsUseCase.IntroductionDto> intros =
             new ComboBox<>("Select session intro:");
-        intros.setRequiredIndicatorVisible(true);
         intros.setItemLabelGenerator(GetScenarioDetailsUseCase.IntroductionDto::spokenText);
         // filter intros shown by context and roles in use
         intros.setItems(

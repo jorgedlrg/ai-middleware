@@ -1,6 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionReasoningRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
