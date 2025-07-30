@@ -39,12 +39,14 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
   private GetScenariosUseCase.ScenarioDto selectedScenario = null;
   private GetScenarioDetailsUseCase.ContextDto selectedContext = null;
   private Map<UUID, CreateSessionUseCase.PerformanceDto> performances = new HashMap<>();
+  private GetScenarioDetailsUseCase.IntroductionDto selectedIntro = null;
   private Locale selectedLocale = null;
 
   private void render() {
     removeAll();
 
     ComboBox<GetScenariosUseCase.ScenarioDto> scenariosComboBox = new ComboBox<>("Scenario:");
+    scenariosComboBox.setRequiredIndicatorVisible(true);
     scenariosComboBox.setItems(getScenariosUseCase.execute(new GetScenariosUseCase.Command()));
     scenariosComboBox.setItemLabelGenerator(GetScenariosUseCase.ScenarioDto::name);
     if (selectedScenario != null) {
@@ -61,6 +63,7 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
 
       // Current context
       ComboBox<GetScenarioDetailsUseCase.ContextDto> contextsComboBox = new ComboBox<>("Context:");
+      contextsComboBox.setRequiredIndicatorVisible(true);
       contextsComboBox.setItems(scenarioDetails.contexts());
       contextsComboBox.setItemLabelGenerator(GetScenarioDetailsUseCase.ContextDto::name);
       if (selectedContext != null) {
@@ -93,8 +96,25 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
         actorsComboBox.addValueChangeListener(e -> selectActorListener(e.getValue(), role.id()));
         add(actorsComboBox);
       }
+      if (selectedContext != null) {
+        ComboBox<GetScenarioDetailsUseCase.IntroductionDto> intros =
+            new ComboBox<>("Select session intro:");
+        intros.setItemLabelGenerator(GetScenarioDetailsUseCase.IntroductionDto::spokenText);
+        // filter intros shown by context and roles in use
+        intros.setItems(
+            scenarioDetails.introductions().stream()
+                .filter(i -> i.context().equals(selectedContext.id()))
+                .filter(i -> performances.get(i.performer()) != null)
+                .toList());
+        if (selectedIntro != null) {
+          intros.setValue(selectedIntro);
+        }
+        intros.addValueChangeListener(e -> selectIntroListener(e.getValue()));
+        add(intros);
+      }
 
       ComboBox<Locale> localeComboBox = new ComboBox<>("Session language:");
+      localeComboBox.setRequiredIndicatorVisible(true);
       localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
       localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
       if (selectedLocale != null) {
@@ -133,6 +153,12 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
     } else {
       performances.remove(role);
     }
+
+    render();
+  }
+
+  private void selectIntroListener(GetScenarioDetailsUseCase.IntroductionDto dto) {
+    selectedIntro = dto;
 
     render();
   }
