@@ -7,4 +7,4 @@ import com.fasterxml.jackson.databind.annotation.JsonNaming;
  * @author jorge
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record OllamaChatMessage(String role, String content) {}
+public record OllamaChatMessage(String role, String content, String thinking) {}

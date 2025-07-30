@@ -8,4 +8,5 @@ import java.util.List;
  * @author jorge
  */
 @JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
-public record OllamaChatRequest(String model, List<OllamaChatMessage> messages, boolean stream) {}
+public record OllamaChatRequest(
+    String model, List<OllamaChatMessage> messages, boolean stream, boolean think) {}

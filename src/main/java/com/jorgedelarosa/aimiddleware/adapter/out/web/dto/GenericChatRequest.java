@@ -5,4 +5,4 @@ import java.util.List;
 /**
  * @author jorge
  */
-public record GenericChatRequest(String model, List<GenericChatMessage> messages) {}
+public record GenericChatRequest(String model, List<GenericChatMessage> messages, boolean think) {}

@@ -45,7 +45,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                   "user",
                   templateEngine.process(
                       "promptThoughts",
-                      new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd)))),
+                      new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd))),
+                  ""),
               cmd.settings());
     }
     if (cmd.settings().actionsEnabled()) {
@@ -55,7 +56,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                   "user",
                   templateEngine.process(
                       "promptAction",
-                      new Context(Locale.ENGLISH, createActionTemplateVars(cmd, thoughts)))),
+                      new Context(Locale.ENGLISH, createActionTemplateVars(cmd, thoughts))),
+                  ""),
               cmd.settings());
     }
     String speech =
@@ -64,7 +66,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                 "user",
                 templateEngine.process(
                     "promptSpeech",
-                    new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd, thoughts, action)))),
+                    new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd, thoughts, action))),
+                ""),
             cmd.settings());
     if (cmd.settings().moodEnabled()) {
       mood =
@@ -73,7 +76,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                   "user",
                   templateEngine.process(
                       "promptMood",
-                      new Context(Locale.ENGLISH, createMoodTemplateVars(cmd, thoughts, speech)))),
+                      new Context(Locale.ENGLISH, createMoodTemplateVars(cmd, thoughts, speech))),
+                  ""),
               cmd.settings());
     }
     return new MachineResponse(thoughts, action, speech, mood);
@@ -151,14 +155,15 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     String text;
     switch (settings.textgenProvider()) {
       case "openrouter" -> {
-        GenericChatRequest req = new GenericChatRequest(settings.openrouterModel(), List.of(msg));
+        GenericChatRequest req =
+            new GenericChatRequest(settings.openrouterModel(), List.of(msg), true);
         OpenRouterClient client = new OpenRouterClient(settings.openrouterApikey());
         OpenRouterChatCompletionResponse response =
             client.chatCompletion(ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
         text = response.choices().getFirst().message().content();
       }
       case "ollama" -> {
-        GenericChatRequest req = new GenericChatRequest(settings.ollamaModel(), List.of(msg));
+        GenericChatRequest req = new GenericChatRequest(settings.ollamaModel(), List.of(msg), true);
         OllamaClient client = new OllamaClient(settings.ollamaHost());
         OllamaChatResponse response =
             client.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
