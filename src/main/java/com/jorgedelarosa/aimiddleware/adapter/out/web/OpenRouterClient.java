@@ -1,6 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.web;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionReasoningRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class OpenRouterClient {
 
   private static final String URL = "https://openrouter.ai/api/v1/chat/completions";
 
-  public OpenRouterChatCompletionResponse chatCompletion(OpenRouterChatCompletionRequest req) {
+  public OpenRouterChatCompletionResponse chatCompletion(Object req) {
 
     log.debug("req: {}", req);
     RestClient customClient =
