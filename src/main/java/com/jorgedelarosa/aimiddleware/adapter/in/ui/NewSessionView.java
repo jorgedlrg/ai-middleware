@@ -9,7 +9,6 @@ import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
-import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,7 +21,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -49,6 +47,10 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
     ComboBox<GetScenariosUseCase.ScenarioDto> scenariosComboBox = new ComboBox<>("Scenario:");
     scenariosComboBox.setItems(getScenariosUseCase.execute(new GetScenariosUseCase.Command()));
     scenariosComboBox.setItemLabelGenerator(GetScenariosUseCase.ScenarioDto::name);
+    if (selectedScenario != null) {
+      // Set value before listener, otherwise it loops
+      scenariosComboBox.setValue(selectedScenario);
+    }
     scenariosComboBox.addValueChangeListener(e -> selectScenarioListener(e.getValue()));
 
     add(scenariosComboBox);
@@ -61,6 +63,9 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       ComboBox<GetScenarioDetailsUseCase.ContextDto> contextsComboBox = new ComboBox<>("Context:");
       contextsComboBox.setItems(scenarioDetails.contexts());
       contextsComboBox.setItemLabelGenerator(GetScenarioDetailsUseCase.ContextDto::name);
+      if (selectedContext != null) {
+        contextsComboBox.setValue(selectedContext);
+      }
       contextsComboBox.addValueChangeListener(e -> selectContextListener(e.getValue()));
 
       add(contextsComboBox);
@@ -73,6 +78,18 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
             new ComboBox<>("Select actor for role " + role.name() + ":");
         actorsComboBox.setItems(actors);
         actorsComboBox.setItemLabelGenerator(GetActorsUseCase.ActorDto::name);
+        actorsComboBox.setClearButtonVisible(true);
+        // If the role already has an actor assigned, set it to the combobox
+        performances.keySet().stream()
+            .filter(e -> e.equals(role.id()))
+            .findFirst()
+            .ifPresent(
+                r ->
+                    actorsComboBox.setValue(
+                        actors.stream()
+                            .filter(a -> a.id().equals(performances.get(r).actor()))
+                            .findFirst()
+                            .orElseThrow()));
         actorsComboBox.addValueChangeListener(e -> selectActorListener(e.getValue(), role.id()));
         add(actorsComboBox);
       }
@@ -80,19 +97,12 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       ComboBox<Locale> localeComboBox = new ComboBox<>("Session language:");
       localeComboBox.setItems(Locale.ENGLISH, Locale.CHINESE, Locale.forLanguageTag("es"));
       localeComboBox.setItemLabelGenerator(Locale::getDisplayLanguage);
+      if (selectedLocale != null) {
+        localeComboBox.setValue(selectedLocale);
+      }
       localeComboBox.addValueChangeListener(e -> selectLocaleListener(e.getValue()));
       add(localeComboBox);
-    }
 
-    add(new Span("Current selection:"));
-    if (selectedScenario != null) {
-      add(new Span("Scenario: " + selectedScenario.name()));
-      if (selectedContext != null) {
-        add(new Span("Current context: " + selectedContext.name()));
-      }
-      for (Entry<UUID, CreateSessionUseCase.PerformanceDto> dto : performances.entrySet()) {
-        add(new Span("Role " + dto.getKey() + ": " + dto.getValue().actor()));
-      }
       if (selectedContext != null && selectedLocale != null && performances.size() > 1) {
         Button createSession = new Button("Save");
         createSession.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
@@ -118,7 +128,11 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
   }
 
   private void selectActorListener(GetActorsUseCase.ActorDto dto, UUID role) {
-    performances.put(role, new CreateSessionUseCase.PerformanceDto(dto.id(), role));
+    if (dto != null) {
+      performances.put(role, new CreateSessionUseCase.PerformanceDto(dto.id(), role));
+    } else {
+      performances.remove(role);
+    }
 
     render();
   }
