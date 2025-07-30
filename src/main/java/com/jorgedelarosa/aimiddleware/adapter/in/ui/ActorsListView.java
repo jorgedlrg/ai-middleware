@@ -4,13 +4,14 @@ import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorCard;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteActorUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase.ActorDto;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoUtility;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 
@@ -24,7 +25,6 @@ public class ActorsListView extends VerticalLayout implements BeforeEnterObserve
 
   private final GetActorsUseCase getActorsUseCase;
   private final DeleteActorUseCase deleteActorUseCase;
-  private static final int GRID_WIDTH = 3;
 
   private void render() {
     removeAll();
@@ -33,15 +33,9 @@ public class ActorsListView extends VerticalLayout implements BeforeEnterObserve
     List<ActorCard> cards = dtos.stream().map(e -> new ActorCard(e, deleteActorUseCase)).toList();
 
     HorizontalLayout horizontalLayout = new HorizontalLayout();
-    for (int i = 0; i < cards.size(); ++i) {
-      if (i % GRID_WIDTH == 0) {
-        horizontalLayout = new HorizontalLayout();
-        horizontalLayout.setPadding(true);
-        horizontalLayout.setJustifyContentMode(FlexComponent.JustifyContentMode.AROUND);
-        add(horizontalLayout);
-      }
-      horizontalLayout.add(cards.get(i));
-    }
+    horizontalLayout.addClassNames(LumoUtility.FlexWrap.WRAP);
+    horizontalLayout.add(Collections.unmodifiableCollection(cards));
+    add(horizontalLayout);
   }
 
   @Override
