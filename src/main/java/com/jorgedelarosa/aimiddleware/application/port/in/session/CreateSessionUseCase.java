@@ -2,6 +2,7 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -11,7 +12,11 @@ public interface CreateSessionUseCase {
   public UUID execute(Command cmd);
 
   public record Command(
-      UUID scenario, UUID currentContext, List<PerformanceDto> performances, Locale locale) {}
+      UUID scenario,
+      UUID currentContext,
+      List<PerformanceDto> performances,
+      Locale locale,
+      Optional<UUID> introduction) {}
 
   public record PerformanceDto(UUID actor, UUID role) {}
 }

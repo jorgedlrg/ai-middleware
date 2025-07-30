@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -99,6 +100,7 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       if (selectedContext != null) {
         ComboBox<GetScenarioDetailsUseCase.IntroductionDto> intros =
             new ComboBox<>("Select session intro:");
+        intros.setRequiredIndicatorVisible(true);
         intros.setItemLabelGenerator(GetScenarioDetailsUseCase.IntroductionDto::spokenText);
         // filter intros shown by context and roles in use
         intros.setItems(
@@ -152,6 +154,9 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       performances.put(role, new CreateSessionUseCase.PerformanceDto(dto.id(), role));
     } else {
       performances.remove(role);
+      if (selectedIntro.performer().equals(role)) {
+        selectedIntro = null;
+      }
     }
 
     render();
@@ -177,7 +182,8 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
                   selectedScenario.id(),
                   selectedContext.id(),
                   new ArrayList(performances.values()),
-                  selectedLocale));
+                  selectedLocale,
+                  Optional.ofNullable(selectedIntro.id())));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId + "/interact"));
       Notification notification = Notification.show("Session " + sessionId + " created!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

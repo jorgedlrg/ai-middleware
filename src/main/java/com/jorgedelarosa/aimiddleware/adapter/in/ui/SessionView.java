@@ -127,8 +127,8 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     VerticalLayout middle = new VerticalLayout();
     middle.setWidth("60%");
     middle.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY);
-    middle.add(radioGroup);
     middle.add(interactionList);
+    middle.add(radioGroup);
     middle.add(input);
     middle.add(contextComboBox);
     middle.add(deleteButton);
