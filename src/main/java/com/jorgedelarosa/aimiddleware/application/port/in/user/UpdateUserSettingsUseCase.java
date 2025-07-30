@@ -17,5 +17,8 @@ public interface UpdateUserSettingsUseCase {
       String ollamaModel,
       boolean actionsEnabled,
       boolean moodEnabled,
-      boolean thoughtsEnabled) {}
+      boolean thoughtsEnabled,
+      boolean actionsReasoning,
+      boolean speechReasoning,
+      boolean thoughtsReasoning) {}
 }

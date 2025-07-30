@@ -31,7 +31,10 @@ public interface UserMapper {
         se.getOllamaModel(),
         se.isActionsEnabled(),
         se.isMoodEnabled(),
-        se.isThoughtsEnabled());
+        se.isThoughtsEnabled(),
+        se.isActionsReasoning(),
+        se.isSpeechReasoning(),
+        se.isThoughtsReasoning());
   }
 
   @Mapping(target = "user", source = "id")

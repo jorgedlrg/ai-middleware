@@ -21,7 +21,7 @@ public class OpenRouterClient {
 
   public OpenRouterChatCompletionResponse chatCompletion(Object req) {
 
-    log.debug("req: {}", req);
+    log.info("req: {}", req);
     RestClient customClient =
         RestClient.builder()
             .baseUrl(URL)
@@ -40,7 +40,7 @@ public class OpenRouterClient {
             .body(req)
             .retrieve()
             .body(OpenRouterChatCompletionResponse.class);
-
+    log.info("res: {}", response);
     return response;
   }
 }

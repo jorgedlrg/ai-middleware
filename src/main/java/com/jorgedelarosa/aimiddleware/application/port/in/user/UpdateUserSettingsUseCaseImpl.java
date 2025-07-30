@@ -29,6 +29,9 @@ public class UpdateUserSettingsUseCaseImpl implements UpdateUserSettingsUseCase 
     user.getSettings().setOpenrouterModel(cmd.openrouterModel());
     user.getSettings().setTextgenProvider(cmd.textgenProvider());
     user.getSettings().setThoughtsEnabled(cmd.thoughtsEnabled());
+    user.getSettings().setActionsReasoning(cmd.actionsReasoning());
+    user.getSettings().setSpeechReasoning(cmd.speechReasoning());
+    user.getSettings().setThoughtsReasoning(cmd.thoughtsReasoning());
 
     saveUserOutPort.save(user);
   }

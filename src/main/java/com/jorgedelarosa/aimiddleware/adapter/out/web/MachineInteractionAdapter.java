@@ -6,7 +6,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatMessage;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OllamaChatResponse;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionMessage;
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionReasoningRequest;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionRequest;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterChatCompletionResponse;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.OpenRouterReasoning;
@@ -50,7 +50,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                       new Context(Locale.ENGLISH, createThoughtsTemplateVars(cmd))),
                   ""),
               cmd.settings(),
-              true);
+              cmd.settings().thoughtsReasoning());
     }
     if (cmd.settings().actionsEnabled()) {
       action =
@@ -62,7 +62,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                       new Context(Locale.ENGLISH, createActionTemplateVars(cmd, thoughts))),
                   ""),
               cmd.settings(),
-              true);
+              cmd.settings().actionsReasoning());
     }
     String speech =
         doInference(
@@ -73,7 +73,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                     new Context(Locale.ENGLISH, createSpeechTemplateVars(cmd, thoughts, action))),
                 ""),
             cmd.settings(),
-            true);
+            cmd.settings().speechReasoning());
     if (cmd.settings().moodEnabled()) {
       mood =
           doInference(
@@ -159,23 +159,21 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   private String doInference(
       GenericChatMessage msg,
       GenerateMachineInteractionOutPort.TextGenSettingsDto settings,
-      boolean thinkingEnabled) {
+      boolean reasoning) {
     String text;
     switch (settings.textgenProvider()) {
       case "openrouter" -> {
         GenericChatRequest req =
-            new GenericChatRequest(settings.openrouterModel(), List.of(msg), thinkingEnabled);
+            new GenericChatRequest(settings.openrouterModel(), List.of(msg), reasoning);
         OpenRouterClient client = new OpenRouterClient(settings.openrouterApikey());
         OpenRouterChatCompletionResponse response =
             client.chatCompletion(
-                thinkingEnabled
-                    ? ChatMapper.INSTANCE.toOpenRouterChatCompletionReasoningRequest(req)
-                    : ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
+                ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
         text = response.choices().getFirst().message().content();
       }
       case "ollama" -> {
         GenericChatRequest req =
-            new GenericChatRequest(settings.ollamaModel(), List.of(msg), thinkingEnabled);
+            new GenericChatRequest(settings.ollamaModel(), List.of(msg), reasoning);
         OllamaClient client = new OllamaClient(settings.ollamaHost());
         OllamaChatResponse response =
             client.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
@@ -191,21 +189,21 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
   public interface ChatMapper {
     ChatMapper INSTANCE = Mappers.getMapper(ChatMapper.class);
 
+    @Mapping(target = "thinking", source = "reasoning")
     OllamaChatMessage toOllamaChatMessage(GenericChatMessage a);
 
     @Mapping(target = "stream", constant = "false")
+    @Mapping(target = "think", source = "reasoning")
     OllamaChatRequest toOllamaChatMessage(GenericChatRequest a);
 
     OpenRouterChatCompletionMessage toOpenRouterChatCompletionMessage(GenericChatMessage a);
 
-    OpenRouterChatCompletionRequest toOpenRouterChatCompletionRequest(GenericChatRequest a);
-
-    default OpenRouterChatCompletionReasoningRequest toOpenRouterChatCompletionReasoningRequest(
+    default OpenRouterChatCompletionRequest toOpenRouterChatCompletionRequest(
         GenericChatRequest a) {
-      return new OpenRouterChatCompletionReasoningRequest(
+      return new OpenRouterChatCompletionRequest(
           a.model(),
           a.messages().stream().map(e -> toOpenRouterChatCompletionMessage(e)).toList(),
-          new OpenRouterReasoning("low", true));
+          new OpenRouterReasoning(a.reasoning()));
     }
   }
 }

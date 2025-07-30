@@ -25,7 +25,7 @@ public class OllamaClient {
 
     String url = host + "/api/chat";
 
-    log.debug("req: {}", req);
+    log.info("req: {}", req);
     RestClient customClient =
         RestClient.builder()
             .baseUrl(url)
@@ -41,7 +41,7 @@ public class OllamaClient {
             .body(req)
             .retrieve()
             .body(OllamaChatResponse.class);
-
+    log.info("res: {}", response);
     return response;
   }
 }

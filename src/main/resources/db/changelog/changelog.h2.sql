@@ -40,3 +40,12 @@ INSERT INTO settings VALUES ('857fa610-b987-454c-96c3-bbf5354f13a0','ollama',nul
 
 -- changeset jorge:1753719375802-2
 CREATE TABLE introduction (id UUID NOT NULL PRIMARY KEY, scenario UUID NOT NULL, spoken_text LONGTEXT NOT NULL, thought_text LONGTEXT, action_text LONGTEXT, role UUID NOT NULL, context UUID NOT NULL);
+
+-- changeset jorge:20250730-1
+ALTER TABLE settings ADD actions_reasoning BIT;
+ALTER TABLE settings ADD speech_reasoning BIT;
+ALTER TABLE settings ADD thoughts_reasoning BIT;
+UPDATE settings SET actions_reasoning=false, speech_reasoning=false, thoughts_reasoning=false;
+ALTER TABLE settings ALTER COLUMN actions_reasoning SET NOT NULL;
+ALTER TABLE settings ALTER COLUMN speech_reasoning SET NOT NULL;
+ALTER TABLE settings ALTER COLUMN thoughts_reasoning SET NOT NULL;

@@ -37,4 +37,13 @@ public class SettingsEntity {
 
   @Column(name = "thoughts_enabled")
   private boolean thoughtsEnabled;
+
+  @Column(name = "actions_reasoning")
+  private boolean actionsReasoning;
+
+  @Column(name = "speech_reasoning")
+  private boolean speechReasoning;
+
+  @Column(name = "thoughts_reasoning")
+  private boolean thoughtsReasoning;
 }

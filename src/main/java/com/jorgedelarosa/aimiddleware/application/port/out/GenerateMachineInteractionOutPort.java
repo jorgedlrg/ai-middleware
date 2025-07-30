@@ -1,16 +1,11 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SettingsEntity;
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.UserEntity;
-import com.jorgedelarosa.aimiddleware.application.port.in.user.GetUserSettingsUseCase;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.user.Settings;
-import com.jorgedelarosa.aimiddleware.domain.user.User;
 import java.util.List;
 import java.util.Optional;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -49,7 +44,10 @@ public interface GenerateMachineInteractionOutPort {
       String ollamaModel,
       boolean actionsEnabled,
       boolean moodEnabled,
-      boolean thoughtsEnabled) {}
+      boolean thoughtsEnabled,
+      boolean actionsReasoning,
+      boolean speechReasoning,
+      boolean thoughtsReasoning) {}
 
   @Mapper
   public interface TextGenMapper {

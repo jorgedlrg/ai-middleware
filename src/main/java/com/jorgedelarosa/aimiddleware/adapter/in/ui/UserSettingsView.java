@@ -35,6 +35,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
   private final UUID user = UUID.fromString("857fa610-b987-454c-96c3-bbf5354f13a0"); // FIXME
 
   private final CheckboxGroup<String> textGenFeatures = new CheckboxGroup<>();
+  private final CheckboxGroup<String> reasoning = new CheckboxGroup<>();
   private final RadioButtonGroup<String> textGenProvider = new RadioButtonGroup<>();
   private final TextField openrouterApikey = new TextField("Api key");
   private final TextField openrouterModel = new TextField("Model");
@@ -60,6 +61,19 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
       textGenFeatures.select("Thoughts");
     }
     add(textGenFeatures);
+
+    reasoning.setLabel("Enable reasoning (if model supports it):");
+    reasoning.setItems("Actions", "Speech", "Thoughts");
+    if (dto.actionsReasoning()) {
+      reasoning.select("Actions");
+    }
+    if (dto.speechReasoning()) {
+      reasoning.select("Speech");
+    }
+    if (dto.thoughtsReasoning()) {
+      reasoning.select("Thoughts");
+    }
+    add(reasoning);
 
     // Text Gen provider
     textGenProvider.setLabel("Text generation provider");
@@ -119,7 +133,10 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
               ollamaModel.getValue(),
               textGenFeatures.getSelectedItems().contains("Actions"),
               textGenFeatures.getSelectedItems().contains("Mood"),
-              textGenFeatures.getSelectedItems().contains("Thoughts")));
+              textGenFeatures.getSelectedItems().contains("Thoughts"),
+              reasoning.getSelectedItems().contains("Actions"),
+              reasoning.getSelectedItems().contains("Speech"),
+              reasoning.getSelectedItems().contains("Thoughts")));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("user-settings"));
       Notification notification = Notification.show("Settings saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);

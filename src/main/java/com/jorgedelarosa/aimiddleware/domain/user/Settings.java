@@ -17,6 +17,9 @@ public class Settings extends Entity {
   private boolean actionsEnabled;
   private boolean moodEnabled;
   private boolean thoughtsEnabled;
+  private boolean actionsReasoning;
+  private boolean speechReasoning;
+  private boolean thoughtsReasoning;
 
   private Settings(UUID id, String textgenProvider) {
     super(id);
@@ -24,6 +27,9 @@ public class Settings extends Entity {
     actionsEnabled = true;
     moodEnabled = true;
     thoughtsEnabled = true;
+    actionsReasoning = false;
+    speechReasoning = false;
+    thoughtsReasoning = false;
     validate();
   }
 
@@ -36,7 +42,10 @@ public class Settings extends Entity {
       String ollamaModel,
       boolean actionsEnabled,
       boolean moodEnabled,
-      boolean thoughtsEnabled) {
+      boolean thoughtsEnabled,
+      boolean actionsReasoning,
+      boolean speechReasoning,
+      boolean thoughtsReasoning) {
     Settings settings = new Settings(user, textgenProvider);
     settings.setActionsEnabled(actionsEnabled);
     settings.setMoodEnabled(moodEnabled);
@@ -45,6 +54,9 @@ public class Settings extends Entity {
     settings.setOpenrouterApikey(openrouterApikey);
     settings.setOpenrouterModel(openrouterModel);
     settings.setThoughtsEnabled(thoughtsEnabled);
+    settings.setActionsReasoning(actionsReasoning);
+    settings.setSpeechReasoning(speechReasoning);
+    settings.setThoughtsReasoning(thoughtsReasoning);
     settings.validate();
     return settings;
   }
@@ -92,6 +104,21 @@ public class Settings extends Entity {
     validate();
   }
 
+  public void setActionsReasoning(boolean actionsReasoning) {
+    this.actionsReasoning = actionsReasoning;
+    validate();
+  }
+
+  public void setSpeechReasoning(boolean speechReasoning) {
+    this.speechReasoning = speechReasoning;
+    validate();
+  }
+
+  public void setThoughtsReasoning(boolean thoughtsReasoning) {
+    this.thoughtsReasoning = thoughtsReasoning;
+    validate();
+  }
+
   public String getTextgenProvider() {
     return textgenProvider;
   }
@@ -122,6 +149,18 @@ public class Settings extends Entity {
 
   public boolean isThoughtsEnabled() {
     return thoughtsEnabled;
+  }
+
+  public boolean isActionsReasoning() {
+    return actionsReasoning;
+  }
+
+  public boolean isSpeechReasoning() {
+    return speechReasoning;
+  }
+
+  public boolean isThoughtsReasoning() {
+    return thoughtsReasoning;
   }
 
   @Override
