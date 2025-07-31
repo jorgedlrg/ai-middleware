@@ -27,6 +27,6 @@ This is what the actors have said so far:
     [(${previousMessage.actorName})]: *[(${previousMessage.action})]* [(${previousMessage.speech})]
 [/]]
 
-You're playing the actor [(${you})]. Write BRIEFLY what the actor is thinking at the moment. Do not speak, do not perform any actions, just write the actor thoughts. And remember, BRIEFLY.
+You're playing the actor [(${you})]. Write BRIEFLY what the actor is thinking at the moment. Do not speak, do not perform any actions, just write the actor thoughts, and you're encouraged to use emojis. And remember, BRIEFLY.
 
 VERY IMPORTANT: write your answer completely in [(${language})].
