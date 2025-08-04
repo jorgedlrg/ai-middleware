@@ -1,6 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.message;
 
-import com.jorgedelarosa.aimiddleware.adapter.out.OutboxEvent;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -8,14 +8,15 @@ import org.springframework.stereotype.Component;
  * @author jorge
  */
 @Component
+@RequiredArgsConstructor
 public class MessagePublisher {
+
+  // This could be replaced by bindings to external message brokers. Here I use Spring application
+  // events to don't use an external message broker and make the deployment simple.
   private final ApplicationEventPublisher eventPublisher;
 
-  public MessagePublisher(ApplicationEventPublisher eventPublisher) {
-    this.eventPublisher = eventPublisher;
-  }
-
-  public void publishMessage(OutboxEvent outboxEvent) {
-    eventPublisher.publishEvent(outboxEvent);
+  // TODO: this is a synchronous publishing. do it asynchronous
+  public void publishMessage(EventEnvelope envelope) {
+    eventPublisher.publishEvent(envelope);
   }
 }

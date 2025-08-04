@@ -1,8 +1,7 @@
-package com.jorgedelarosa.aimiddleware.domain;
+package com.jorgedelarosa.aimiddleware.adapter.out.message;
 
-import java.util.HashMap;
+import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
 import java.util.Map;
-import java.util.UUID;
 
 /**
  * @author jorge
@@ -10,25 +9,30 @@ import java.util.UUID;
  */
 public class EventEnvelope<T extends DomainEvent> {
   private final T event;
+  private final String eventType;
   private final Map<String, Object> metadata;
   private final String correlationId;
   private final String causationId; // The ID of the event that caused this. Useful for idempotency.
 
   public EventEnvelope(
-      T event, Map<String, Object> metadata, String correlationId, String causationId) {
+      T event,
+      String eventType,
+      Map<String, Object> metadata,
+      String correlationId,
+      String causationId) {
     this.event = event;
+    this.eventType = eventType;
     this.metadata = metadata;
     this.correlationId = correlationId;
     this.causationId = causationId;
   }
 
-  public static <T extends DomainEvent> EventEnvelope<T> of(T event) {
-    return new EventEnvelope<>(
-        event, new HashMap<>(), UUID.randomUUID().toString(), event.getEventId().toString());
-  }
-
   public T getEvent() {
     return event;
+  }
+
+  public String getEventType() {
+    return eventType;
   }
 
   public Map<String, Object> getMetadata() {

@@ -18,7 +18,7 @@ public abstract class AggregateRoot extends Entity {
     return aggregateId;
   }
 
-  public class AggregateId {
+  public static class AggregateId {
     private final Class clazz;
     private final UUID id;
 
