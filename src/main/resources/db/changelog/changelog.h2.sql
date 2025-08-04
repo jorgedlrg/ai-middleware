@@ -49,3 +49,6 @@ UPDATE settings SET actions_reasoning=false, speech_reasoning=false, thoughts_re
 ALTER TABLE settings ALTER COLUMN actions_reasoning SET NOT NULL;
 ALTER TABLE settings ALTER COLUMN speech_reasoning SET NOT NULL;
 ALTER TABLE settings ALTER COLUMN thoughts_reasoning SET NOT NULL;
+
+-- changeset jorge:20250804-1
+CREATE TABLE outbox_event (id UUID NOT NULL PRIMARY KEY, aggregate_id TEXT NOT NULL, event_type TEXT NOT NULL, payload TEXT NOT NULL, created_at BIGINT NOT NULL, processed BIT NOT NULL, processed_on BIGINT, retry_count INT NOT NULL, error_message TEXT);

@@ -14,6 +14,10 @@ public abstract class AggregateRoot extends Entity {
     aggregateId = new AggregateId(clazz, id);
   }
 
+  public AggregateId getAggregateId() {
+    return aggregateId;
+  }
+
   public class AggregateId {
     private final Class clazz;
     private final UUID id;
@@ -21,6 +25,14 @@ public abstract class AggregateRoot extends Entity {
     public AggregateId(Class clazz, UUID id) {
       this.clazz = clazz;
       this.id = id;
+    }
+
+    public Class getClazz() {
+      return clazz;
+    }
+
+    public UUID getId() {
+      return id;
     }
 
     @Override

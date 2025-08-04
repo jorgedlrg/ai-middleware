@@ -7,7 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * @author jorge
  */
-public interface ActorRepository extends JpaRepository<ActorEntity, UUID> {
+public interface OutboxEventRepository extends JpaRepository<OutboxEventEntity, UUID> {
 
-  List<ActorEntity> findAllByCurrentOutfit(UUID currentOutfit);
+  List<OutboxEventEntity> findByProcessedFalse();
 }

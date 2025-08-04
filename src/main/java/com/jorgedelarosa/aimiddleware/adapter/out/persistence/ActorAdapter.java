@@ -7,6 +7,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.DeleteActorOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByCurrentOutfitOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
@@ -34,11 +35,19 @@ public class ActorAdapter
         GetActorListByIdOutPort,
         GetActorsOutPort,
         SaveActorOutPort,
-        DeleteActorOutPort {
+        DeleteActorOutPort,
+        GetActorListByCurrentOutfitOutPort {
 
   private final ActorRepository actorRepository;
   private final MindRepository mindRepository;
   private final AssetRepository assetRepository;
+
+  @Override
+  public List<Actor> queryActors(UUID outfit) {
+    return actorRepository.findAllByCurrentOutfit(outfit).stream()
+        .map(e -> restoreActor(e))
+        .toList();
+  }
 
   @Override
   public Optional<Actor> query(UUID id) {
