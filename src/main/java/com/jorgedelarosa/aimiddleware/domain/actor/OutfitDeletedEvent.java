@@ -11,8 +11,6 @@ public class OutfitDeletedEvent extends DomainEvent {
   public OutfitDeletedEvent(AggregateRoot.AggregateId aggregateId, Long version) {
     super(aggregateId, version);
   }
-  
-  
 
   @Override
   public int getSchemaVersion() {

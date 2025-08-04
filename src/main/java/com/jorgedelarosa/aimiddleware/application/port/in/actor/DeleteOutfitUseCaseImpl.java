@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.DeleteOutfitOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.PublishDomainEventOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
+import com.jorgedelarosa.aimiddleware.domain.actor.OutfitDeletedEvent;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,6 @@ public class DeleteOutfitUseCaseImpl implements DeleteOutfitUseCase {
     Outfit outfit = getOutfitByIdOutPort.query(cmd.id()).orElseThrow();
     deleteOutfitOutPort.delete(outfit);
     publishDomainEventOutPort.publishDomainEvent(
-        new DeleteOutfitUseCase.OutfitDeletedEvent(outfit.getAggregateId(), 1l));
+        new OutfitDeletedEvent(outfit.getAggregateId(), 1l));
   }
 }

@@ -20,7 +20,7 @@ public class OutboxEventConsumer {
   @EventListener
   public void handleMessage(EventEnvelope envelope) {
     switch (envelope.getEventType()) {
-      case "com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteOutfitUseCase$OutfitDeletedEvent" -> {
+      case "com.jorgedelarosa.aimiddleware.domain.actor.OutfitDeletedEvent" -> {
         log.info("removing outfit from actors..");
 
         removeOutfitAllActorsUseCase.execute(
