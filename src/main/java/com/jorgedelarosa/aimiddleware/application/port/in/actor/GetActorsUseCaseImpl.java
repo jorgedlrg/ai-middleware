@@ -1,11 +1,9 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.actor;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.ActorMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
-import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import java.util.List;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 /**
@@ -20,12 +18,5 @@ public class GetActorsUseCaseImpl implements GetActorsUseCase {
   @Override
   public List<ActorDto> execute(Command cmd) {
     return getActorsOutPort.query().stream().map(e -> ActorMapper.INSTANCE.toDto(e)).toList();
-  }
-
-  @Mapper
-  public interface ActorMapper {
-    ActorMapper INSTANCE = Mappers.getMapper(ActorMapper.class);
-
-    GetActorsUseCase.ActorDto toDto(Actor dom);
   }
 }

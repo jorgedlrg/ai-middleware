@@ -3,8 +3,8 @@ package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.filesystem.AssetRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.ActorRepository;
-import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MindRepository;
+import com.jorgedelarosa.aimiddleware.application.port.mapper.ActorMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.DeleteActorOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByCurrentOutfitOutPort;
@@ -12,7 +12,6 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPo
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
-import com.jorgedelarosa.aimiddleware.domain.actor.Mind;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import java.util.HashMap;
 import java.util.List;
@@ -20,9 +19,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 
 /**
@@ -101,26 +97,5 @@ public class ActorAdapter
     mindRepository.deleteById(actor.getId());
     actorRepository.deleteById(actor.getId());
     assetRepository.delete("actors/" + actor.getId());
-  }
-
-  @Mapper
-  public interface ActorMapper {
-    ActorMapper INSTANCE = Mappers.getMapper(ActorMapper.class);
-
-    default ActorEntity toEntity(Actor dom) {
-      ActorEntity ae = new ActorEntity();
-      ae.setId(dom.getId());
-      ae.setName(dom.getName());
-      ae.setPhysicalDescription(dom.getPhysicalDescription());
-      dom.getCurrentOutfit().ifPresent(e -> ae.setCurrentOutfit(e));
-      return ae;
-    }
-
-    default Mind toMind(MindEntity entity) {
-      return Mind.restore(entity.getActor(), entity.getPersonality());
-    }
-
-    @Mapping(target = "actor", source = "id")
-    MindEntity toEntity(Mind dom);
   }
 }
