@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 @Slf4j
-public class OutboxEventConsumer {
+public class EventConsumer {
 
   private final RemoveOutfitAllActorsUseCase removeOutfitAllActorsUseCase;
 
