@@ -78,11 +78,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
               .map(
                   (e) ->
                       MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toMessage(
-                          getActorByIdOutPort
-                              .query(session.getFeaturedActor(e.getRole()).get())
-                              .orElseThrow()
-                              .getName(),
-                          e))
+                          getActorByIdOutPort.query(e.getActor()).orElseThrow().getName(), e))
               .toList();
 
       List<Actor> featuredActors = getActorListByIdOutPort.query(session.getFeaturedActors());

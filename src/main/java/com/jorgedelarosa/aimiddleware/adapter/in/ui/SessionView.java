@@ -12,8 +12,10 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.NextInteractio
 import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
+import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
@@ -100,6 +102,8 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
             });
     input.setWidthFull();
 
+    Button editSession = new Button("Edit session");
+    editSession.addClickListener(editSessionListener());
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", session.toString(), deleteSessionListener());
 
@@ -131,6 +135,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     middle.add(radioGroup);
     middle.add(input);
     middle.add(contextComboBox);
+    middle.add(editSession);
     middle.add(deleteButton);
 
     add(left);
@@ -179,6 +184,12 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private void deleteInteractionListener(UUID id) {
     deleteInteractionUseCase.execute(new DeleteInteractionUseCase.Command(session, id));
     reloadInteractions();
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> editSessionListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + session));
+    };
   }
 
   private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteSessionListener() {

@@ -1,16 +1,13 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.SessionMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Introduction;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
-import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -49,12 +46,5 @@ public class CreateSessionUseCaseImpl implements CreateSessionUseCase {
     saveSessionOutPort.save(session);
 
     return session.getId();
-  }
-
-  @Mapper
-  public interface SessionMapper {
-    SessionMapper INSTANCE = Mappers.getMapper(SessionMapper.class);
-
-    Performance toDom(CreateSessionUseCase.PerformanceDto dto);
   }
 }

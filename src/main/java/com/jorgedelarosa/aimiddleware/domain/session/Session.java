@@ -132,8 +132,9 @@ public class Session extends AggregateRoot {
   }
 
   /**
-   * Returns the youngest of the same level Interactions that happened BEFORE the last one. i.e.: A
-   * [B] CURRENT D E
+   * Returns the youngest of the same level Interactions that happened BEFORE the last one.
+   *
+   * <p>i.e.: A [B] CURRENT D E
    *
    * @return
    */
@@ -147,8 +148,9 @@ public class Session extends AggregateRoot {
   }
 
   /**
-   * Returns the oldest of the same level Interactions that happened AFTER the last one. i.e.: A B
-   * CURRENT [D] E
+   * Returns the oldest of the same level Interactions that happened AFTER the last one.
+   *
+   * <p>i.e.: A B CURRENT [D] E
    *
    * @return
    */
@@ -189,6 +191,17 @@ public class Session extends AggregateRoot {
         break;
       }
     }
+    validate();
+  }
+
+  public void addPerformance(Performance performance) {
+    performances.put(performance.getRole(), performance);
+    validate();
+  }
+
+  public void replacePerformances(List<Performance> performances) {
+    this.performances.clear();
+    performances.stream().forEach(p -> addPerformance(p));
     validate();
   }
 

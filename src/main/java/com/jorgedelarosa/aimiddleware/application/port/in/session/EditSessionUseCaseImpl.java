@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.SessionMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
@@ -13,15 +14,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class UpdateSessionLocaleUseCaseImpl implements UpdateSessionLocaleUseCase {
+public class EditSessionUseCaseImpl implements EditSessionUseCase {
 
   private final GetSessionByIdOutPort getSessionByIdOutPort;
   private final SaveSessionOutPort saveSessionOutPort;
 
   @Override
-  public void execute(UpdateSessionLocaleUseCase.Command cmd) {
-    Session session = getSessionByIdOutPort.query(cmd.id()).orElseThrow();
+  public void execute(Command cmd) {
+    Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
+    session.replacePerformances(
+        cmd.performances().stream().map(p -> SessionMapper.INSTANCE.toDom(p)).toList());
+    session.setCurrentContext(cmd.currentContext());
     session.setLocale(cmd.locale());
 
     saveSessionOutPort.save(session);

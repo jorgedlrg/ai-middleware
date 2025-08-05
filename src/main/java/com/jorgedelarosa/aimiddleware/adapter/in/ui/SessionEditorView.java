@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.CreateSessionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
@@ -14,7 +15,7 @@ import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
-import com.vaadin.flow.router.PageTitle;
+import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,19 +25,24 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.EditSessionUseCase;
 
 /**
  * @author jorge
  */
-@Route(value = "new-session", layout = MainView.class)
+@Route(value = "sessions/:sessionId?", layout = MainView.class)
 @RequiredArgsConstructor
-@PageTitle("New Session")
-public class NewSessionView extends VerticalLayout implements BeforeEnterObserver {
+public class SessionEditorView extends VerticalLayout
+    implements HasDynamicTitle, BeforeEnterObserver {
+  private final GetSessionDetailsUseCase getSessionDetailsUseCase;
   private final GetScenariosUseCase getScenariosUseCase;
   private final GetScenarioDetailsUseCase getScenarioDetailsUseCase;
   private final GetActorsUseCase getActorsUseCase;
   private final CreateSessionUseCase createSessionUseCase;
+  private final EditSessionUseCase updateSessionUseCase;
 
+  private String pageTitle;
+  private UUID session = null;
   private GetScenariosUseCase.ScenarioDto selectedScenario = null;
   private GetScenarioDetailsUseCase.ContextDto selectedContext = null;
   private Map<UUID, CreateSessionUseCase.PerformanceDto> performances = new HashMap<>();
@@ -55,8 +61,12 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       scenariosComboBox.setValue(selectedScenario);
     }
     scenariosComboBox.addValueChangeListener(e -> selectScenarioListener(e.getValue()));
-
+    // lock components when editing an existing session
+    if (session != null) {
+      scenariosComboBox.setEnabled(false);
+    }
     add(scenariosComboBox);
+
     if (selectedScenario != null) {
       GetScenarioDetailsUseCase.ScenarioDto scenarioDetails =
           getScenarioDetailsUseCase.execute(
@@ -111,6 +121,9 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
           intros.setValue(selectedIntro);
         }
         intros.addValueChangeListener(e -> selectIntroListener(e.getValue()));
+        if (session != null) {
+          intros.setEnabled(false);
+        }
         add(intros);
       }
 
@@ -127,7 +140,7 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       if (selectedContext != null && selectedLocale != null && performances.size() > 1) {
         Button createSession = new Button("Save");
         createSession.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        createSession.addClickListener(createSessionListener());
+        createSession.addClickListener(saveSessionListener());
         add(createSession);
       }
     }
@@ -153,7 +166,7 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
       performances.put(role, new CreateSessionUseCase.PerformanceDto(dto.id(), role));
     } else {
       performances.remove(role);
-      if (selectedIntro.performer().equals(role)) {
+      if (selectedIntro != null && selectedIntro.performer().equals(role)) {
         selectedIntro = null;
       }
     }
@@ -173,24 +186,78 @@ public class NewSessionView extends VerticalLayout implements BeforeEnterObserve
     render();
   }
 
-  private ComponentEventListener<ClickEvent<Button>> createSessionListener() {
+  private ComponentEventListener<ClickEvent<Button>> saveSessionListener() {
     return (ClickEvent<Button> t) -> {
-      UUID sessionId =
-          createSessionUseCase.execute(
-              new CreateSessionUseCase.Command(
-                  selectedScenario.id(),
-                  selectedContext.id(),
-                  new ArrayList(performances.values()),
-                  selectedLocale,
-                  Optional.ofNullable(selectedIntro != null ? selectedIntro.id() : null)));
-      t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId + "/interact"));
-      Notification notification = Notification.show("Session " + sessionId + " created!");
-      notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      if (session != null) {
+        updateSessionUseCase.execute(
+            new EditSessionUseCase.Command(
+                session,
+                selectedContext.id(),
+                performances.values().stream()
+                    .map(p -> new EditSessionUseCase.PerformanceDto(p.actor(), p.role()))
+                    .toList(),
+                selectedLocale));
+        t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + session + "/interact"));
+        Notification notification = Notification.show("Session " + session + " updated!");
+        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      } else {
+        UUID sessionId =
+            createSessionUseCase.execute(
+                new CreateSessionUseCase.Command(
+                    selectedScenario.id(),
+                    selectedContext.id(),
+                    new ArrayList(performances.values()),
+                    selectedLocale,
+                    Optional.ofNullable(selectedIntro != null ? selectedIntro.id() : null)));
+        t.getSource().getUI().ifPresent(ui -> ui.navigate("sessions/" + sessionId + "/interact"));
+        Notification notification = Notification.show("Session " + sessionId + " created!");
+        notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+      }
     };
   }
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
+    Optional<UUID> sessionParam =
+        event.getRouteParameters().get("sessionId").map(e -> UUID.fromString(e));
+
+    if (sessionParam.isPresent()) {
+      session = sessionParam.get();
+      GetSessionDetailsUseCase.SessionDto dto =
+          getSessionDetailsUseCase.execute(new GetSessionDetailsUseCase.Command(session));
+
+      selectedScenario =
+          getScenariosUseCase.execute(new GetScenariosUseCase.Command()).stream()
+              .filter(e -> e.id().equals(dto.scenario()))
+              .findFirst()
+              .orElseThrow();
+      GetScenarioDetailsUseCase.ScenarioDto scenarioDetails =
+          getScenarioDetailsUseCase.execute(
+              new GetScenarioDetailsUseCase.Command(selectedScenario.id()));
+      selectedContext =
+          scenarioDetails.contexts().stream()
+              .filter(e -> e.id().equals(dto.currentContext()))
+              .findFirst()
+              .orElseThrow();
+
+      dto.performances().stream()
+          .forEach(
+              p ->
+                  performances.put(
+                      p.role(), new CreateSessionUseCase.PerformanceDto(p.actor(), p.role())));
+
+      selectedLocale = dto.locale();
+
+      pageTitle = "Session - " + selectedScenario.name();
+    } else {
+      pageTitle = "New Session";
+    }
+
     render();
+  }
+
+  @Override
+  public String getPageTitle() {
+    return pageTitle;
   }
 }

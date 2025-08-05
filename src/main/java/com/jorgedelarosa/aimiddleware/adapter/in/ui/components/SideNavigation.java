@@ -2,11 +2,11 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorsListView;
-import com.jorgedelarosa.aimiddleware.adapter.in.ui.NewSessionView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenarioEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ScenariosListView;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.SessionEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.SessionsListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.UserSettingsView;
 import com.vaadin.flow.component.html.Div;
@@ -41,7 +41,7 @@ public class SideNavigation extends Div {
     SideNavItem sessions =
         new SideNavItem("Sessions", SessionsListView.class, VaadinIcon.MOVIE.create());
     sessions.addItem(
-        new SideNavItem("New session", NewSessionView.class, VaadinIcon.PLUS.create()));
+        new SideNavItem("New session", SessionEditorView.class, VaadinIcon.PLUS.create()));
     mainSection.addItem(sessions);
     add(mainSection);
 
