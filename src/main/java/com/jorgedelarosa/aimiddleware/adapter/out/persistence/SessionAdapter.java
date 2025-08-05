@@ -9,6 +9,7 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.DeleteSessionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsByScenarioOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
@@ -33,11 +34,22 @@ import org.springframework.stereotype.Component;
 @Component
 @AllArgsConstructor
 public class SessionAdapter
-    implements GetSessionByIdOutPort, SaveSessionOutPort, GetSessionsOutPort, DeleteSessionOutPort {
+    implements GetSessionByIdOutPort,
+        SaveSessionOutPort,
+        GetSessionsOutPort,
+        DeleteSessionOutPort,
+        GetSessionsByScenarioOutPort {
 
   private final SessionRepository sessionRepository;
   private final InteractionRepository interactionRepository;
   private final PerformanceRepository performanceRepository;
+
+  @Override
+  public List<Session> queryByScenario(UUID scenario) {
+    return sessionRepository.findAllByScenario(scenario).stream()
+        .map(e -> restoreSession(e))
+        .toList();
+  }
 
   @Override
   public Optional<Session> query(UUID id) {

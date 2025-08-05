@@ -1,8 +1,7 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.DeleteSessionOutPort;
-import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
-import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionsByScenarioOutPort;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -13,14 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 @RequiredArgsConstructor
 @Transactional
-public class DeleteSessionUseCaseImpl implements DeleteSessionUseCase {
+public class DeleteSessionWithScenarioUseCaseImpl implements DeleteSessionWithScenarioUseCase {
 
-  private final GetSessionByIdOutPort getSessionByIdOutPort;
+  private final GetSessionsByScenarioOutPort getSessionsByScenarioOutPort;
   private final DeleteSessionOutPort deleteSessionOutPort;
 
   @Override
   public void execute(Command cmd) {
-    Session session = getSessionByIdOutPort.query(cmd.sessionId()).orElseThrow();
-    deleteSessionOutPort.delete(session);
+    getSessionsByScenarioOutPort.queryByScenario(cmd.scenario()).stream()
+        .forEach(s -> deleteSessionOutPort.delete(s));
   }
 }
