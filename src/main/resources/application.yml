@@ -2,7 +2,7 @@ spring:
   application:
     name: aimiddleware
   datasource:
-    url: jdbc:h2:~/aimiddleware/mydb
+    url: jdbc:h2:~/aimiddleware/mydb;\DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;FILE_LOCK=SOCKET;WRITE_DELAY=0;FLUSH_MODE=SYNC
     username: sa
     password: sa
     driverClassName: org.h2.Driver
