@@ -60,7 +60,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private UUID session;
   private String pageTitle;
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
-  private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> radioGroup;
+  private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> userActorSelector;
 
   private void render() {
     removeAll();
@@ -82,11 +82,11 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
             .orElseThrow());
     contextComboBox.addValueChangeListener(e -> changeContextListener(e.getValue()));
 
-    radioGroup = new RadioButtonGroup<>();
-    radioGroup.setLabel("You're:");
-    radioGroup.setRenderer(performancesRenderer);
-    radioGroup.setItems(sessionDetails.performances());
-    radioGroup.setValue(sessionDetails.performances().getFirst());
+    userActorSelector = new RadioButtonGroup<>();
+    userActorSelector.setLabel("You're:");
+    userActorSelector.setRenderer(performancesRenderer);
+    userActorSelector.setItems(sessionDetails.performances());
+    userActorSelector.setValue(sessionDetails.performances().getFirst());
 
     interactionList = new VirtualList<>();
     interactionList.setRenderer(interactionRenderer);
@@ -132,7 +132,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     middle.setWidth("60%");
     middle.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY);
     middle.add(interactionList);
-    middle.add(radioGroup);
+    middle.add(userActorSelector);
     middle.add(input);
     middle.add(contextComboBox);
     middle.add(editSession);
@@ -155,7 +155,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private void userInteractListener(MessageInput.SubmitEvent submitEvent) {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
-            session, radioGroup.getValue().role(), submitEvent.getValue()));
+            session, userActorSelector.getValue().role(), submitEvent.getValue()));
 
     reloadInteractions();
   }
