@@ -4,7 +4,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsU
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetOutfitsUseCase;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -12,7 +11,6 @@ import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.server.streams.UploadHandler;
 import com.vaadin.flow.server.streams.UploadMetadata;
-import com.vaadin.flow.theme.lumo.LumoUtility;
 import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
@@ -48,9 +46,11 @@ public class ActorEditorActorLayout extends VerticalLayout {
     physicalDescription = new TextArea("Physical description");
     physicalDescription.setValue(actorDto.physicalDescription());
     physicalDescription.setWidthFull();
+    physicalDescription.setMinRows(4);
 
     personality = new TextArea("Personality");
     personality.setWidthFull();
+    personality.setMinRows(4);
     actorDto.mind().ifPresent(e -> personality.setValue(e.personality()));
 
     Upload upload =

@@ -48,6 +48,7 @@ public class OutfitEditorView extends VerticalLayout
 
     name = new TextField("Name");
     description = new TextArea("Description");
+    description.setMinRows(4);
     if (dto != null) {
       name.setValue(dto.name());
       description.setValue(dto.description());

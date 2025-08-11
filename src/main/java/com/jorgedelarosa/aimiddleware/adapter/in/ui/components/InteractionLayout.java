@@ -4,8 +4,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDeta
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.details.Details;
-import com.vaadin.flow.component.details.DetailsVariant;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -100,16 +98,17 @@ public class InteractionLayout extends HorizontalLayout {
     nameLayout.addClassNames(LumoUtility.Width.FULL, LumoUtility.JustifyContent.BETWEEN);
     detailsLayout.add(nameLayout);
 
-    String mood = "";
-    if (dto.mood() != null && !dto.mood().equals("")) {
-      mood = "(" + dto.mood() + ")";
+    if (dto.thoughtText() != null && !dto.thoughtText().equals("")) {
+      Div thoughtText = new Div(new Text("Thoughts:\n" + dto.thoughtText()));
+      thoughtText.addClassNames(
+          LumoUtility.TextColor.SECONDARY,
+          LumoUtility.FontSize.SMALL);
+      detailsLayout.add(thoughtText);
+      if (dto.thoughtReasoning() != null) {
+        ReasoningPopover popover =
+            new ReasoningPopover(new Div(new Text(dto.thoughtReasoning())), thoughtText);
+      }
     }
-    Div thoughtText = new Div(new Text(dto.thoughtText()));
-    Details thoughts = new Details("Thoughts " + mood + dto.emoji(), thoughtText);
-    thoughts.setOpened(true);
-    thoughts.addThemeVariants(DetailsVariant.SMALL);
-    thoughts.addClassNames(LumoUtility.Margin.NONE);
-    detailsLayout.add(thoughts);
 
     HorizontalLayout header = new HorizontalLayout();
     header.addClassNames(LumoUtility.Width.FULL, LumoUtility.Padding.SMALL);
@@ -120,7 +119,7 @@ public class InteractionLayout extends HorizontalLayout {
         LumoUtility.Margin.NONE, LumoUtility.Padding.NONE, LumoUtility.Display.BLOCK);
     verticalLayout.add(header);
     if (dto.actionText() != null && !dto.actionText().equals("")) {
-      Div action = new Div(new Text(dto.actionText()));
+      Div action = new Div(new Text("Action:\n" + dto.actionText()));
       action.addClassNames(
           LumoUtility.TextColor.SECONDARY,
           LumoUtility.FontSize.SMALL,
@@ -128,8 +127,16 @@ public class InteractionLayout extends HorizontalLayout {
           LumoUtility.Padding.Vertical.NONE,
           LumoUtility.Padding.Horizontal.XLARGE);
       verticalLayout.add(action);
+      if (dto.actionReasoning() != null) {
+        ReasoningPopover popover =
+            new ReasoningPopover(new Div(new Text(dto.actionReasoning())), action);
+      }
     }
     Div text = new Div(new Text(dto.spokenText()));
+    if (dto.spokenReasoning() != null) {
+      ReasoningPopover popover =
+          new ReasoningPopover(new Div(new Text(dto.spokenReasoning())), text);
+    }
     text.addClassNames(
         LumoUtility.Background.BASE,
         LumoUtility.BorderRadius.LARGE,

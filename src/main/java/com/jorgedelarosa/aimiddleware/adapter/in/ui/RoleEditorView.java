@@ -46,6 +46,7 @@ public class RoleEditorView extends VerticalLayout implements BeforeEnterObserve
     removeAll();
     name = new TextField("Name");
     details = new TextArea("Details");
+    details.setMinRows(4);
     if (role != null) {
       GetScenarioDetailsUseCase.RoleDto dto = retrieveRole();
       name.setValue(dto.name());

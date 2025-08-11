@@ -47,6 +47,7 @@ public class ContextEditorView extends VerticalLayout
     removeAll();
     name = new TextField("Name");
     physicalDescription = new TextArea("Physical description");
+    physicalDescription.setMinRows(4);
     if (context != null) {
       GetScenarioDetailsUseCase.ContextDto dto = retrieveContext();
       name.setValue(dto.name());

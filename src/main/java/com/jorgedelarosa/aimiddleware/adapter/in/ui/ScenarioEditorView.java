@@ -53,6 +53,7 @@ public class ScenarioEditorView extends VerticalLayout
     description.setValue(scenarioDto.description());
     description.setRequired(true);
     description.setWidthFull();
+    description.setMinRows(4);
 
     Grid<GetScenarioDetailsUseCase.ContextDto> contextGrid =
         new Grid<>(GetScenarioDetailsUseCase.ContextDto.class, false);

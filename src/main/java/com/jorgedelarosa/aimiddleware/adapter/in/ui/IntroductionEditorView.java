@@ -52,8 +52,11 @@ public class IntroductionEditorView extends VerticalLayout
   private void render() {
     removeAll();
     spoken = new TextArea("Spoken text");
+    spoken.setMinRows(4);
     thoughts = new TextArea("Thoughts");
+    thoughts.setMinRows(4);
     action = new TextArea("Action");
+    action.setMinRows(4);
     roles = new ComboBox<>("Performer");
     roles.setItems(scenarioDto.roles());
     roles.setItemLabelGenerator(GetScenarioDetailsUseCase.RoleDto::name);
