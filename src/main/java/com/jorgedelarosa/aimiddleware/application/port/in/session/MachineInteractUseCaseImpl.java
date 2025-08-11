@@ -14,6 +14,7 @@ import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
@@ -96,9 +97,9 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
                     user.getSettings())));
     session.interact(
-        response.thoughts(),
-        response.action(),
-        response.speech(),
+        new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
+        new InteractionText(response.action().text(), response.action().reasoning()),
+        new InteractionText(response.speech().text(), response.speech().reasoning()),
         cmd.role(),
         Mood.optionalValueOf(response.mood()));
 
@@ -112,7 +113,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     default GenerateMachineInteractionOutPort.PreviousMessage toMessage(
         String actorName, Interaction interaction) {
       return new GenerateMachineInteractionOutPort.PreviousMessage(
-          actorName, interaction.getActionText(), interaction.getSpokenText());
+          actorName, interaction.getActionText().getText(), interaction.getSpokenText().getText());
     }
 
     default GenerateMachineInteractionOutPort.PerformanceDto toDto(

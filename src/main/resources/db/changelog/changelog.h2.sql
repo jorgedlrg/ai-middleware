@@ -52,3 +52,8 @@ ALTER TABLE settings ALTER COLUMN thoughts_reasoning SET NOT NULL;
 
 -- changeset jorge:20250804-1
 CREATE TABLE outbox_event (id UUID NOT NULL PRIMARY KEY, aggregate_id TEXT NOT NULL, event_type TEXT NOT NULL, payload TEXT NOT NULL, created_at BIGINT NOT NULL, processed BIT NOT NULL, processed_on BIGINT, retry_count INT NOT NULL, error_message TEXT);
+
+-- changeset jorge:20250811-1
+ALTER TABLE interaction ADD text_reasoning LONGTEXT;
+ALTER TABLE interaction ADD thoughts_reasoning LONGTEXT;
+ALTER TABLE interaction ADD action_reasoning LONGTEXT;

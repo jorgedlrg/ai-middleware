@@ -13,6 +13,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import com.jorgedelarosa.aimiddleware.domain.user.User;
@@ -109,9 +110,9 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
                       user.getSettings())));
       session.interactNext(
-          response.thoughts(),
-          response.action(),
-          response.speech(),
+          new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
+          new InteractionText(response.action().text(), response.action().reasoning()),
+          new InteractionText(response.speech().text(), response.speech().reasoning()),
           session.getLastInteraction().getRole(),
           Mood.optionalValueOf(response.mood()));
     }

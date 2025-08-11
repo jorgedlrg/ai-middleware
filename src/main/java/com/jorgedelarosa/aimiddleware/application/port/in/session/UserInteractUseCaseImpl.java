@@ -2,6 +2,7 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.Optional;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,12 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
     // TODO: REFINE. maybe make the user send actions and thoughts, if necessary
-    session.interact("", "", cmd.text(), cmd.role(), Optional.empty());
+    session.interact(
+        new InteractionText("", Optional.empty()),
+        new InteractionText("", Optional.empty()),
+        new InteractionText(cmd.text(), Optional.empty()),
+        cmd.role(),
+        Optional.empty());
 
     saveSessionOutPort.save(session);
   }

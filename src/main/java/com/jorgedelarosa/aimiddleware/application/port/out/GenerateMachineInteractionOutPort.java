@@ -34,7 +34,9 @@ public interface GenerateMachineInteractionOutPort {
 
   public record PreviousMessage(String actorName, String action, String speech) {}
 
-  public record MachineResponse(String thoughts, String action, String speech, String mood) {}
+  public record TextDto(String text, Optional<String> reasoning) {}
+
+  public record MachineResponse(TextDto thoughts, TextDto action, TextDto speech, String mood) {}
 
   public record TextGenSettingsDto(
       String textgenProvider,

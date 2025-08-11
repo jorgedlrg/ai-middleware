@@ -4,6 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.mapper.SessionMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Introduction;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import java.util.Optional;
 import java.util.UUID;
@@ -37,9 +38,9 @@ public class CreateSessionUseCaseImpl implements CreateSessionUseCase {
               .findFirst()
               .orElseThrow();
       session.interact(
-          intro.getThoughtText().orElse(null),
-          intro.getActionText().orElse(null),
-          intro.getSpokenText(),
+          new InteractionText(intro.getThoughtText().orElse(null), Optional.empty()),
+          new InteractionText(intro.getActionText().orElse(null), Optional.empty()),
+          new InteractionText(intro.getSpokenText(), Optional.empty()),
           intro.getPerformer().getId(),
           Optional.empty());
     }

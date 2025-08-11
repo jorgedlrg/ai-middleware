@@ -11,9 +11,9 @@ import java.util.UUID;
  */
 public class Interaction extends Entity {
 
-  private final String thoughtText;
-  private final String spokenText;
-  private final String actionText;
+  private final InteractionText thoughtText;
+  private final InteractionText spokenText;
+  private final InteractionText actionText;
   private final Instant timestamp;
   private final UUID role;
   private final UUID actor;
@@ -23,9 +23,9 @@ public class Interaction extends Entity {
   private final Optional<Mood> mood;
 
   private Interaction(
-      String thoughtText,
-      String spokenText,
-      String actionText,
+      InteractionText thoughtText,
+      InteractionText spokenText,
+      InteractionText actionText,
       Instant timestamp,
       UUID role,
       UUID actor,
@@ -48,9 +48,9 @@ public class Interaction extends Entity {
   }
 
   public static Interaction create(
-      String thoughtText,
-      String spokenText,
-      String actionText,
+      InteractionText thoughtText,
+      InteractionText spokenText,
+      InteractionText actionText,
       UUID role,
       UUID actor,
       UUID context,
@@ -62,9 +62,9 @@ public class Interaction extends Entity {
     }
     Interaction interaction =
         new Interaction(
-            thoughtText != null ? thoughtText : "",
+            thoughtText != null ? thoughtText : new InteractionText("", Optional.empty()),
             spokenText,
-            actionText != null ? actionText : "",
+            actionText != null ? actionText : new InteractionText("", Optional.empty()),
             Instant.now(),
             role,
             actor,
@@ -79,9 +79,9 @@ public class Interaction extends Entity {
 
   public static Interaction restore(
       UUID id,
-      String thoughtText,
-      String spokenText,
-      String actionText,
+      InteractionText thoughtText,
+      InteractionText spokenText,
+      InteractionText actionText,
       long timestamp,
       UUID role,
       UUID actor,
@@ -94,9 +94,9 @@ public class Interaction extends Entity {
     }
     Interaction interaction =
         new Interaction(
-            thoughtText != null ? thoughtText : "",
+            thoughtText != null ? thoughtText : new InteractionText("", Optional.empty()),
             spokenText,
-            actionText != null ? actionText : "",
+            actionText != null ? actionText : new InteractionText("", Optional.empty()),
             Instant.ofEpochMilli(timestamp),
             role,
             actor,
@@ -109,15 +109,15 @@ public class Interaction extends Entity {
     return interaction;
   }
 
-  public String getThoughtText() {
+  public InteractionText getThoughtText() {
     return thoughtText;
   }
 
-  public String getSpokenText() {
+  public InteractionText getSpokenText() {
     return spokenText;
   }
 
-  public String getActionText() {
+  public InteractionText getActionText() {
     return actionText;
   }
 
@@ -151,7 +151,7 @@ public class Interaction extends Entity {
 
   @Override
   public boolean validate() {
-    if (Validator.strNotEmpty.validate(spokenText)
+    if (Validator.strNotEmpty.validate(spokenText.getText())
         && timestamp != null
         && role != null
         && actor != null

@@ -36,5 +36,8 @@ public interface GetSessionDetailsUseCase {
       Integer siblingNumber,
       Integer totalSiblings,
       String mood,
-      String emoji) {}
+      String emoji,
+      String thoughtReasoning,
+      String actionReasoning,
+      String spokenReasoning) {}
 }
