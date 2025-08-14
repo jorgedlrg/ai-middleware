@@ -182,9 +182,9 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         OpenRouterClient client = new OpenRouterClient(settings.openrouterApikey());
         OpenRouterChatCompletionResponse response =
             client.chatCompletion(ChatMapper.INSTANCE.toOpenRouterChatCompletionRequest(req));
-        text[0] = response.choices().getFirst().message().content().trim();
+        text[0] = response.choices().getFirst().message().content();
         if (reasoning) {
-          text[1] = response.choices().getFirst().message().reasoning().trim();
+          text[1] = response.choices().getFirst().message().reasoning();
         }
       }
       case "ollama" -> {
@@ -193,9 +193,9 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
         OllamaClient client = new OllamaClient(settings.ollamaHost());
         OllamaChatResponse response =
             client.chatCompletion(ChatMapper.INSTANCE.toOllamaChatMessage(req));
-        text[0] = response.message().content().trim();
+        text[0] = response.message().content();
         if (reasoning) {
-          text[1] = response.message().thinking().trim();
+          text[1] = response.message().thinking();
         }
       }
       default -> throw new AssertionError();

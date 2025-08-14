@@ -10,8 +10,8 @@ public class InteractionText {
   private final Optional<String> reasoning;
 
   public InteractionText(String text, Optional<String> reasoning) {
-    this.text = text;
-    this.reasoning = reasoning;
+    this.text = text.trim();
+    this.reasoning = reasoning.map(e -> e.trim());
   }
 
   public String getText() {
