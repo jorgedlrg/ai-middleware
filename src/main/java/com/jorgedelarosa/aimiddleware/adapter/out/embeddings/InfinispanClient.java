@@ -9,21 +9,13 @@ import dev.langchain4j.store.embedding.EmbeddingSearchRequest;
 import dev.langchain4j.store.embedding.EmbeddingStore;
 import dev.langchain4j.store.embedding.infinispan.InfinispanEmbeddingStore;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
-import org.infinispan.configuration.cache.IndexStorage;
-import org.infinispan.configuration.global.GlobalConfigurationBuilder;
-import org.infinispan.manager.DefaultCacheManager;
-import org.infinispan.manager.EmbeddedCacheManager;
-import org.infinispan.server.hotrod.HotRodServer;
-import org.infinispan.server.hotrod.configuration.HotRodServerConfigurationBuilder;
 
 /**
  * @author jorge
  */
 @Slf4j
-@RequiredArgsConstructor
 public class InfinispanClient {
 
   private static final InfinispanServer SERVER;
@@ -32,36 +24,35 @@ public class InfinispanClient {
     SERVER = new InfinispanServer();
   }
 
-  public static void mvp() {
+  private final EmbeddingStore<TextSegment> embeddingStore;
+  private final EmbeddingModel embeddingModel;
 
+  public InfinispanClient() {
     ConfigurationBuilder builder = new ConfigurationBuilder();
     builder.addServers("localhost:11222");
-    EmbeddingStore<TextSegment> embeddingStore =
+    embeddingStore =
         InfinispanEmbeddingStore.builder()
             .cacheName("embeddings")
             .infinispanConfigBuilder(builder)
             .registerSchema(true)
             .dimension(384)
             .build();
+    embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+  }
 
-    EmbeddingModel embeddingModel = new AllMiniLmL6V2EmbeddingModel();
+  public void addTextSegment(String text) {
+    TextSegment textSegment = TextSegment.from(text);
+    Embedding embedding = embeddingModel.embed(textSegment).content();
+    embeddingStore.add(embedding, textSegment);
+  }
 
-    TextSegment segment1 = TextSegment.from("I like football.");
-    Embedding embedding1 = embeddingModel.embed(segment1).content();
-    embeddingStore.add(embedding1, segment1);
-
-    TextSegment segment2 = TextSegment.from("The weather is good today.");
-    Embedding embedding2 = embeddingModel.embed(segment2).content();
-    embeddingStore.add(embedding2, segment2);
-
-    Embedding queryEmbedding = embeddingModel.embed("What is your favourite sport?").content();
+  public List<String> query(String query) {
+    Embedding queryEmbedding = embeddingModel.embed(query).content();
     EmbeddingSearchRequest embeddingSearchRequest =
-        EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(1).build();
+        EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(10).build();
     List<EmbeddingMatch<TextSegment>> matches =
         embeddingStore.search(embeddingSearchRequest).matches();
-    EmbeddingMatch<TextSegment> embeddingMatch = matches.get(0);
-
-    log.info(embeddingMatch.score().toString()); // 0.814428....
-    log.info(embeddingMatch.embedded().text()); // I like football.
+    log.debug(String.format("Number of matches: %s", matches.size()));
+    return matches.stream().map(e -> e.embedded().text()).toList();
   }
 }
