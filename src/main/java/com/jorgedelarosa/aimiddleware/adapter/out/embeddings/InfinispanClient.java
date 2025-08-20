@@ -18,6 +18,8 @@ import org.infinispan.client.hotrod.configuration.ConfigurationBuilder;
 @Slf4j
 public class InfinispanClient {
 
+  // TODO: attempt to access the in-process infinispan server directly, intead of using a socket.
+  // Also, test this server as a @Component
   private static final InfinispanServer SERVER;
 
   static {
@@ -49,9 +51,14 @@ public class InfinispanClient {
   public List<String> query(String query) {
     Embedding queryEmbedding = embeddingModel.embed(query).content();
     EmbeddingSearchRequest embeddingSearchRequest =
-        EmbeddingSearchRequest.builder().queryEmbedding(queryEmbedding).maxResults(10).build();
+        EmbeddingSearchRequest.builder()
+            .queryEmbedding(queryEmbedding)
+            .maxResults(10)
+            .build();
     List<EmbeddingMatch<TextSegment>> matches =
         embeddingStore.search(embeddingSearchRequest).matches();
+    // TODO: I need to rethink how I handle these caches... maybe I need to create one per session.
+    embeddingStore.removeAll();
     log.debug(String.format("Number of matches: %s", matches.size()));
     return matches.stream().map(e -> e.embedded().text()).toList();
   }

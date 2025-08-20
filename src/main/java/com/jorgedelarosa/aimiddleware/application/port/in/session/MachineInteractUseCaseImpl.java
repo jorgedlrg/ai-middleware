@@ -23,6 +23,7 @@ import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import com.jorgedelarosa.aimiddleware.domain.user.User;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -71,8 +72,11 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
         getActorByIdOutPort.query(session.getFeaturedActor(cmd.role()).get()).orElseThrow();
 
     Memory memory = getMemoryByActorOutPort.query(actingActor.getId());
-    List<MemoryFragment> fragments = extractRelevantMemoryFragmentsOutPort.query(memory);
-    
+    List<MemoryFragment> memoryFragments =
+        !session.getCurrentInteractions().isEmpty()
+            ? extractRelevantMemoryFragmentsOutPort.query(
+                memory, session.getCurrentInteractions().getLast())
+            : Collections.EMPTY_LIST;
 
     List<GenerateMachineInteractionOutPort.PreviousMessage> previousMessages =
         session.getCurrentInteractions().stream()
@@ -105,7 +109,10 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH),
                 GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
-                    user.getSettings())));
+                    user.getSettings()),
+                memoryFragments.stream()
+                    .map(e -> GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toDto(e))
+                    .toList()));
     session.interact(
         new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
         new InteractionText(response.action().text(), response.action().reasoning()),

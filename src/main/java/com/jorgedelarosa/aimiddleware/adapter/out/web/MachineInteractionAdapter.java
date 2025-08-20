@@ -121,6 +121,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     templateVars.put("previousMessages", cmd.previousMessages());
     templateVars.put("you", cmd.you().getName());
     templateVars.put("language", cmd.replyLanguage());
+    templateVars.put("memoryFragments", cmd.memoryFragments());
 
     return templateVars;
   }
