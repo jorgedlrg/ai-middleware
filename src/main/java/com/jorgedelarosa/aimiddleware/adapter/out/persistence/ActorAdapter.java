@@ -18,14 +18,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class ActorAdapter
     implements GetActorByIdOutPort,
         GetActorListByIdOutPort,

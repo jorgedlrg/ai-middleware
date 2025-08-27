@@ -18,7 +18,10 @@
         <license/>
     </licenses>
     <developers>
-        <developer/>
+        <developer>
+            <name>Jorge de la Rosa Giner</name>
+            <email>jorgedlrg@gmail.com</email>
+        </developer>
     </developers>
     <scm>
         <connection/>
@@ -31,6 +34,7 @@
         <org.mapstruct.version>1.6.3</org.mapstruct.version>
         <springdoc-openapi.version>2.8.9</springdoc-openapi.version>
         <vaadin.version>24.8.5</vaadin.version>
+        <com.google.guava.version>33.4.8-jre</com.google.guava.version>
     </properties>
     <dependencies>
         <dependency>
@@ -102,9 +106,9 @@
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>33.4.8-jre</version>
+            <version>${com.google.guava.version}</version>
         </dependency>
-
+        
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>

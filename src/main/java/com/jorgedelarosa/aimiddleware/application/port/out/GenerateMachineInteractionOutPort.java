@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.application.port.out;
 
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
+import com.jorgedelarosa.aimiddleware.domain.actor.MemoryFragment;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.user.Settings;
 import java.util.List;
@@ -22,7 +23,8 @@ public interface GenerateMachineInteractionOutPort {
       List<PerformanceDto> performances,
       List<PreviousMessage> previousMessages,
       String replyLanguage,
-      TextGenSettingsDto settings) {}
+      TextGenSettingsDto settings,
+      List<MemoryFragmentDto> memoryFragments) {}
 
   public record PerformanceDto(
       String roleName,
@@ -51,10 +53,14 @@ public interface GenerateMachineInteractionOutPort {
       boolean speechReasoning,
       boolean thoughtsReasoning) {}
 
+  public record MemoryFragmentDto(String text) {}
+
   @Mapper
   public interface TextGenMapper {
     TextGenMapper INSTANCE = Mappers.getMapper(TextGenMapper.class);
 
     TextGenSettingsDto toSettingsEntity(Settings dom);
+    
+    MemoryFragmentDto toDto(MemoryFragment dom);
   }
 }

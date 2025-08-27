@@ -3,12 +3,14 @@ package com.jorgedelarosa.aimiddleware.application.port.in.session;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.GetMemoryByActorOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
+import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
@@ -50,6 +52,7 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
   private final SaveSessionOutPort saveSessionOutPort;
   private final GenerateMachineInteractionOutPort generateMachineInteractionOutPort;
   private final GetUserByIdOutPort getUserByIdOutPort;
+  private final GetMemoryByActorOutPort getMemoryByActorOutPort;
 
   @Override
   public void execute(Command cmd) {
@@ -63,6 +66,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
     Actor actingActor =
         getActorByIdOutPort.query(session.getFeaturedActor(cmd.role()).get()).orElseThrow();
+
+    Memory memory = getMemoryByActorOutPort.query(actingActor.getId());
 
     List<GenerateMachineInteractionOutPort.PreviousMessage> previousMessages =
         session.getCurrentInteractions().stream()
@@ -95,7 +100,10 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                 previousMessages,
                 session.getLocale().getDisplayLanguage(Locale.ENGLISH),
                 GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
-                    user.getSettings())));
+                    user.getSettings()),
+                memory.getFragments().stream()
+                    .map(e -> GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toDto(e))
+                    .toList()));
     session.interact(
         new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
         new InteractionText(response.action().text(), response.action().reasoning()),

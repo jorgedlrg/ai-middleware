@@ -35,6 +35,10 @@ You're playing the actor [(${you})][# th:if="${currentThoughts}!=null"], and thi
 {
     [(${currentAction})]
 }[/]
+These are the memories [(${you})] has. Only consider those that are relevant to the current context and events:
+[[# th:each="memoryFragment : ${memoryFragments}"]
+    [(${memoryFragment.text})]
+[/]]
 
 Talk as you were [(${you})]. Bear in mind [(${you})]'s current thoughts and what the actor is doing while speaking. Write what the actor would say. Do not emote. Don't write actions.
 You're encouraged to use emojis in the middle of the sentences to express the emotions of the actor.
