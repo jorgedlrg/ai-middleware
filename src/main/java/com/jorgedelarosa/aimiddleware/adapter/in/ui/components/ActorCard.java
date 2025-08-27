@@ -49,9 +49,11 @@ public class ActorCard extends Card {
 
     Button editActor = new Button("Edit");
     editActor.addClickListener(editActorListener());
+    Button memory = new Button("Memory");
+    memory.addClickListener(editMemoryListener());
     DeleteConfirmButton deleteButton =
         new DeleteConfirmButton("Delete", dto.name(), deleteActorListener());
-    addToFooter(editActor, deleteButton);
+    addToFooter(editActor, memory, deleteButton);
     addThemeVariants(
         CardVariant.LUMO_HORIZONTAL, CardVariant.LUMO_COVER_MEDIA, CardVariant.LUMO_ELEVATED);
   }
@@ -68,6 +70,12 @@ public class ActorCard extends Card {
   private ComponentEventListener<ClickEvent<Button>> editActorListener() {
     return (ClickEvent<Button> t) -> {
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + id));
+    };
+  }
+
+  private ComponentEventListener<ClickEvent<Button>> editMemoryListener() {
+    return (ClickEvent<Button> t) -> {
+      t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + id + "/memory"));
     };
   }
 }

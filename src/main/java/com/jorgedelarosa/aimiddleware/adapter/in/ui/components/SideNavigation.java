@@ -39,7 +39,7 @@ public class SideNavigation extends Div {
     mainSection.addItem(scenarios);
 
     SideNavItem sessions =
-        new SideNavItem("Sessions", SessionsListView.class, VaadinIcon.MOVIE.create());
+        new SideNavItem("Sessions", SessionsListView.class, VaadinIcon.CHAT.create());
     sessions.addItem(
         new SideNavItem("New session", SessionEditorView.class, VaadinIcon.PLUS.create()));
     mainSection.addItem(sessions);
