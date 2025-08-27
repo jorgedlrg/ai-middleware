@@ -1,6 +1,5 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
-import com.jorgedelarosa.aimiddleware.application.port.out.ExtractRelevantMemoryFragmentsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
@@ -12,7 +11,6 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
-import com.jorgedelarosa.aimiddleware.domain.actor.MemoryFragment;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
@@ -21,7 +19,6 @@ import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import com.jorgedelarosa.aimiddleware.domain.user.User;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
@@ -53,7 +50,6 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
   private final GenerateMachineInteractionOutPort generateMachineInteractionOutPort;
   private final GetUserByIdOutPort getUserByIdOutPort;
   private final GetMemoryByActorOutPort getMemoryByActorOutPort;
-  private final ExtractRelevantMemoryFragmentsOutPort extractRelevantMemoryFragmentsOutPort;
 
   @Override
   public void execute(Command cmd) {
@@ -79,11 +75,6 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
               .orElseThrow();
 
       Memory memory = getMemoryByActorOutPort.query(actingActor.getId());
-      List<MemoryFragment> memoryFragments =
-          !session.getCurrentInteractions().isEmpty()
-              ? extractRelevantMemoryFragmentsOutPort.query(
-                  memory, session.getCurrentInteractions().getLast())
-              : Collections.EMPTY_LIST;
 
       List<Interaction> previousInteractions = session.getCurrentInteractions();
       // Removes the last message, since we're regenerating it
@@ -123,7 +114,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   session.getLocale().getDisplayLanguage(Locale.ENGLISH),
                   GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toSettingsEntity(
                       user.getSettings()),
-                  memoryFragments.stream()
+                  memory.getFragments().stream()
                       .map(e -> GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toDto(e))
                       .toList()));
       session.interactNext(

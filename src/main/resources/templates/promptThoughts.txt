@@ -28,7 +28,7 @@ This is what the actors have said so far:
 [/]]
 
 You're playing the actor [(${you})]. 
-These are the memories [(${you})] has regarding the current events:
+These are the memories [(${you})] has. Only consider those that are relevant to the current context and events:
 [[# th:each="memoryFragment : ${memoryFragments}"]
     [(${memoryFragment.text})]
 [/]]
