@@ -1,22 +1,34 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ByteImage;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.CreateSessionUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.session.EditSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
+import com.vaadin.flow.component.html.Div;
+import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.renderer.ComponentRenderer;
+import com.vaadin.flow.data.renderer.LitRenderer;
+import com.vaadin.flow.data.renderer.Renderer;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -25,7 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.EditSessionUseCase;
 
 /**
  * @author jorge
@@ -92,6 +103,7 @@ public class SessionEditorView extends VerticalLayout
             new ComboBox<>("Select actor for role " + role.name() + ":");
         actorsComboBox.setItems(actors);
         actorsComboBox.setItemLabelGenerator(GetActorsUseCase.ActorDto::name);
+        actorsComboBox.setRenderer(actorComboRenderer);
         actorsComboBox.setClearButtonVisible(true);
         // If the role already has an actor assigned, set it to the combobox
         performances.keySet().stream()
@@ -185,6 +197,25 @@ public class SessionEditorView extends VerticalLayout
 
     render();
   }
+
+  private final Renderer<GetActorsUseCase.ActorDto> actorComboRenderer =
+      new ComponentRenderer<>(
+          actor -> {
+            Image portrait;
+            if (actor.portrait().length > 0) {
+              portrait = new ByteImage("Portrait", actor.portrait());
+              portrait.setMaxWidth("64px");
+              portrait.setMinWidth("64px");
+              return new Div(portrait, new Text(actor.name()));
+            } else {
+              Icon icon = LumoIcon.PHOTO.create();
+              icon.getStyle()
+                  .setColor("var(--lumo-primary-color)")
+                  .setBackgroundColor("var(--lumo-primary-color-10pct)");
+              icon.setSize("64px");
+              return new VerticalLayout(icon, new Text(actor.name()));
+            }
+          });
 
   private ComponentEventListener<ClickEvent<Button>> saveSessionListener() {
     return (ClickEvent<Button> t) -> {
