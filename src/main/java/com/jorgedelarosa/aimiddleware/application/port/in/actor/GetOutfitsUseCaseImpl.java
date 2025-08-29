@@ -3,14 +3,14 @@ package com.jorgedelarosa.aimiddleware.application.port.in.actor;
 import com.jorgedelarosa.aimiddleware.application.port.mapper.OutfitMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitsOutPort;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GetOutfitsUseCaseImpl implements GetOutfitsUseCase {
 
   private final GetOutfitsOutPort getOutfitsOutPort;

@@ -3,14 +3,14 @@ package com.jorgedelarosa.aimiddleware.application.port.in.actor;
 import com.jorgedelarosa.aimiddleware.application.port.mapper.ActorMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import java.util.List;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GetActorsUseCaseImpl implements GetActorsUseCase {
 
   private final GetActorsOutPort getActorsOutPort;

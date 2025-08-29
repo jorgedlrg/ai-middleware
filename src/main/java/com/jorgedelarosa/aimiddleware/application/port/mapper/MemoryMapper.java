@@ -1,9 +1,12 @@
 package com.jorgedelarosa.aimiddleware.application.port.mapper;
 
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MemoryFragmentEntity;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetMemoryUseCase;
+import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import com.jorgedelarosa.aimiddleware.domain.actor.MemoryFragment;
 import java.time.Instant;
 import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -21,4 +24,7 @@ public interface MemoryMapper {
         entity.getId(),
         entity.isEnabled());
   }
+
+  @Mapping(target = "actorId", source = "actor")
+  GetMemoryUseCase.MemoryDto map(Memory dom);
 }

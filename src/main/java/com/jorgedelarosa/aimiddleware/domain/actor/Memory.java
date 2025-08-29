@@ -6,6 +6,9 @@ import java.util.List;
 import java.util.UUID;
 
 /**
+ * I'm using now the actor ID to identify this aggregate, although the structure doesn't reflect
+ * this. I'm still unsure about the design of this aggregate.
+ *
  * @author jorge
  */
 public class Memory extends AggregateRoot {

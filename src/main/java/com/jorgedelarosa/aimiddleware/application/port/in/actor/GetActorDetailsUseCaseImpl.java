@@ -2,14 +2,14 @@ package com.jorgedelarosa.aimiddleware.application.port.in.actor;
 
 import com.jorgedelarosa.aimiddleware.application.port.mapper.ActorMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 /**
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class GetActorDetailsUseCaseImpl implements GetActorDetailsUseCase {
   private final GetActorByIdOutPort getActorByIdOutPort;
 

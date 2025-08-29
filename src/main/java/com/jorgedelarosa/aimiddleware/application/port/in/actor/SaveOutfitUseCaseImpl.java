@@ -4,7 +4,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveOutfitOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 public class SaveOutfitUseCaseImpl implements SaveOutfitUseCase {
 
