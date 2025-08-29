@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.MemoryFragmentLayout;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteMemoryFragmentUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetMemoryUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveMemoryUseCase;
 import com.vaadin.flow.component.ClickEvent;
@@ -31,12 +32,13 @@ public class MemoryEditorView extends VerticalLayout
 
   private final GetMemoryUseCase getMemoryUseCase;
   private final SaveMemoryUseCase saveMemoryUseCase;
+  private final DeleteMemoryFragmentUseCase deleteMemoryFragmentUseCase;
 
   private UUID actor;
   private GetMemoryUseCase.MemoryDto dto;
 
   // private VirtualList<GetMemoryUseCase.MemoryFragmentDto> fragmentList;
-  private List<MemoryFragmentLayout> fragments = new ArrayList<>();
+  private final List<MemoryFragmentLayout> fragments = new ArrayList<>();
 
   private String pageTitle;
 
@@ -58,7 +60,9 @@ public class MemoryEditorView extends VerticalLayout
     return (ClickEvent<Button> t) -> {
       fragments.add(
           new MemoryFragmentLayout(
-              actor, new GetMemoryUseCase.MemoryFragmentDto(null, "new", Instant.now(), true)));
+              deleteMemoryFragmentUseCase,
+              actor,
+              new GetMemoryUseCase.MemoryFragmentDto(null, null, Instant.now(), true)));
       render();
     };
   }
@@ -85,7 +89,10 @@ public class MemoryEditorView extends VerticalLayout
     actor = UUID.fromString(bee.getRouteParameters().get("actorId").orElseThrow());
     if (actor != null) {
       dto = getMemoryUseCase.execute(new GetMemoryUseCase.Command(actor));
-      dto.fragments().stream().forEach(e -> fragments.add(new MemoryFragmentLayout(actor, e)));
+      fragments.clear();
+      dto.fragments().stream()
+          .forEach(
+              e -> fragments.add(new MemoryFragmentLayout(deleteMemoryFragmentUseCase, actor, e)));
       pageTitle = "Memory Editor - " + dto.actorId();
     } else {
       pageTitle = "Memory Editor - new";

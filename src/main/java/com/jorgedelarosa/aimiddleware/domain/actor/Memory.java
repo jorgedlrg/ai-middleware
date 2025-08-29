@@ -20,15 +20,18 @@ public class Memory extends AggregateRoot {
     super(clazz, id);
     this.actor = actor;
     this.fragments = fragments;
-    validate();
   }
 
   public static Memory create(UUID actor) {
-    return new Memory(actor, new ArrayList<>(), Memory.class, UUID.randomUUID());
+    Memory memory = new Memory(actor, new ArrayList<>(), Memory.class, UUID.randomUUID());
+    memory.validate();
+    return memory;
   }
 
   public static Memory restore(UUID actor, List<MemoryFragment> fragments, UUID id) {
-    return new Memory(actor, fragments, Memory.class, id);
+    Memory memory = new Memory(actor, new ArrayList(fragments), Memory.class, id);
+    memory.validate();
+    return memory;
   }
 
   public void addFragment(String text) {
@@ -41,6 +44,16 @@ public class Memory extends AggregateRoot {
 
   public List<MemoryFragment> getFragments() {
     return List.copyOf(fragments);
+  }
+
+  public void deleteFragment(UUID fragmentId) {
+    for (int i = 0; i < fragments.size(); ++i) {
+      if (fragments.get(i).getId().equals(fragmentId)) {
+        fragments.remove(i);
+        break;
+      }
+    }
+    validate();
   }
 
   @Override

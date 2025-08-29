@@ -30,6 +30,7 @@ public class MemoryAdapter implements GetMemoryByActorOutPort, SaveMemoryOutPort
 
   @Override
   public void save(Memory memory) {
+    memoryFragmentRepository.deleteAllByOwner(memory.getActor());
     memoryFragmentRepository.saveAll(
         memory.getFragments().stream()
             .map(e -> MemoryMapper.INSTANCE.map(e, memory.getActor()))

@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteMemoryFragmentUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetMemoryUseCase;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.checkbox.Checkbox;
@@ -18,14 +19,19 @@ import java.util.UUID;
  */
 public class MemoryFragmentLayout extends VerticalLayout {
 
+  private final DeleteMemoryFragmentUseCase deleteMemoryFragmentUseCase;
   private final UUID actor;
   private final UUID id;
   private final TextArea text;
   private final Checkbox enabled;
   private final Instant timestamp;
 
-  public MemoryFragmentLayout(UUID actor, GetMemoryUseCase.MemoryFragmentDto dto) {
+  public MemoryFragmentLayout(
+      DeleteMemoryFragmentUseCase deleteMemoryFragmentUseCase,
+      UUID actor,
+      GetMemoryUseCase.MemoryFragmentDto dto) {
     super();
+    this.deleteMemoryFragmentUseCase = deleteMemoryFragmentUseCase;
     this.actor = actor;
     this.id = dto.id();
     this.timestamp = dto.timestamp();
@@ -40,7 +46,12 @@ public class MemoryFragmentLayout extends VerticalLayout {
 
     text = new TextArea();
     text.setWidthFull();
-    text.setValue(dto.text());
+    text.setPlaceholder("Memory fragment text");
+    text.setRequired(true);
+    text.setRequiredIndicatorVisible(true);
+    if (dto.text() != null) {
+      text.setValue(dto.text());
+    }
 
     addClassNames(LumoUtility.Border.ALL);
     add(ops);
@@ -65,9 +76,12 @@ public class MemoryFragmentLayout extends VerticalLayout {
 
   private ComponentEventListener<ConfirmDialog.ConfirmEvent> deleteFragmentListener() {
     return (ConfirmDialog.ConfirmEvent t) -> {
-      // TODO: call use case
+      if (id != null) {
+        deleteMemoryFragmentUseCase.execute(new DeleteMemoryFragmentUseCase.Command(actor, id));
+      }
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors/" + actor + "/memory"));
-      Notification notification = Notification.show("Memory fragment deleted!");
+      Notification notification =
+          Notification.show(String.format("Memory fragment %s deleted!", id));
       notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     };
   }

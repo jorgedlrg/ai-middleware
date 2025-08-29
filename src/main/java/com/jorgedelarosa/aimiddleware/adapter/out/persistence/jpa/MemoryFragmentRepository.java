@@ -10,4 +10,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MemoryFragmentRepository extends JpaRepository<MemoryFragmentEntity, UUID> {
 
   List<MemoryFragmentEntity> findAllByOwner(UUID owner);
+
+  void deleteAllByOwner(UUID owner);
 }
