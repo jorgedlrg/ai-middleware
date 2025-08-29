@@ -7,12 +7,11 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-public interface GetMemoryUseCase {
-  public MemoryDto execute(Command cmd);
+public interface SaveMemoryUseCase {
 
-  public record Command(UUID actorId) {}
+  public UUID execute(Command cmd);
 
-  public record MemoryDto(UUID actorId, List<MemoryFragmentDto> fragments) {}
+  public record Command(UUID actorId, List<MemoryFragmentDto> fragments) {}
 
   public record MemoryFragmentDto(UUID id, String text, Instant timestamp, boolean enabled) {}
 }

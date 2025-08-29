@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.MemoryFragmentRepository;
 import com.jorgedelarosa.aimiddleware.application.port.mapper.MemoryMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetMemoryByActorOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveMemoryOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +14,7 @@ import org.springframework.stereotype.Component;
  */
 @Component
 @RequiredArgsConstructor
-public class MemoryAdapter implements GetMemoryByActorOutPort {
+public class MemoryAdapter implements GetMemoryByActorOutPort, SaveMemoryOutPort {
 
   private final MemoryFragmentRepository memoryFragmentRepository;
 
@@ -25,5 +26,13 @@ public class MemoryAdapter implements GetMemoryByActorOutPort {
             .map(e -> MemoryMapper.INSTANCE.map(e))
             .toList(),
         actor);
+  }
+
+  @Override
+  public void save(Memory memory) {
+    memoryFragmentRepository.saveAll(
+        memory.getFragments().stream()
+            .map(e -> MemoryMapper.INSTANCE.map(e, memory.getActor()))
+            .toList());
   }
 }

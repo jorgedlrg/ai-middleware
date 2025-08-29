@@ -5,6 +5,7 @@ import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetMemoryUseCase
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import com.jorgedelarosa.aimiddleware.domain.actor.MemoryFragment;
 import java.time.Instant;
+import java.util.UUID;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
@@ -24,7 +25,15 @@ public interface MemoryMapper {
         entity.getId(),
         entity.isEnabled());
   }
+  
+  default long map(Instant value){
+    return value.toEpochMilli();
+  }
+  
+  MemoryFragmentEntity map(MemoryFragment dom, UUID owner);
 
   @Mapping(target = "actorId", source = "actor")
   GetMemoryUseCase.MemoryDto map(Memory dom);
+  
+  
 }
