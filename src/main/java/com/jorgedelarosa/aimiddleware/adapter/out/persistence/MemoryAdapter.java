@@ -19,7 +19,6 @@ public class MemoryAdapter implements GetMemoryByActorOutPort {
 
   @Override
   public Memory query(UUID actor) {
-    //TODO: persist Memory aggregate or refine it, I'm not sure about it
     return Memory.restore(
         actor,
         memoryFragmentRepository.findAllByOwner(actor).stream()

@@ -12,22 +12,22 @@ public class MemoryFragment extends Entity {
 
   private String text;
   private final Instant timestamp;
-  private final UUID owner;
+  private boolean enabled;
 
-  private MemoryFragment(String text, Instant timestamp, UUID owner, UUID id) {
+  private MemoryFragment(String text, Instant timestamp, UUID id, boolean enabled) {
     super(id);
     this.text = text;
     this.timestamp = timestamp;
-    this.owner = owner;
+    this.enabled = enabled;
     validate();
   }
 
-  public static MemoryFragment create(String text, UUID owner) {
-    return new MemoryFragment(text, Instant.now(), owner, UUID.randomUUID());
+  public static MemoryFragment create(String text) {
+    return new MemoryFragment(text, Instant.now(), UUID.randomUUID(), true);
   }
 
-  public static MemoryFragment restore(String text, Instant timestamp, UUID owner, UUID id) {
-    return new MemoryFragment(text, timestamp, owner, id);
+  public static MemoryFragment restore(String text, Instant timestamp, UUID id, boolean enabled) {
+    return new MemoryFragment(text, timestamp, id, enabled);
   }
 
   public String getText() {
@@ -43,12 +43,17 @@ public class MemoryFragment extends Entity {
     return timestamp;
   }
 
-  public UUID getOwner() {
-    return owner;
+  public boolean isEnabled() {
+    return enabled;
+  }
+
+  public void setEnabled(boolean enabled) {
+    this.enabled = enabled;
+    validate();
   }
 
   @Override
   public final boolean validate() {
-    return Validator.strNotEmpty.validate(text) && timestamp != null && owner != null;
+    return Validator.strNotEmpty.validate(text) && timestamp != null;
   }
 }

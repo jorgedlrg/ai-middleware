@@ -16,4 +16,5 @@ public class MemoryFragmentEntity {
   private UUID owner;
   private long timestamp;
   private String text;
+  private boolean enabled;
 }

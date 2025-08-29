@@ -27,9 +27,9 @@ public class Memory extends AggregateRoot {
   public static Memory restore(UUID actor, List<MemoryFragment> fragments, UUID id) {
     return new Memory(actor, fragments, Memory.class, id);
   }
-  
-  public void addFragment(String text){
-    fragments.add(MemoryFragment.create(text, actor));
+
+  public void addFragment(String text) {
+    fragments.add(MemoryFragment.create(text));
   }
 
   public UUID getActor() {

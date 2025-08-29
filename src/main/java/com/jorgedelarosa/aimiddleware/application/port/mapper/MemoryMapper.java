@@ -18,7 +18,7 @@ public interface MemoryMapper {
     return MemoryFragment.restore(
         entity.getText(),
         Instant.ofEpochMilli(entity.getTimestamp()),
-        entity.getOwner(),
-        entity.getId());
+        entity.getId(),
+        entity.isEnabled());
   }
 }

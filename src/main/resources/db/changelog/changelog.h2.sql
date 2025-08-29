@@ -61,3 +61,8 @@ ALTER TABLE interaction ADD action_reasoning LONGTEXT;
 -- changeset jorge:20250818-1
 CREATE TABLE memory_fragment (id UUID NOT NULL PRIMARY KEY, owner UUID NOT NULL, timestamp BIGINT NOT NULL, text LONGTEXT NOT NULL);
 INSERT INTO  memory_fragment VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40','caa30e65-1886-4366-bfb7-f415af9f4a40',1755526346108, 'Jack Isparragus has lost his boat');
+
+-- changeset jorge:20250829-1
+ALTER TABLE memory_fragment ADD enabled BIT;
+UPDATE memory_fragment SET enabled=true;
+ALTER TABLE memory_fragment ALTER COLUMN enabled SET NOT NULL;
