@@ -37,8 +37,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
 
   @Override
   public MachineResponse execute(Command cmd) {
-    String[] thoughts = null;
-    String[] action = null;
+    String[] thoughts = new String[2];
+    String[] action = new String[2];
     String mood = null;
     if (cmd.settings().thoughtsEnabled()) {
       thoughts =
@@ -89,8 +89,8 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
               false)[0];
     }
     return new MachineResponse(
-        new TextDto(thoughts[0], Optional.ofNullable(thoughts[1])),
-        new TextDto(action[0], Optional.ofNullable(action[1])),
+        new TextDto(thoughts[0] != null ? thoughts[0] : "", Optional.ofNullable(thoughts[1])),
+        new TextDto(action[0] != null ? action[0] : "", Optional.ofNullable(action[1])),
         new TextDto(speech[0], Optional.ofNullable(speech[1])),
         mood);
   }
