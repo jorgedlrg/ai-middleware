@@ -7,9 +7,7 @@ import java.util.UUID;
  * @author jorge
  */
 public interface GetOutfitsUseCase {
-  public List<OutfitDto> execute(Command cmd);
-
-  public record Command() {}
+  public List<OutfitDto> execute();
 
   public record OutfitDto(UUID id, String name, String description) {}
 }

@@ -16,7 +16,7 @@ public class GetOutfitsUseCaseImpl implements GetOutfitsUseCase {
   private final GetOutfitsOutPort getOutfitsOutPort;
 
   @Override
-  public List<OutfitDto> execute(Command cmd) {
+  public List<OutfitDto> execute() {
     return getOutfitsOutPort.query().stream().map(e -> OutfitMapper.INSTANCE.toDto(e)).toList();
   }
 }

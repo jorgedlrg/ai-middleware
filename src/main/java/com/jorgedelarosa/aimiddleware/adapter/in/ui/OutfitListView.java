@@ -28,7 +28,7 @@ public class OutfitListView extends VerticalLayout implements BeforeEnterObserve
     grid = new Grid<>();
     grid.addColumn(GetOutfitsUseCase.OutfitDto::name).setHeader("Outfit");
     grid.addItemClickListener(editOutfitListener());
-    grid.setItems(getOutfitsUseCase.execute(new GetOutfitsUseCase.Command()));
+    grid.setItems(getOutfitsUseCase.execute());
     add(grid);
   }
 

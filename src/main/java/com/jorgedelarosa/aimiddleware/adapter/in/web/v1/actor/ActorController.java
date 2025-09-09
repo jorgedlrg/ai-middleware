@@ -38,7 +38,7 @@ public class ActorController {
   }
 
   @GetMapping("/{actor}/details")
-  public GetActorDetailsUseCase.ActorDto getActorDetail(UUID actor) {
+  public GetActorDetailsUseCase.ActorDto getActorDetails(UUID actor) {
     return getActorDetailsUseCase.execute(new GetActorDetailsUseCase.Command(actor));
   }
 

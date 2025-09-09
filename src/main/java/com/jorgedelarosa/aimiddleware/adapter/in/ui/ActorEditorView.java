@@ -45,9 +45,7 @@ public class ActorEditorView extends VerticalLayout
   private void rebuildEditor() {
     removeAll();
 
-    actorEditorActorLayout =
-        new ActorEditorActorLayout(
-            actorDto, getOutfitsUseCase.execute(new GetOutfitsUseCase.Command()));
+    actorEditorActorLayout = new ActorEditorActorLayout(actorDto, getOutfitsUseCase.execute());
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
