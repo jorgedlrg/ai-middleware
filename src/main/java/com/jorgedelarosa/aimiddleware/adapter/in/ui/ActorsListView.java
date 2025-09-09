@@ -29,7 +29,7 @@ public class ActorsListView extends VerticalLayout implements BeforeEnterObserve
   private void render() {
     removeAll();
 
-    List<ActorDto> dtos = getActorsUseCase.execute(new GetActorsUseCase.Command());
+    List<ActorDto> dtos = getActorsUseCase.execute();
     List<ActorCard> cards = dtos.stream().map(e -> new ActorCard(e, deleteActorUseCase)).toList();
 
     HorizontalLayout horizontalLayout = new HorizontalLayout();

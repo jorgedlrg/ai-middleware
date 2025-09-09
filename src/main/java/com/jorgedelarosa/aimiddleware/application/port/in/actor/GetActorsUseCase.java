@@ -8,10 +8,8 @@ import java.util.UUID;
  */
 public interface GetActorsUseCase {
 
-  public List<ActorDto> execute(Command cmd);
+  public List<ActorDto> execute();
 
-  // TODO: find by user
-  public record Command() {}
 
   public record ActorDto(UUID id, String name, byte[] portrait) {}
 }

@@ -16,7 +16,7 @@ public class GetActorsUseCaseImpl implements GetActorsUseCase {
   private final GetActorsOutPort getActorsOutPort;
 
   @Override
-  public List<ActorDto> execute(Command cmd) {
+  public List<ActorDto> execute() {
     return getActorsOutPort.query().stream().map(e -> ActorMapper.INSTANCE.toDto(e)).toList();
   }
 }
