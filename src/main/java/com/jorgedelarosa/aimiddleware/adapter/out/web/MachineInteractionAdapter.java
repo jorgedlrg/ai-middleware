@@ -89,8 +89,12 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
               false)[0];
     }
     return new MachineResponse(
-        new TextDto(thoughts[0] != null ? thoughts[0] : "", Optional.ofNullable(thoughts[1])),
-        new TextDto(action[0] != null ? action[0] : "", Optional.ofNullable(action[1])),
+        thoughts[0] != null
+            ? Optional.of(new TextDto(thoughts[0], Optional.ofNullable(thoughts[1])))
+            : Optional.empty(),
+        action[0] != null
+            ? Optional.of(new TextDto(action[0], Optional.ofNullable(action[1])))
+            : Optional.empty(),
         new TextDto(speech[0], Optional.ofNullable(speech[1])),
         mood);
   }

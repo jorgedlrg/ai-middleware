@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.MessageMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
@@ -83,7 +84,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           previousInteractions.stream()
               .map(
                   (e) ->
-                      MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toMessage(
+                      MessageMapper.INSTANCE.toMessage(
                           getActorByIdOutPort.query(e.getActor()).orElseThrow().getName(), e))
               .toList();
 
@@ -98,7 +99,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           session.getPerformances().stream()
               .map(
                   e ->
-                      MachineInteractUseCaseImpl.MessageMapper.INSTANCE.toDto(
+                      MessageMapper.INSTANCE.toDto(
                           e, scenario, featuredActors, wornOutfits))
               .toList();
 
@@ -118,8 +119,8 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                       .map(e -> GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toDto(e))
                       .toList()));
       session.interactNext(
-          new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
-          new InteractionText(response.action().text(), response.action().reasoning()),
+          response.thoughts().map(e -> new InteractionText(e.text(), e.reasoning())),
+          response.action().map(e -> new InteractionText(e.text(), e.reasoning())),
           new InteractionText(response.speech().text(), response.speech().reasoning()),
           session.getLastInteraction().getRole(),
           Mood.optionalValueOf(response.mood()));

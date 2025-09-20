@@ -65,8 +65,9 @@ public interface SessionMapper {
 
   default InteractionEntity toEntity(Interaction interaction, UUID session) {
     InteractionEntity entity = new InteractionEntity();
-    entity.setAction(interaction.getActionText().getText());
-    entity.setActionReasoning(interaction.getActionText().getReasoning().orElse(null));
+    entity.setAction(interaction.getActionText().map(e -> e.getText()).orElse(null));
+    entity.setActionReasoning(
+        interaction.getActionText().map(e -> e.getReasoning().orElse(null)).orElse(null));
     entity.setActor(interaction.getActor());
     entity.setContext(interaction.getContext());
     entity.setId(interaction.getId());
@@ -76,8 +77,9 @@ public interface SessionMapper {
     entity.setSession(session);
     entity.setText(interaction.getSpokenText().getText());
     entity.setTextReasoning(interaction.getSpokenText().getReasoning().orElse(null));
-    entity.setThoughts(interaction.getThoughtText().getText());
-    entity.setThoughtsReasoning(interaction.getThoughtText().getReasoning().orElse(null));
+    entity.setThoughts(interaction.getThoughtText().map(e -> e.getText()).orElse(null));
+    entity.setThoughtsReasoning(
+        interaction.getThoughtText().map(e -> e.getReasoning().orElse(null)).orElse(null));
     entity.setTimestamp(interaction.getTimestamp().toEpochMilli());
     return entity;
   }
@@ -89,10 +91,9 @@ public interface SessionMapper {
     }
     return Interaction.restore(
         entity.getId(),
-        new InteractionText(
-            entity.getThoughts(), Optional.ofNullable(entity.getThoughtsReasoning())),
+        InteractionText.optionalFromNullable(entity.getThoughts(), entity.getThoughtsReasoning()),
         new InteractionText(entity.getText(), Optional.ofNullable(entity.getTextReasoning())),
-        new InteractionText(entity.getAction(), Optional.ofNullable(entity.getActionReasoning())),
+        InteractionText.optionalFromNullable(entity.getAction(), entity.getActionReasoning()),
         entity.getTimestamp(),
         entity.getRole(),
         entity.getActor(),
@@ -138,16 +139,16 @@ public interface SessionMapper {
         dom.getId(),
         dom.getTimestamp(),
         actor.getName(),
-        dom.getThoughtText().getText(),
-        dom.getActionText().getText(),
+        dom.getThoughtText().map(e -> e.getText()).orElse(""),
+        dom.getActionText().map(e -> e.getText()).orElse(""),
         dom.getSpokenText().getText(),
         portrait,
         siblings.indexOf(dom) + 1,
         siblings.size(),
         moodName,
         mooodEmoji,
-        dom.getThoughtText().getReasoning().orElse(null),
-        dom.getActionText().getReasoning().orElse(null),
+        dom.getThoughtText().map(e -> e.getReasoning().orElse(null)).orElse(null),
+        dom.getActionText().map(e -> e.getReasoning().orElse(null)).orElse(null),
         dom.getSpokenText().getReasoning().orElse(null));
   }
 }

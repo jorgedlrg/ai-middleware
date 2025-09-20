@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import com.jorgedelarosa.aimiddleware.application.port.mapper.MessageMapper;
 import com.jorgedelarosa.aimiddleware.application.port.out.GenerateMachineInteractionOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
@@ -13,21 +14,15 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
-import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
-import com.jorgedelarosa.aimiddleware.domain.session.Performance;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
 import com.jorgedelarosa.aimiddleware.domain.user.User;
 import java.util.List;
 import java.util.Locale;
-import java.util.Optional;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
-import org.mapstruct.Mapper;
-import org.mapstruct.factory.Mappers;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -105,8 +100,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
                     .map(e -> GenerateMachineInteractionOutPort.TextGenMapper.INSTANCE.toDto(e))
                     .toList()));
     session.interact(
-        new InteractionText(response.thoughts().text(), response.thoughts().reasoning()),
-        new InteractionText(response.action().text(), response.action().reasoning()),
+        response.thoughts().map(e -> new InteractionText(e.text(), e.reasoning())),
+        response.action().map(e -> new InteractionText(e.text(), e.reasoning())),
         new InteractionText(response.speech().text(), response.speech().reasoning()),
         cmd.role(),
         Mood.optionalValueOf(response.mood()));
@@ -114,48 +109,5 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
     saveSessionOutPort.save(session);
   }
 
-  @Mapper
-  public interface MessageMapper {
-    MessageMapper INSTANCE = Mappers.getMapper(MessageMapper.class);
 
-    default GenerateMachineInteractionOutPort.PreviousMessage toMessage(
-        String actorName, Interaction interaction) {
-      return new GenerateMachineInteractionOutPort.PreviousMessage(
-          actorName, interaction.getActionText().getText(), interaction.getSpokenText().getText());
-    }
-
-    default GenerateMachineInteractionOutPort.PerformanceDto toDto(
-        Performance performance,
-        Scenario scenario,
-        List<Actor> featuredActors,
-        List<Outfit> wornOutfits) {
-      Role role =
-          scenario.getRoles().stream()
-              .filter(r -> r.getId().equals(performance.getRole()))
-              .findFirst()
-              .orElseThrow();
-      Actor actor =
-          featuredActors.stream()
-              .filter(a -> a.getId().equals(performance.getActor()))
-              .findFirst()
-              .orElseThrow();
-      String outfit = null;
-      if (actor.getCurrentOutfit().isPresent()) {
-        outfit =
-            wornOutfits.stream()
-                .filter(o -> o.getId().equals(actor.getCurrentOutfit().get()))
-                .findFirst()
-                .orElseThrow()
-                .getDescription();
-      }
-
-      return new GenerateMachineInteractionOutPort.PerformanceDto(
-          role.getName(),
-          actor.getName(),
-          actor.getPhysicalDescription(),
-          Optional.ofNullable(outfit),
-          actor.getMind().map(e -> e.getPersonality()),
-          role.getDetails());
-    }
-  }
 }

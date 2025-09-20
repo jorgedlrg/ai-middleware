@@ -34,11 +34,12 @@ public interface GenerateMachineInteractionOutPort {
       Optional<String> personality,
       String roleDescription) {}
 
-  public record PreviousMessage(String actorName, String action, String speech) {}
+  public record PreviousMessage(String actorName, Optional<String> action, String speech) {}
 
   public record TextDto(String text, Optional<String> reasoning) {}
 
-  public record MachineResponse(TextDto thoughts, TextDto action, TextDto speech, String mood) {}
+  public record MachineResponse(
+      Optional<TextDto> thoughts, Optional<TextDto> action, TextDto speech, String mood) {}
 
   public record TextGenSettingsDto(
       String textgenProvider,
@@ -60,7 +61,7 @@ public interface GenerateMachineInteractionOutPort {
     TextGenMapper INSTANCE = Mappers.getMapper(TextGenMapper.class);
 
     TextGenSettingsDto toSettingsEntity(Settings dom);
-    
+
     MemoryFragmentDto toDto(MemoryFragment dom);
   }
 }

@@ -38,8 +38,8 @@ public class CreateSessionUseCaseImpl implements CreateSessionUseCase {
               .findFirst()
               .orElseThrow();
       session.interact(
-          new InteractionText(intro.getThoughtText().orElse(""), Optional.empty()),
-          new InteractionText(intro.getActionText().orElse(""), Optional.empty()),
+          intro.getThoughtText().map(e -> new InteractionText(e, Optional.empty())),
+          intro.getActionText().map(e -> new InteractionText(e, Optional.empty())),
           new InteractionText(intro.getSpokenText(), Optional.empty()),
           intro.getPerformer().getId(),
           Optional.empty());

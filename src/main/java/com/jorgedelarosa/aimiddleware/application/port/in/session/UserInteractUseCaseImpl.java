@@ -26,8 +26,8 @@ public class UserInteractUseCaseImpl implements UserInteractUseCase {
 
     // TODO: REFINE. maybe make the user send actions and thoughts, if necessary
     session.interact(
-        new InteractionText("", Optional.empty()),
-        new InteractionText("", Optional.empty()),
+        Optional.empty(),
+        Optional.empty(),
         new InteractionText(cmd.text(), Optional.empty()),
         cmd.role(),
         Optional.empty());
