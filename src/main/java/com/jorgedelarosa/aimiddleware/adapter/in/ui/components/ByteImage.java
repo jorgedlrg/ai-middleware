@@ -10,7 +10,7 @@ import java.io.OutputStream;
 /**
  * @author jorge
  */
-//TODO it only supports png for now. fix this
+// TODO it only supports png for now. fix this
 public class ByteImage extends Image {
 
   public ByteImage(String label, byte[] data) {

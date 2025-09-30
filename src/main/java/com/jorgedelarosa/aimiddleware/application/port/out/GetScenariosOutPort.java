@@ -8,5 +8,5 @@ import java.util.List;
  */
 public interface GetScenariosOutPort {
 
- public List<Scenario> query();
+  public List<Scenario> query();
 }

@@ -26,146 +26,140 @@ import java.util.UUID;
  */
 public class InteractionLayout extends HorizontalLayout {
 
-    private static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
+  private static final String DATETIME_PATTERN = "yyyy-MM-dd HH:mm:ss";
 
-    public InteractionLayout(
-            GetSessionDetailsUseCase.InteractionDto dto,
-            OneUuidVoidOperator prevListener,
-            OneUuidVoidOperator nextListener,
-            OneUuidVoidOperator deleteListener) {
-        super();
-        setMargin(true);
-        setPadding(false);
+  public InteractionLayout(
+      GetSessionDetailsUseCase.InteractionDto dto,
+      OneUuidVoidOperator prevListener,
+      OneUuidVoidOperator nextListener,
+      OneUuidVoidOperator deleteListener) {
+    super();
+    setMargin(true);
+    setPadding(false);
 
-        Avatar avatar = new Avatar(dto.actorName());
-        avatar.setHeight("112px");
-        avatar.setWidth("112px");
+    Avatar avatar = new Avatar(dto.actorName());
+    avatar.setHeight("112px");
+    avatar.setWidth("112px");
 
-        if (dto.portrait().length > 0) {
-            avatar.setImageHandler(
-                    DownloadHandler.fromInputStream(
-                            (DownloadEvent downloadEvent) -> {
-                                try (OutputStream outputStream = downloadEvent.getOutputStream()) {
-                                    outputStream.write(dto.portrait());
-                                }
-                                return new DownloadResponse(
-                                        new ByteArrayInputStream(dto.portrait()),
-                                        "avatar",
-                                        "image/png",
-                                        dto.portrait().length);
-                            }));
-        } else {
-            avatar.setColorIndex(Math.abs(dto.actorName().hashCode()) % 5);
-        }
-
-        VerticalLayout detailsLayout = new VerticalLayout();
-        detailsLayout.setWidthFull();
-        detailsLayout.setSpacing(false);
-        detailsLayout.setPadding(false);
-
-        Icon prevIcon = LumoIcon.ARROW_LEFT.create();
-        Button prevButton = new Button(prevIcon);
-        prevButton.addClickListener(e -> prevListener.op(dto.id()));
-
-        Icon nextIcon = LumoIcon.ARROW_RIGHT.create();
-        Button nextButton = new Button(nextIcon);
-        nextButton.addClickListener(e -> nextListener.op(dto.id()));
-
-        Icon deleteIcon = LumoIcon.CROSS.create();
-        deleteIcon.setColor("red");
-        Button deleteButton = new Button(deleteIcon);
-        deleteButton.addClickListener(e -> deleteListener.op(dto.id()));
-
-        HorizontalLayout buttonsLayout = new HorizontalLayout();
-        buttonsLayout.setSpacing(false);
-        buttonsLayout.addClassNames(LumoUtility.Border.NONE, LumoUtility.AlignItems.CENTER);
-        buttonsLayout.add(
-                new Div(new Text(dto.siblingNumber() + "/" + dto.totalSiblings())),
-                prevButton,
-                nextButton,
-                deleteButton);
-
-        // TODO: Get zone from user browser (requires current view)
-        ZonedDateTime zdt = ZonedDateTime.ofInstant(dto.timestamp(), ZoneId.systemDefault());
-
-        Div name = new Div(new Text(dto.actorName() + " " + dto.emoji()));
-        name.addClassNames(LumoUtility.FontWeight.BOLD, LumoUtility.FontSize.LARGE);
-        HorizontalLayout nameLayout
-                = new HorizontalLayout(
-                        new Div(
-                                name,
-                                new Text(
-                                        zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)))),
-                        buttonsLayout);
-        nameLayout.addClassNames(LumoUtility.Width.FULL, LumoUtility.JustifyContent.BETWEEN);
-        detailsLayout.add(nameLayout);
-
-        if (dto.thoughtText() != null && !dto.thoughtText().equals("")) {
-            Div thoughtText = new Div(new Icon(VaadinIcon.LIGHTBULB), new Text(dto.thoughtText()));
-            thoughtText.addClassNames(
-                    LumoUtility.TextColor.SECONDARY,
-                    LumoUtility.FontSize.SMALL);
-            detailsLayout.add(thoughtText);
-            if (dto.thoughtReasoning() != null) {
-                ReasoningPopover popover
-                        = new ReasoningPopover(new Div(new Text(dto.thoughtReasoning())), thoughtText);
-            }
-        }
-        if (dto.actionText() != null && !dto.actionText().equals("")) {
-            Div action = new Div(new Icon(VaadinIcon.EXIT), new Text(dto.actionText()));
-            action.addClassNames(
-                    LumoUtility.TextColor.SECONDARY,
-                    LumoUtility.FontSize.SMALL);
-            detailsLayout.add(action);
-            if (dto.actionReasoning() != null) {
-                ReasoningPopover popover
-                        = new ReasoningPopover(new Div(new Text(dto.actionReasoning())), action);
-            }
-        }
-
-        HorizontalLayout header = new HorizontalLayout();
-        header.addClassNames(LumoUtility.Width.FULL, LumoUtility.Padding.SMALL);
-        header.add(avatar, detailsLayout);
-
-        VerticalLayout verticalLayout = new VerticalLayout();
-        verticalLayout.addClassNames(
-                LumoUtility.Margin.NONE, LumoUtility.Padding.NONE, LumoUtility.Display.BLOCK);
-        verticalLayout.add(header);
-
-        Div text = new Div(new Text(dto.spokenText()));
-        if (dto.spokenReasoning() != null) {
-            ReasoningPopover popover
-                    = new ReasoningPopover(new Div(new Text(dto.spokenReasoning())), text);
-        }
-        text.addClassNames(
-                LumoUtility.Background.BASE,
-                LumoUtility.BorderRadius.LARGE,
-                LumoUtility.TextColor.BODY,
-                LumoUtility.Margin.NONE,
-                LumoUtility.Padding.Vertical.SMALL,
-                LumoUtility.Padding.Horizontal.MEDIUM,
-                LumoUtility.FontWeight.MEDIUM);
-        verticalLayout.add(text);
-
-        add(verticalLayout);
-        addClassNames(
-                LumoUtility.Border.ALL,
-                LumoUtility.BorderColor.CONTRAST,
-                LumoUtility.BorderRadius.LARGE,
-                LumoUtility.Margin.XSMALL,
-                LumoUtility.Padding.NONE,
-                LumoUtility.Background.CONTRAST_5);
+    if (dto.portrait().length > 0) {
+      avatar.setImageHandler(
+          DownloadHandler.fromInputStream(
+              (DownloadEvent downloadEvent) -> {
+                try (OutputStream outputStream = downloadEvent.getOutputStream()) {
+                  outputStream.write(dto.portrait());
+                }
+                return new DownloadResponse(
+                    new ByteArrayInputStream(dto.portrait()),
+                    "avatar",
+                    "image/png",
+                    dto.portrait().length);
+              }));
+    } else {
+      avatar.setColorIndex(Math.abs(dto.actorName().hashCode()) % 5);
     }
 
-    /**
-     * Helper interfacte to be able to send the delete listener to this
-     * component. I use this because the delete use case can't be moved to this
-     * component because at the moment we don't refresh the view to display the
-     * interactions. When we do it, we can move the use case here and remove
-     * this.
-     */
-    public interface OneUuidVoidOperator {
+    VerticalLayout detailsLayout = new VerticalLayout();
+    detailsLayout.setWidthFull();
+    detailsLayout.setSpacing(false);
+    detailsLayout.setPadding(false);
 
-        public void op(UUID a);
+    Icon prevIcon = LumoIcon.ARROW_LEFT.create();
+    Button prevButton = new Button(prevIcon);
+    prevButton.addClickListener(e -> prevListener.op(dto.id()));
+
+    Icon nextIcon = LumoIcon.ARROW_RIGHT.create();
+    Button nextButton = new Button(nextIcon);
+    nextButton.addClickListener(e -> nextListener.op(dto.id()));
+
+    Icon deleteIcon = LumoIcon.CROSS.create();
+    deleteIcon.setColor("red");
+    Button deleteButton = new Button(deleteIcon);
+    deleteButton.addClickListener(e -> deleteListener.op(dto.id()));
+
+    HorizontalLayout buttonsLayout = new HorizontalLayout();
+    buttonsLayout.setSpacing(false);
+    buttonsLayout.addClassNames(LumoUtility.Border.NONE, LumoUtility.AlignItems.CENTER);
+    buttonsLayout.add(
+        new Div(new Text(dto.siblingNumber() + "/" + dto.totalSiblings())),
+        prevButton,
+        nextButton,
+        deleteButton);
+
+    // TODO: Get zone from user browser (requires current view)
+    ZonedDateTime zdt = ZonedDateTime.ofInstant(dto.timestamp(), ZoneId.systemDefault());
+
+    Div name = new Div(new Text(dto.actorName() + " " + dto.emoji()));
+    name.addClassNames(LumoUtility.FontWeight.BOLD, LumoUtility.FontSize.LARGE);
+    HorizontalLayout nameLayout =
+        new HorizontalLayout(
+            new Div(
+                name,
+                new Text(
+                    zdt.toLocalDateTime().format(DateTimeFormatter.ofPattern(DATETIME_PATTERN)))),
+            buttonsLayout);
+    nameLayout.addClassNames(LumoUtility.Width.FULL, LumoUtility.JustifyContent.BETWEEN);
+    detailsLayout.add(nameLayout);
+
+    if (dto.thoughtText() != null && !dto.thoughtText().equals("")) {
+      Div thoughtText = new Div(new Icon(VaadinIcon.LIGHTBULB), new Text(dto.thoughtText()));
+      thoughtText.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.SMALL);
+      detailsLayout.add(thoughtText);
+      if (dto.thoughtReasoning() != null) {
+        ReasoningPopover popover =
+            new ReasoningPopover(new Div(new Text(dto.thoughtReasoning())), thoughtText);
+      }
     }
+    if (dto.actionText() != null && !dto.actionText().equals("")) {
+      Div action = new Div(new Icon(VaadinIcon.EXIT), new Text(dto.actionText()));
+      action.addClassNames(LumoUtility.TextColor.SECONDARY, LumoUtility.FontSize.SMALL);
+      detailsLayout.add(action);
+      if (dto.actionReasoning() != null) {
+        ReasoningPopover popover =
+            new ReasoningPopover(new Div(new Text(dto.actionReasoning())), action);
+      }
+    }
+
+    HorizontalLayout header = new HorizontalLayout();
+    header.addClassNames(LumoUtility.Width.FULL, LumoUtility.Padding.SMALL);
+    header.add(avatar, detailsLayout);
+
+    VerticalLayout verticalLayout = new VerticalLayout();
+    verticalLayout.addClassNames(
+        LumoUtility.Margin.NONE, LumoUtility.Padding.NONE, LumoUtility.Display.BLOCK);
+    verticalLayout.add(header);
+
+    Div text = new Div(new Text(dto.spokenText()));
+    if (dto.spokenReasoning() != null) {
+      ReasoningPopover popover =
+          new ReasoningPopover(new Div(new Text(dto.spokenReasoning())), text);
+    }
+    text.addClassNames(
+        LumoUtility.Background.BASE,
+        LumoUtility.BorderRadius.LARGE,
+        LumoUtility.TextColor.BODY,
+        LumoUtility.Margin.NONE,
+        LumoUtility.Padding.Vertical.SMALL,
+        LumoUtility.Padding.Horizontal.MEDIUM,
+        LumoUtility.FontWeight.MEDIUM);
+    verticalLayout.add(text);
+
+    add(verticalLayout);
+    addClassNames(
+        LumoUtility.Border.ALL,
+        LumoUtility.BorderColor.CONTRAST,
+        LumoUtility.BorderRadius.LARGE,
+        LumoUtility.Margin.XSMALL,
+        LumoUtility.Padding.NONE,
+        LumoUtility.Background.CONTRAST_5);
+  }
+
+  /**
+   * Helper interfacte to be able to send the delete listener to this component. I use this because
+   * the delete use case can't be moved to this component because at the moment we don't refresh the
+   * view to display the interactions. When we do it, we can move the use case here and remove this.
+   */
+  public interface OneUuidVoidOperator {
+
+    public void op(UUID a);
+  }
 }

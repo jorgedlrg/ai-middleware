@@ -10,7 +10,7 @@ public interface GetSessionsUseCase {
 
   public List<SessionDto> execute(Command cmd);
 
-  //TODO: find by user 
+  // TODO: find by user
   public record Command() {}
 
   public record SessionDto(UUID session, String scenario) {}

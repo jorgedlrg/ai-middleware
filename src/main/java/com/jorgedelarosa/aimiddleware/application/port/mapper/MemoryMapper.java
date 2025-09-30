@@ -25,15 +25,13 @@ public interface MemoryMapper {
         entity.getId(),
         entity.isEnabled());
   }
-  
-  default long map(Instant value){
+
+  default long map(Instant value) {
     return value.toEpochMilli();
   }
-  
+
   MemoryFragmentEntity map(MemoryFragment dom, UUID owner);
 
   @Mapping(target = "actorId", source = "actor")
   GetMemoryUseCase.MemoryDto map(Memory dom);
-  
-  
 }

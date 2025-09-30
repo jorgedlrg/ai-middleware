@@ -10,6 +10,5 @@ public interface GetActorsUseCase {
 
   public List<ActorDto> execute();
 
-
   public record ActorDto(UUID id, String name, byte[] portrait) {}
 }

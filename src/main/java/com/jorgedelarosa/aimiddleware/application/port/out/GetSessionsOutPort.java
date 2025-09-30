@@ -7,5 +7,5 @@ import java.util.List;
  * @author jorge
  */
 public interface GetSessionsOutPort {
-public List<Session> query();
+  public List<Session> query();
 }

@@ -8,6 +8,4 @@ import org.springframework.stereotype.Component;
  * @author jorge
  */
 @Component
-public interface ScenarioRepository extends JpaRepository<ScenarioEntity, UUID> {
-
-}
+public interface ScenarioRepository extends JpaRepository<ScenarioEntity, UUID> {}

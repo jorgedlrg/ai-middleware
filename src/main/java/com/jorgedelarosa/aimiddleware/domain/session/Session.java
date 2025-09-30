@@ -82,7 +82,11 @@ public class Session extends AggregateRoot {
   }
 
   public void interact(
-      Optional<InteractionText> thoughts, Optional<InteractionText> action, InteractionText speech, UUID role, Optional<Mood> mood) {
+      Optional<InteractionText> thoughts,
+      Optional<InteractionText> action,
+      InteractionText speech,
+      UUID role,
+      Optional<Mood> mood) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();
@@ -105,7 +109,11 @@ public class Session extends AggregateRoot {
   }
 
   public void interactNext(
-      Optional<InteractionText> thoughts, Optional<InteractionText> action, InteractionText speech, UUID role, Optional<Mood> mood) {
+      Optional<InteractionText> thoughts,
+      Optional<InteractionText> action,
+      InteractionText speech,
+      UUID role,
+      Optional<Mood> mood) {
     Performance performance = performances.get(role);
     if (performance != null) {
       UUID actorId = performance.getActor();

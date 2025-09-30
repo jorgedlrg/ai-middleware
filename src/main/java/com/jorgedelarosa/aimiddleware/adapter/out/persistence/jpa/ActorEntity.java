@@ -17,7 +17,7 @@ public class ActorEntity {
 
   @Column(name = "physical_desc")
   private String physicalDescription;
-  
+
   @Column(name = "current_outfit")
   private UUID currentOutfit;
 }

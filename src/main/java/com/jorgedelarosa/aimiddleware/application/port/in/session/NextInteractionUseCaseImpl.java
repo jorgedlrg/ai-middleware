@@ -97,10 +97,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
                   .toList());
       List<GenerateMachineInteractionOutPort.PerformanceDto> performances =
           session.getPerformances().stream()
-              .map(
-                  e ->
-                      MessageMapper.INSTANCE.toDto(
-                          e, scenario, featuredActors, wornOutfits))
+              .map(e -> MessageMapper.INSTANCE.toDto(e, scenario, featuredActors, wornOutfits))
               .toList();
 
       User user = getUserByIdOutPort.query(userId).orElseThrow();

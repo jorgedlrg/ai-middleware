@@ -47,7 +47,8 @@ public class SideNavigation extends Div {
 
     SideNav userSection = new SideNav("User");
 
-    SideNavItem settings = new SideNavItem("Settings",UserSettingsView.class,VaadinIcon.TOOLS.create());
+    SideNavItem settings =
+        new SideNavItem("Settings", UserSettingsView.class, VaadinIcon.TOOLS.create());
     userSection.addItem(settings);
 
     Div navWrapper = new Div(mainSection, userSection);

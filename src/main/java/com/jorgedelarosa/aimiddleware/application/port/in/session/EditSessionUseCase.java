@@ -11,10 +11,7 @@ public interface EditSessionUseCase {
   public void execute(Command cmd);
 
   public record Command(
-      UUID session,
-      UUID currentContext,
-      List<PerformanceDto> performances,
-      Locale locale) {}
+      UUID session, UUID currentContext, List<PerformanceDto> performances, Locale locale) {}
 
   public record PerformanceDto(UUID actor, UUID role) {}
 }

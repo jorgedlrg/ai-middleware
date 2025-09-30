@@ -5,11 +5,9 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- *
  * @author jorge
  */
 public interface GetUserByIdOutPort {
-  
-  public Optional<User> query(UUID id);
 
+  public Optional<User> query(UUID id);
 }

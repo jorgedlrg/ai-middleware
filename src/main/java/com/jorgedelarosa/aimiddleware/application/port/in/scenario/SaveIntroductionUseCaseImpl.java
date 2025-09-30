@@ -35,7 +35,8 @@ public class SaveIntroductionUseCaseImpl implements SaveIntroductionUseCase {
               .findFirst()
               .orElseThrow());
     } else {
-      scenario.modifyIntroduction(cmd.introduction(), cmd.spokenText(), cmd.thoughtText(), cmd.actionText());
+      scenario.modifyIntroduction(
+          cmd.introduction(), cmd.spokenText(), cmd.thoughtText(), cmd.actionText());
     }
     scenarioOutPort.save(scenario);
 

@@ -9,5 +9,5 @@ import java.util.UUID;
  */
 public interface GetScenarioByIdOutPort {
 
- public Optional<Scenario> query(UUID id);
+  public Optional<Scenario> query(UUID id);
 }

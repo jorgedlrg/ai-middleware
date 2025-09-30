@@ -6,4 +6,4 @@ import org.springframework.data.jpa.repository.JpaRepository;
 /**
  * @author jorge
  */
-public interface MindRepository extends JpaRepository<MindEntity, UUID>  {}
+public interface MindRepository extends JpaRepository<MindEntity, UUID> {}

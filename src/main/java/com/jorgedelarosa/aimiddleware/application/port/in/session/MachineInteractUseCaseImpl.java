@@ -108,6 +108,4 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
     saveSessionOutPort.save(session);
   }
-
-
 }

@@ -14,5 +14,4 @@ public class MindEntity {
 
   @Id private UUID actor;
   private String personality;
-  
 }

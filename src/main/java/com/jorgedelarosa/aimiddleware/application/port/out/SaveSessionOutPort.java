@@ -7,5 +7,5 @@ import com.jorgedelarosa.aimiddleware.domain.session.Session;
  */
 public interface SaveSessionOutPort {
 
-public void save(Session session);
+  public void save(Session session);
 }

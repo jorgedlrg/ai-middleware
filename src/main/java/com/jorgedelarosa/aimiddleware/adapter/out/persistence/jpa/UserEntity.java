@@ -6,14 +6,12 @@ import java.util.UUID;
 import lombok.Data;
 
 /**
- *
  * @author jorge
  */
 @Entity(name = "usertable")
 @Data
 public class UserEntity {
 
-   @Id private UUID id;
-   private String email;
-  
+  @Id private UUID id;
+  private String email;
 }
