@@ -101,3 +101,4 @@ src/main/frontend/*
 /package-lock.json
 /vite.generated.ts
 /types.d.ts
+/nbproject/
