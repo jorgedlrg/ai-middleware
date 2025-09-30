@@ -9,21 +9,25 @@ class OutfitTest {
 
     @Test
     void create_shouldGenerateIdAndSetFields() {
-        Outfit outfit = Outfit.create("Casual", "Jeans and T-shirt");
+        String name = "Casual";
+        String description = "Jeans and T-shirt";
+        Outfit outfit = Outfit.create(name, description);
 
         assertNotNull(outfit.getId(), "Expected a generated id");
-        assertEquals("Casual", outfit.getName());
-        assertEquals("Jeans and T-shirt", outfit.getDescription());
+        assertEquals(name, outfit.getName());
+        assertEquals(description, outfit.getDescription());
     }
 
     @Test
     void restore_shouldUseProvidedIdAndSetFields() {
         UUID id = UUID.randomUUID();
-        Outfit outfit = Outfit.restore(id, "Formal", "Suit and tie");
+        String name = "Casual";
+        String description = "Jeans and T-shirt";
+        Outfit outfit = Outfit.restore(id, name, description);
 
         assertEquals(id, outfit.getId());
-        assertEquals("Formal", outfit.getName());
-        assertEquals("Suit and tie", outfit.getDescription());
+        assertEquals(name, outfit.getName());
+        assertEquals(description, outfit.getDescription());
     }
 
     @Test
