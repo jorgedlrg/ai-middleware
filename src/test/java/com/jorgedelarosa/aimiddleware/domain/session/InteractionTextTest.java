@@ -1,12 +1,12 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
 import java.util.Optional;
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * @author jorge
@@ -54,6 +54,12 @@ public class InteractionTextTest {
   @Test
   void optionalFromNullable_returnsEmpty_whenTextIsNull() {
     Optional<InteractionText> result = InteractionText.optionalFromNullable(null, "reason");
+    assertTrue(result.isEmpty());
+  }
+  
+  @Test
+  void optionalFromNullable_returnsEmpty_whenTextIsBlank() {
+    Optional<InteractionText> result = InteractionText.optionalFromNullable("    ", "reason");
     assertTrue(result.isEmpty());
   }
 

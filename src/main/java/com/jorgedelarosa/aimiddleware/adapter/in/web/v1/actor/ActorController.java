@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+// TODO: These controllers should have their own DTOs, in order to not break API contract
+// when changing any of the use cases, and then just use mappers.
+
 /**
  * @author jorge
  */

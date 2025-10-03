@@ -10,21 +10,18 @@ This is the current context, named [(${name})]:
 This scenario contains the following actors:
 [[# th:each="actor : ${actors}"]
     {
-      "name": [(${actor.actorName})], 
-      "physical description": [(${actor.physicalDescription})]
-      [# th:if="${actor.currentOutfit.present}"]
-      "outfit": [(${actor.currentOutfit.get})]
-      [/]
-      [# th:if="${actor.personality.present}"]
-      "personality": [(${actor.personality.get})]
-      [/]
+      "name": [(${actor.actorName})],
+      "profile": [(${actor.profile})],
+      "physical description": [(${actor.physicalDescription})],
+      [# th:if="${actor.currentOutfit.present}"]"outfit": [(${actor.currentOutfit.get})],[/]
+      [# th:if="${actor.personality.present}"]"personality": [(${actor.personality.get})],[/]
       "role": [(${actor.roleDescription})]
     }
 [/]]
 
 This is what the actors have said so far:
 [[# th:each="previousMessage : ${previousMessages}"]
-    [(${previousMessage.actorName})]: *[(${previousMessage.action})]* [(${previousMessage.speech})]
+    [(${previousMessage.actorName})]: [# th:if="${previousMessage.action.present}"]*[(${previousMessage.action.get})]*[/] [(${previousMessage.speech})]
 [/]]
 
 You're playing the actor [(${you})]. 

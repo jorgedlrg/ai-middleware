@@ -11,6 +11,7 @@ public interface SaveActorUseCase {
   public record Command(
       UUID id,
       String name,
+      String profile,
       String physicalDescription,
       String personality,
       byte[] portrait,

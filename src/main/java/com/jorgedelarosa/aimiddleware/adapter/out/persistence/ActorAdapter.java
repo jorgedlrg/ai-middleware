@@ -72,6 +72,7 @@ public class ActorAdapter
     return Actor.restore(
         entity.getId(),
         entity.getName(),
+        entity.getProfile(),
         entity.getPhysicalDescription(),
         mindRepository.findById(entity.getId()).map(e -> ActorMapper.INSTANCE.toMind(e)),
         Optional.ofNullable(entity.getCurrentOutfit()),

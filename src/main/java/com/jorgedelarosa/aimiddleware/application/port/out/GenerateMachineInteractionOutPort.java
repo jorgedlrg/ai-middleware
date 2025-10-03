@@ -29,6 +29,7 @@ public interface GenerateMachineInteractionOutPort {
   public record PerformanceDto(
       String roleName,
       String actorName,
+      String profile,
       String physicalDescription,
       Optional<String> currentOutfit,
       Optional<String> personality,

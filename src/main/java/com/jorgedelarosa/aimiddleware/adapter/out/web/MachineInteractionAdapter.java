@@ -108,6 +108,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
                     new GenerateMachineInteractionOutPort.PerformanceDto(
                         e.roleName(),
                         e.actorName(),
+                        e.profile(),
                         e.physicalDescription(),
                         e.currentOutfit(),
                         e.personality(),

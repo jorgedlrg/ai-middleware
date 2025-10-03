@@ -14,6 +14,7 @@ public interface GetActorDetailsUseCase {
   public record ActorDto(
       UUID id,
       String name,
+      String profile,
       String physicalDescription,
       Optional<MindDto> mind,
       byte[] portrait,

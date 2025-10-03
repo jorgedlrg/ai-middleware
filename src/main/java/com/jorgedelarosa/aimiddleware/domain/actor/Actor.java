@@ -16,6 +16,7 @@ import java.util.UUID;
 public class Actor extends AggregateRoot {
 
   private String name;
+  private String profile;
   private String physicalDescription;
   private Optional<Mind> mind;
   private Optional<UUID> currentOutfit;
@@ -25,6 +26,7 @@ public class Actor extends AggregateRoot {
   private Actor(
       UUID id,
       String name,
+      String profile,
       String physicalDescription,
       Optional<Mind> mind,
       Optional<UUID> currentOutfit,
@@ -32,6 +34,7 @@ public class Actor extends AggregateRoot {
       Map<Mood, List<byte[]>> moodPortraits) {
     super(Actor.class, id);
     this.name = name;
+    this.profile = profile;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
     this.currentOutfit = currentOutfit;
@@ -39,7 +42,8 @@ public class Actor extends AggregateRoot {
     this.moodPortraits = moodPortraits;
   }
 
-  public static Actor create(String name, String physicalDescription, String personality) {
+  public static Actor create(
+      String name, String profile, String physicalDescription, String personality) {
     UUID id = UUID.randomUUID();
     Optional<Mind> mind = Optional.empty();
     if (personality != null && !personality.equals("")) {
@@ -47,7 +51,14 @@ public class Actor extends AggregateRoot {
     }
     Actor actor =
         new Actor(
-            id, name, physicalDescription, mind, Optional.empty(), new byte[0], new HashMap<>());
+            id,
+            name,
+            profile,
+            physicalDescription,
+            mind,
+            Optional.empty(),
+            new byte[0],
+            new HashMap<>());
     actor.validate();
     return actor;
   }
@@ -55,19 +66,25 @@ public class Actor extends AggregateRoot {
   public static Actor restore(
       UUID id,
       String name,
+      String profile,
       String physicalDescription,
       Optional<Mind> mind,
       Optional<UUID> currentOutfit,
       byte[] portrait,
       Map<Mood, List<byte[]>> moodPortraits) {
     Actor actor =
-        new Actor(id, name, physicalDescription, mind, currentOutfit, portrait, moodPortraits);
+        new Actor(
+            id, name, profile, physicalDescription, mind, currentOutfit, portrait, moodPortraits);
     actor.validate();
     return actor;
   }
 
   public String getName() {
     return name;
+  }
+
+  public String getProfile() {
+    return profile;
   }
 
   public String getPhysicalDescription() {
@@ -98,6 +115,11 @@ public class Actor extends AggregateRoot {
 
   public void setName(String name) {
     this.name = name;
+    validate();
+  }
+
+  public void setProfile(String profile) {
+    this.profile = profile;
     validate();
   }
 
@@ -132,6 +154,7 @@ public class Actor extends AggregateRoot {
   @Override
   public boolean validate() {
     if (Validator.strNotEmpty.validate(name)
+            && Validator.strNotEmpty.validate(profile)
             && Validator.strNotEmpty.validate(physicalDescription)
             && currentOutfit != null
             && mind.isPresent()

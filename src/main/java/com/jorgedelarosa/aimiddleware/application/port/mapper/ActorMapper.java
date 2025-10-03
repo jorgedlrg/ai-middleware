@@ -30,6 +30,7 @@ public interface ActorMapper {
     ActorEntity ae = new ActorEntity();
     ae.setId(dom.getId());
     ae.setName(dom.getName());
+    ae.setProfile(dom.getProfile());
     ae.setPhysicalDescription(dom.getPhysicalDescription());
     dom.getCurrentOutfit().ifPresent(e -> ae.setCurrentOutfit(e));
     return ae;

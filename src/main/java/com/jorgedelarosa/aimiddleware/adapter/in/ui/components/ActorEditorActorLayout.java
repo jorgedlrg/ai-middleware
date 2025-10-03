@@ -21,6 +21,7 @@ import java.util.UUID;
 public class ActorEditorActorLayout extends VerticalLayout {
 
   private final TextField name;
+  private final TextArea profile;
   private final TextArea physicalDescription;
   private final TextArea personality;
   private byte[] portraitBytes;
@@ -42,6 +43,11 @@ public class ActorEditorActorLayout extends VerticalLayout {
     }
 
     portrait.setMaxHeight("480px");
+
+    profile = new TextArea("Profile");
+    profile.setValue(actorDto.profile());
+    profile.setWidthFull();
+    profile.setMinRows(4);
 
     physicalDescription = new TextArea("Physical description");
     physicalDescription.setValue(actorDto.physicalDescription());
@@ -77,6 +83,7 @@ public class ActorEditorActorLayout extends VerticalLayout {
     FormLayout formLayout = new FormLayout();
     formLayout.setAutoResponsive(false);
     formLayout.addFormRow(portrait, name, outfitComboBox);
+    formLayout.addFormRow(profile);
     formLayout.addFormRow(physicalDescription);
     formLayout.addFormRow(personality);
     formLayout.addFormRow(upload);
@@ -87,6 +94,10 @@ public class ActorEditorActorLayout extends VerticalLayout {
 
   public String getNameValue() {
     return name.getValue();
+  }
+
+  public String getProfileValue() {
+    return profile.getValue();
   }
 
   public String getPhysicalDescriptionValue() {

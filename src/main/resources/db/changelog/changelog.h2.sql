@@ -66,3 +66,8 @@ INSERT INTO  memory_fragment VALUES ('caa30e65-1886-4366-bfb7-f415af9f4a40','caa
 ALTER TABLE memory_fragment ADD enabled BIT;
 UPDATE memory_fragment SET enabled=true;
 ALTER TABLE memory_fragment ALTER COLUMN enabled SET NOT NULL;
+
+-- changeset jorge:20251003-1
+ALTER TABLE actor ADD profile LONGTEXT;
+UPDATE actor SET profile='profile';
+ALTER TABLE actor ALTER COLUMN profile SET NOT NULL;

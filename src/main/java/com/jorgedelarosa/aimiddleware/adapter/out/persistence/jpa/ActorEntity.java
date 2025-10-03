@@ -15,6 +15,8 @@ public class ActorEntity {
   @Id private UUID id;
   private String name;
 
+  private String profile;
+
   @Column(name = "physical_desc")
   private String physicalDescription;
 

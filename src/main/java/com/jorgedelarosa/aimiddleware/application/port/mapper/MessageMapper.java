@@ -55,6 +55,7 @@ public interface MessageMapper {
     return new GenerateMachineInteractionOutPort.PerformanceDto(
         role.getName(),
         actor.getName(),
+        actor.getProfile(),
         actor.getPhysicalDescription(),
         Optional.ofNullable(outfit),
         actor.getMind().map(e -> e.getPersonality()),
