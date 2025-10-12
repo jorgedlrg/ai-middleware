@@ -1,6 +1,6 @@
 spring:
   application:
-    name: aimiddleware
+    name: artifantasy
   datasource:
     url: jdbc:h2:~/aimiddleware/mydb;\DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE;FILE_LOCK=SOCKET;WRITE_DELAY=0
     username: sa
@@ -32,6 +32,7 @@ management:
     health.enabled: true
     prometheus.enabled: true
   endpoints.web.exposure.include: health, info, metrics, prometheus
+  metrics.tags.application: ${spring.application.name}
 vaadin:
   devmode.devTools.enabled: false
 # RestClient logging
