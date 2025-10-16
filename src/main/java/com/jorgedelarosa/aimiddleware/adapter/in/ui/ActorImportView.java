@@ -1,12 +1,14 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.markdown.Markdown;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -14,6 +16,9 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.server.streams.UploadHandler;
 import com.vaadin.flow.server.streams.UploadMetadata;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,6 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ActorImportView extends VerticalLayout implements BeforeEnterObserver {
 
   private CharacterCardReader.CharacterCardV2 card;
+  private byte[] portraitBytes;
+  private ActorEditorActorLayout actorEditorLayout;
+  private TextArea scenario;
+  private TextArea firstMes;
 
   private void render() {
     removeAll();
@@ -36,6 +45,7 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
             UploadHandler.inMemory(
                 (UploadMetadata metadata, byte[] data) -> {
                   card = new CharacterCardReader().read(data);
+                  portraitBytes = Arrays.copyOf(data, data.length);
                 }));
 
     upload.setDropAllowed(true);
@@ -47,8 +57,28 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
     add(readDataButton);
 
     if (card != null) {
-      Markdown markdown = new Markdown(card.toString());
-      add(markdown);
+      actorEditorLayout =
+          new ActorEditorActorLayout(
+              new GetActorDetailsUseCase.ActorDto(
+                  null,
+                  card.data().name(),
+                  card.data().description(),
+                  card.data().description(),
+                  Optional.of(new GetActorDetailsUseCase.MindDto(card.data().personality())),
+                  portraitBytes,
+                  Optional.empty()),
+              Collections.EMPTY_LIST);
+      scenario = new TextArea("Scenario");
+      scenario.setValue(card.data().scenario());
+      scenario.setWidthFull();
+      scenario.setMinRows(4);
+      firstMes = new TextArea("Introduction");
+      firstMes.setValue(card.data().first_mes());
+      firstMes.setWidthFull();
+      firstMes.setMinRows(4);
+      add(actorEditorLayout);
+      add(scenario);
+      add(firstMes);
     }
   }
 
