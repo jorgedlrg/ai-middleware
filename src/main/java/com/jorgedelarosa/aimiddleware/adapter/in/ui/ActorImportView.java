@@ -2,9 +2,11 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,6 +32,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @Slf4j
 public class ActorImportView extends VerticalLayout implements BeforeEnterObserver {
+
+  private final SaveActorUseCase saveActorUseCase;
 
   private CharacterCardReader.CharacterCardV2 card;
   private byte[] portraitBytes;
@@ -57,13 +61,17 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
     add(readDataButton);
 
     if (card != null) {
+      // People use to refer to the character in the cards as {{char}} so it can be dinamically
+      // changed. I don't use this.
+      String processedDescription =
+          card.data().description().replace("{{char}}", card.data().name());
       actorEditorLayout =
           new ActorEditorActorLayout(
               new GetActorDetailsUseCase.ActorDto(
                   null,
                   card.data().name(),
-                  card.data().description(),
-                  card.data().description(),
+                  processedDescription,
+                  processedDescription,
                   Optional.of(new GetActorDetailsUseCase.MindDto(card.data().personality())),
                   portraitBytes,
                   Optional.empty()),
@@ -77,6 +85,10 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
       firstMes.setWidthFull();
       firstMes.setMinRows(4);
       add(actorEditorLayout);
+      Button saveActorOnlyButton = new Button("Save Actor Only");
+      saveActorOnlyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+      saveActorOnlyButton.addClickListener(saveOnlyActorListener());
+      add(saveActorOnlyButton);
       add(scenario);
       add(firstMes);
     }
@@ -88,10 +100,19 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
     };
   }
 
-  private ComponentEventListener<ClickEvent<Button>> importActorListener() {
+  private ComponentEventListener<ClickEvent<Button>> saveOnlyActorListener() {
     return (ClickEvent<Button> t) -> {
+      saveActorUseCase.execute(
+          new SaveActorUseCase.Command(
+              null,
+              actorEditorLayout.getNameValue(),
+              actorEditorLayout.getProfileValue(),
+              actorEditorLayout.getPhysicalDescriptionValue(),
+              actorEditorLayout.getPersonalityValue(),
+              actorEditorLayout.getPortraitBytes(),
+              actorEditorLayout.getOutfitValue()));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
-      Notification notification = Notification.show("Actor imported!");
+      Notification notification = Notification.show(actorEditorLayout.getNameValue() + " saved!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }
