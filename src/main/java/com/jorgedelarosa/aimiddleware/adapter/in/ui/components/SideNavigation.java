@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorEditorView;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorImportView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.ActorsListView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitEditorView;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.OutfitListView;
@@ -25,6 +26,8 @@ public class SideNavigation extends Div {
     SideNavItem actors =
         new SideNavItem("Actors", ActorsListView.class, VaadinIcon.FAMILY.create());
     actors.addItem(new SideNavItem("New actor", ActorEditorView.class, VaadinIcon.PLUS.create()));
+    actors.addItem(
+        new SideNavItem("Import actor", ActorImportView.class, VaadinIcon.ARROW_DOWN.create()));
     SideNavItem outfits =
         new SideNavItem("Outfits", OutfitListView.class, VaadinIcon.GLASSES.create());
     outfits.addItem(
