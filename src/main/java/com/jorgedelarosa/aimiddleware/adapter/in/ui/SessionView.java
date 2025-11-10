@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.PerformanceCard;
+import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
@@ -12,6 +13,8 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.NextInteractio
 import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
+import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
@@ -38,12 +41,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 
 /**
  * @author jorge
  */
 @Route(value = "sessions/:sessionId?/interact", layout = MainView.class)
 @RequiredArgsConstructor
+@org.springframework.stereotype.Component
+@Slf4j
 public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
@@ -218,6 +225,21 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
       Notification notification = Notification.show(session + " deleted!");
       notification.addThemeVariants(NotificationVariant.LUMO_PRIMARY);
     };
+  }
+
+  @EventListener
+  public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
+    if (envelope.getEvent() instanceof InteractionAddedEvent) {
+      log.debug("UI push");
+      this.getUI()
+          .ifPresent(
+              ui ->
+                  ui.access(
+                      () -> {
+                        reloadInteractions();
+                        ui.push();
+                      }));
+    }
   }
 
   @Override
