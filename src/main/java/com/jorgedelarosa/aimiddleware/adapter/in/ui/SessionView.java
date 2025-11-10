@@ -33,6 +33,8 @@ import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -61,6 +63,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private String pageTitle;
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> userActorSelector;
+  private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> autoreplySelector;
 
   private void render() {
     removeAll();
@@ -82,8 +85,17 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
             .orElseThrow());
     contextComboBox.addValueChangeListener(e -> changeContextListener(e.getValue()));
 
-    userActorSelector = new RadioButtonGroup<>();
-    userActorSelector.setLabel("You're:");
+    autoreplySelector = new RadioButtonGroup<>("Auto reply:");
+    autoreplySelector.setRenderer(performancesRenderer);
+    List<GetSessionDetailsUseCase.PerformanceDto> autoreplyPerformances = new ArrayList();
+    GetSessionDetailsUseCase.PerformanceDto disabled =
+        new GetSessionDetailsUseCase.PerformanceDto(null, null, "Disabled", "No auto reply", null);
+    autoreplyPerformances.add(disabled);
+    autoreplyPerformances.addAll(sessionDetails.performances());
+    autoreplySelector.setItems(autoreplyPerformances);
+    autoreplySelector.setValue(disabled);
+
+    userActorSelector = new RadioButtonGroup<>("You're:");
     userActorSelector.setRenderer(performancesRenderer);
     userActorSelector.setItems(sessionDetails.performances());
     userActorSelector.setValue(sessionDetails.performances().getFirst());
@@ -132,6 +144,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     middle.setWidth("60%");
     middle.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY);
     middle.add(interactionList);
+    middle.add(autoreplySelector);
     middle.add(userActorSelector);
     middle.add(input);
     middle.add(contextComboBox);
