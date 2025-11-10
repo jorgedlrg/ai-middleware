@@ -203,7 +203,9 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   }
 
   private void nextInteractionListener(UUID id) {
-    nextInteractionUseCase.execute(new NextInteractionUseCase.Command(session));
+    nextInteractionUseCase.execute(
+        new NextInteractionUseCase.Command(
+            session, Optional.ofNullable(autoreplySelector.getValue().role())));
     reloadInteractions();
   }
 

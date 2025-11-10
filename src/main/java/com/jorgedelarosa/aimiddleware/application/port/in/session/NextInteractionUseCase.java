@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -8,5 +9,5 @@ import java.util.UUID;
 public interface NextInteractionUseCase {
   public void execute(Command cmd);
 
-  public record Command(UUID session) {}
+  public record Command(UUID session, Optional<UUID> autoreplyRole) {}
 }

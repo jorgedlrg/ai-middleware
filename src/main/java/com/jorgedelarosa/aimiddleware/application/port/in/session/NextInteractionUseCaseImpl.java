@@ -9,6 +9,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutP
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.PublishDomainEventOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
@@ -16,6 +17,7 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
 import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
@@ -24,7 +26,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,7 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 @Slf4j
 public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
@@ -52,12 +54,15 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
   private final GetUserByIdOutPort getUserByIdOutPort;
   private final GetMemoryByActorOutPort getMemoryByActorOutPort;
 
+  private final PublishDomainEventOutPort publishDomainEventOutPort;
+
   @Override
   public void execute(Command cmd) {
     Session session = getSessionByIdOutPort.query(cmd.session()).orElseThrow();
 
     try {
       session.setLastInteraction(session.getNextInteraction());
+      //FIXME: I don't like using a catch for logic
     } catch (NoSuchElementException ex) {
       log.debug(
           String.format(
@@ -123,5 +128,8 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
           Mood.optionalValueOf(response.mood()));
     }
     saveSessionOutPort.save(session);
+    publishDomainEventOutPort.publishDomainEvent(
+        new InteractionAddedEvent(
+            session.getAggregateId(), 1l, session.getLastInteraction(), cmd.autoreplyRole()));
   }
 }
