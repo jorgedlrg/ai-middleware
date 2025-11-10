@@ -6,9 +6,9 @@ import java.util.UUID;
 /**
  * @author jorge
  */
-public interface UserInteractUseCase {
+public interface AutoreplyUseCase {
 
   public void execute(Command cmd);
 
-  public record Command(UUID session, UUID role, String text, Optional<UUID> autoreplyRole) {}
+  public record Command(UUID session, Optional<UUID> autoreplyRole) {}
 }

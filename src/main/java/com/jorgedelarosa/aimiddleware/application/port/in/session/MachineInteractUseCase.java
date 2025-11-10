@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -9,5 +10,5 @@ public interface MachineInteractUseCase {
 
   public void execute(Command cmd);
 
-  public record Command(UUID session, UUID role) {}
+  public record Command(UUID session, UUID role, Optional<UUID> autoreplyRole) {}
 }

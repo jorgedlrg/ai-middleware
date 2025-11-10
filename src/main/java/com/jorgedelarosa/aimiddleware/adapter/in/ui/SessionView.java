@@ -35,6 +35,7 @@ import com.vaadin.flow.router.Route;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 
@@ -168,13 +169,18 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private void userInteractListener(MessageInput.SubmitEvent submitEvent) {
     userInteractUseCase.execute(
         new UserInteractUseCase.Command(
-            session, userActorSelector.getValue().role(), submitEvent.getValue()));
+            session,
+            userActorSelector.getValue().role(),
+            submitEvent.getValue(),
+            Optional.ofNullable(autoreplySelector.getValue().role())));
 
     reloadInteractions();
   }
 
   private void machineInteractListener(UUID role) {
-    machineInteractUseCase.execute(new MachineInteractUseCase.Command(session, role));
+    machineInteractUseCase.execute(
+        new MachineInteractUseCase.Command(
+            session, role, Optional.ofNullable(autoreplySelector.getValue().role())));
 
     reloadInteractions();
   }

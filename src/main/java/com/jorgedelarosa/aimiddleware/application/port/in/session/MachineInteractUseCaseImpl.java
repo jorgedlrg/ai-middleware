@@ -9,12 +9,14 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetOutfitListByIdOutP
 import com.jorgedelarosa.aimiddleware.application.port.out.GetScenarioByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.PublishDomainEventOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.actor.Memory;
 import com.jorgedelarosa.aimiddleware.domain.actor.Outfit;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Context;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
 import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
 import com.jorgedelarosa.aimiddleware.domain.session.Session;
@@ -22,7 +24,7 @@ import com.jorgedelarosa.aimiddleware.domain.user.User;
 import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,7 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
  * @author jorge
  */
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Transactional
 public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
 
@@ -48,6 +50,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
   private final GenerateMachineInteractionOutPort generateMachineInteractionOutPort;
   private final GetUserByIdOutPort getUserByIdOutPort;
   private final GetMemoryByActorOutPort getMemoryByActorOutPort;
+
+  private final PublishDomainEventOutPort publishDomainEventOutPort;
 
   @Override
   public void execute(Command cmd) {
@@ -107,5 +111,8 @@ public class MachineInteractUseCaseImpl implements MachineInteractUseCase {
         Mood.optionalValueOf(response.mood()));
 
     saveSessionOutPort.save(session);
+    publishDomainEventOutPort.publishDomainEvent(
+        new InteractionAddedEvent(
+            session.getAggregateId(), 1l, session.getLastInteraction(), cmd.autoreplyRole()));
   }
 }
