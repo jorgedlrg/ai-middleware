@@ -1,0 +1,18 @@
+package com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa;
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import java.util.UUID;
+import lombok.Data;
+
+/**
+ * @author jorge
+ */
+@Entity(name = "outfit")
+@Data
+public class OutfitEntity {
+
+  @Id private UUID id;
+  private String name;
+  private String description;
+}

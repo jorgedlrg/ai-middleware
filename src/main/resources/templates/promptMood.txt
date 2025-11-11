@@ -1,0 +1,15 @@
+You're in a fictional roleplay scenario.
+
+You're playing the actor [(${you})][# th:if="${currentThoughts}!=null"], and this is what [(${you})] is currently thinking:
+{
+    [(${currentThoughts})]
+}[/]
+And this is the last thing [(${you})] said:
+{
+    [(${lastSpeech})]
+}
+
+Given all this information, write in one word the mood of [(${you})].
+You can only use one of the following moods: {[[# th:each="mood : ${moods}"] [(${mood.name})], [/]]}
+
+VERY IMPORTANT: write your answer completely in English.

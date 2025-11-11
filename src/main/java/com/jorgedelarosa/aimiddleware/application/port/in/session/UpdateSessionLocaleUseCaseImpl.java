@@ -1,0 +1,29 @@
+package com.jorgedelarosa.aimiddleware.application.port.in.session;
+
+import com.jorgedelarosa.aimiddleware.application.port.out.GetSessionByIdOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveSessionOutPort;
+import com.jorgedelarosa.aimiddleware.domain.session.Session;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
+
+/**
+ * @author jorge
+ */
+@Component
+@RequiredArgsConstructor
+@Transactional
+public class UpdateSessionLocaleUseCaseImpl implements UpdateSessionLocaleUseCase {
+
+  private final GetSessionByIdOutPort getSessionByIdOutPort;
+  private final SaveSessionOutPort saveSessionOutPort;
+
+  @Override
+  public void execute(UpdateSessionLocaleUseCase.Command cmd) {
+    Session session = getSessionByIdOutPort.query(cmd.id()).orElseThrow();
+
+    session.setLocale(cmd.locale());
+
+    saveSessionOutPort.save(session);
+  }
+}
