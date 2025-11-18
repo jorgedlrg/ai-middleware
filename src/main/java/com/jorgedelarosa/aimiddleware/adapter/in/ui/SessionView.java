@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.PerformanceCard;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.infra.EventAware;
 import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
@@ -15,9 +16,11 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionC
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
 import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -51,7 +54,8 @@ import org.springframework.context.event.EventListener;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 @Slf4j
-public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
+public class SessionView extends HorizontalLayout
+    implements HasDynamicTitle, BeforeEnterObserver, EventAware {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
@@ -72,6 +76,8 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> userActorSelector;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> autoreplySelector;
+
+  private UI ui;
 
   private void render() {
     removeAll();
@@ -230,17 +236,15 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   }
 
   @EventListener
+  @Override
   public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
     if (envelope.getEvent() instanceof InteractionAddedEvent) {
       log.debug("UI push");
-      this.getUI()
-          .ifPresent(
-              ui ->
-                  ui.access(
-                      () -> {
-                        reloadInteractions();
-                        ui.push();
-                      }));
+      ui.access(
+          () -> {
+            reloadInteractions();
+            ui.push();
+          });
     }
   }
 
@@ -255,6 +259,18 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   @Override
   public String getPageTitle() {
     return pageTitle;
+  }
+
+  @Override
+  protected void onAttach(AttachEvent attachEvent) {
+    log.info("Doing attach stuff");
+    ui = attachEvent.getUI();
+
+    addDetachListener(
+        detachEvent -> {
+          log.info("Detaching..");
+          detachEvent.unregisterListener();
+        });
   }
 
   private final ComponentRenderer<Component, GetSessionDetailsUseCase.PerformanceDto>

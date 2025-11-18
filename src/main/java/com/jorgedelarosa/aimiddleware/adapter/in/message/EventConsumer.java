@@ -13,6 +13,7 @@ import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 /**
@@ -29,6 +30,7 @@ public class EventConsumer {
   private final AutoreplyUseCase autoreplyUseCase;
 
   @EventListener
+  @Async
   public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
     log.info(String.format("Received %s", envelope.getEvent().getClass().getSimpleName()));
     switch (envelope.getEvent()) {
