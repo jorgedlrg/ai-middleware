@@ -3,6 +3,8 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.PerformanceCard;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.infra.EventAware;
+import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteSessionUseCase;
@@ -12,9 +14,13 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.NextInteractio
 import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousInteractionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
+import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
+import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
+import com.vaadin.flow.component.AttachEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -39,6 +45,7 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 
 /**
  * @author jorge
@@ -47,7 +54,8 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 @Slf4j
-public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
+public class SessionView extends HorizontalLayout
+    implements HasDynamicTitle, BeforeEnterObserver, EventAware {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
   private final DeleteInteractionUseCase deleteInteractionUseCase;
@@ -69,7 +77,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> userActorSelector;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> autoreplySelector;
 
-  // private UI ui;
+  private UI ui;
 
   private void render() {
     removeAll();
@@ -150,7 +158,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     middle.setWidth("60%");
     middle.addClassNames(LumoUtility.Display.FLEX, LumoUtility.JustifyContent.EVENLY);
     middle.add(interactionList);
-    // middle.add(autoreplySelector);
+    middle.add(autoreplySelector);
     middle.add(userActorSelector);
     middle.add(input);
     middle.add(contextComboBox);
@@ -227,18 +235,18 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     };
   }
 
-  //  @EventListener
-  //  @Override
-  //  public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
-  //    if (envelope.getEvent() instanceof InteractionAddedEvent) {
-  //      log.debug("UI push");
-  //      ui.access(
-  //          () -> {
-  //            reloadInteractions();
-  //            ui.push();
-  //          });
-  //    }
-  //  }
+  @EventListener
+  @Override
+  public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
+    if (envelope.getEvent() instanceof InteractionAddedEvent) {
+      log.debug("UI push");
+      ui.access(
+          () -> {
+            reloadInteractions();
+            ui.push();
+          });
+    }
+  }
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
@@ -253,17 +261,17 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     return pageTitle;
   }
 
-  //  @Override
-  //  protected void onAttach(AttachEvent attachEvent) {
-  //    log.info("Doing attach stuff");
-  //    ui = attachEvent.getUI();
-  //
-  //    addDetachListener(
-  //        detachEvent -> {
-  //          log.info("Detaching..");
-  //          detachEvent.unregisterListener();
-  //        });
-  //  }
+  @Override
+  protected void onAttach(AttachEvent attachEvent) {
+    log.info("Doing attach stuff");
+    ui = attachEvent.getUI();
+
+    addDetachListener(
+        detachEvent -> {
+          log.info("Detaching..");
+          detachEvent.unregisterListener();
+        });
+  }
 
   private final ComponentRenderer<Component, GetSessionDetailsUseCase.PerformanceDto>
       performancesRenderer =
