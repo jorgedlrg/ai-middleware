@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -30,8 +29,6 @@ public class OllamaClient {
         RestClient.builder()
             .baseUrl(url)
             .requestFactory(new HttpComponentsClientHttpRequestFactory())
-            .messageConverters(
-                converters -> converters.add(new MappingJackson2HttpMessageConverter()))
             .build();
 
     OllamaChatResponse response =

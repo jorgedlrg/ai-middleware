@@ -16,7 +16,7 @@ public class ReasoningPopover extends Popover {
     super(content);
     content.addClassNames(LumoUtility.Padding.MEDIUM);
     setTarget(target);
-    addThemeVariants(PopoverVariant.ARROW, PopoverVariant.LUMO_NO_PADDING);
+    addThemeVariants(PopoverVariant.LUMO_ARROW, PopoverVariant.LUMO_NO_PADDING);
     setPosition(PopoverPosition.BOTTOM);
     setModal(true);
 

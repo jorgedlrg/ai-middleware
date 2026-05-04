@@ -16,7 +16,7 @@ spring:
     generate-ddl: false
     database-platform: org.hibernate.dialect.H2Dialect
   liquibase:
-    change-log: db/changelog/changelog.h2.sql
+    enabled: false
   h2:
     console:
       enabled: true # http://localhost:8080/h2-console

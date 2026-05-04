@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.web.client.RestClient;
 
 /**
@@ -23,7 +22,6 @@ public class OpenRouterClient {
   public OpenRouterChatCompletionResponse chatCompletion(Object req) {
     HttpComponentsClientHttpRequestFactory reqFactory =
         new HttpComponentsClientHttpRequestFactory();
-    reqFactory.setConnectTimeout(Duration.ofSeconds(5));
     reqFactory.setConnectionRequestTimeout(Duration.ofSeconds(5));
     reqFactory.setReadTimeout(Duration.ofSeconds(30));
 
@@ -32,8 +30,6 @@ public class OpenRouterClient {
         RestClient.builder()
             .baseUrl(URL)
             .requestFactory(reqFactory)
-            .messageConverters(
-                converters -> converters.add(new MappingJackson2HttpMessageConverter()))
             .defaultHeader("Authorization", "Bearer " + apikey)
             .defaultHeader("HTTP-Referer", "jorgedelarosa.com")
             .defaultHeader("X-Title", "AI Middleware")
