@@ -1,14 +1,11 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.adapter.out.message.MessagePublisher;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutboxEventEntity;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutboxEventRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.PublishDomainEventOutPort;
 import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
-import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import java.time.Instant;
 import java.util.HashMap;
 import java.util.List;
@@ -17,6 +14,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author jorge
@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class OutboxAdapter implements PublishDomainEventOutPort {
   private final OutboxEventRepository repository;
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
   private final MessagePublisher messagePublisher;
 
   @Override
@@ -43,8 +43,8 @@ public class OutboxAdapter implements PublishDomainEventOutPort {
     oee.setAggregateId(envelope.getEvent().getAggregateId().toString());
     oee.setEventType(envelope.getEventType());
     try {
-      oee.setPayload(objectMapper.writeValueAsString(envelope));
-    } catch (JsonProcessingException ex) {
+      oee.setPayload(jsonMapper.writeValueAsString(envelope));
+    } catch (JacksonException ex) {
       log.error(ex.getOriginalMessage());
       throw new RuntimeException(ex);
     }
@@ -77,11 +77,11 @@ public class OutboxAdapter implements PublishDomainEventOutPort {
 
   private <T extends DomainEvent> EventEnvelope<T> deserialize(String payload, Class<T> clazz) {
     JavaType javaType =
-        objectMapper.getTypeFactory().constructParametricType(EventEnvelope.class, clazz);
+        jsonMapper.getTypeFactory().constructParametricType(EventEnvelope.class, clazz);
     EventEnvelope<T> envelope;
     try {
-      envelope = objectMapper.readValue(payload, javaType);
-    } catch (JsonProcessingException ex) {
+      envelope = jsonMapper.readValue(payload, javaType);
+    } catch (JacksonException ex) {
       log.error(ex.getMessage());
       throw new RuntimeException(ex);
     }

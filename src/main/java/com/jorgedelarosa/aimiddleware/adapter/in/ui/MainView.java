@@ -88,11 +88,6 @@ public class MainView extends AppLayout implements AfterNavigationObserver {
   }
 
   @Override
-  protected void afterNavigation() {
-    super.afterNavigation();
-  }
-
-  @Override
   public void afterNavigation(AfterNavigationEvent event) {
     String pageTitle = "error";
 
