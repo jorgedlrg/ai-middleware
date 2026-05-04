@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.InteractionLayout;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.PerformanceCard;
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.infra.InteractionDispatcher;
 import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.DeleteInteractionUseCase;
@@ -14,10 +15,11 @@ import com.jorgedelarosa.aimiddleware.application.port.in.session.PreviousIntera
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UpdateSessionContextUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.UserInteractUseCase;
 import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
-import com.jorgedelarosa.aimiddleware.domain.session.InteractionAddedEvent;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.ComponentEventListener;
+import com.vaadin.flow.component.DetachEvent;
+import com.vaadin.flow.component.UI;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -35,6 +37,8 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
+import com.vaadin.flow.shared.Registration;
+import com.vaadin.flow.spring.annotation.UIScope;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +46,6 @@ import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.event.EventListener;
 
 /**
  * @author jorge
@@ -51,6 +54,7 @@ import org.springframework.context.event.EventListener;
 @RequiredArgsConstructor
 @org.springframework.stereotype.Component
 @Slf4j
+@UIScope
 public class SessionView extends HorizontalLayout implements HasDynamicTitle, BeforeEnterObserver {
   private final UserInteractUseCase userInteractUseCase;
   private final MachineInteractUseCase machineInteractUseCase;
@@ -72,6 +76,10 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   private VirtualList<GetSessionDetailsUseCase.InteractionDto> interactionList;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> userActorSelector;
   private RadioButtonGroup<GetSessionDetailsUseCase.PerformanceDto> autoreplySelector;
+
+  private final InteractionDispatcher dispatcher;
+  private Registration registration;
+  private UI ui;
 
   private void render() {
     removeAll();
@@ -229,29 +237,24 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     };
   }
 
-  @EventListener
   public void handleMessage(EventEnvelope<? extends DomainEvent> envelope) {
-    if (envelope.getEvent() instanceof InteractionAddedEvent) {
-      log.debug("UI push");
-      this.getUI()
-          .ifPresent(
-              ui -> {
-                if (ui.isAttached()) {
-                  ui.access(
-                      () -> {
-                        reloadInteractions();
-                        ui.push();
-                      });
-                } else {
-                  log.info("UI not attached");
-                }
-              });
-    }
+    log.debug("UI push");
+    ui.access(
+        () -> {
+          try {
+            reloadInteractions();
+            ui.push();
+          } catch (Exception e) {
+            log.error("Error updating UI", e);
+          }
+        });
   }
 
   @Override
   public void beforeEnter(BeforeEnterEvent event) {
     session = UUID.fromString(event.getRouteParameters().get("sessionId").orElseThrow());
+    ui = event.getUI();
+    registration = dispatcher.register(this::handleMessage);
 
     render();
     pageTitle = "Session - " + scenarioDetails.name();
@@ -260,6 +263,16 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
   @Override
   public String getPageTitle() {
     return pageTitle;
+  }
+
+  @Override
+  protected void onDetach(DetachEvent detachEvent) {
+    if (registration != null) {
+      registration.remove();
+      registration = null;
+    }
+    super.onDetach(detachEvent);
+    log.info("UI detached");
   }
 
   private final ComponentRenderer<Component, GetSessionDetailsUseCase.PerformanceDto>
