@@ -1,8 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.out.persistence;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JavaType;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jorgedelarosa.aimiddleware.adapter.out.message.EventEnvelope;
 import com.jorgedelarosa.aimiddleware.adapter.out.message.MessagePublisher;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutboxEventEntity;
@@ -15,6 +12,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import tools.jackson.core.JacksonException;
+import tools.jackson.databind.JavaType;
+import tools.jackson.databind.json.JsonMapper;
 
 /**
  * @author jorge
@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 public class OutboxProcessor {
   private final OutboxEventRepository repository;
-  private final ObjectMapper objectMapper;
+  private final JsonMapper jsonMapper;
   private final MessagePublisher messagePublisher;
 
   @Scheduled(fixedDelay = 1000)
@@ -54,11 +54,11 @@ public class OutboxProcessor {
 
   private <T extends DomainEvent> EventEnvelope<T> deserialize(String payload, Class<T> clazz) {
     JavaType javaType =
-        objectMapper.getTypeFactory().constructParametricType(EventEnvelope.class, clazz);
+        jsonMapper.getTypeFactory().constructParametricType(EventEnvelope.class, clazz);
     EventEnvelope<T> envelope;
     try {
-      envelope = objectMapper.readValue(payload, javaType);
-    } catch (JsonProcessingException ex) {
+      envelope = jsonMapper.readValue(payload, javaType);
+    } catch (JacksonException ex) {
       log.error(ex.getMessage());
       throw new RuntimeException(ex);
     }
