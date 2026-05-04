@@ -104,21 +104,8 @@ public interface SessionMapper {
 
   default GetSessionDetailsUseCase.PerformanceDto toDto(
       Actor actor, Role role, List<Interaction> interactions) {
-    byte[] portrait;
-    List<Interaction> actorInteractions =
-        interactions.stream().filter(e -> e.getActor().equals(actor.getId())).toList();
-    if (!actorInteractions.isEmpty()) {
-      if (actorInteractions.getLast().getMood().isPresent()) {
-        portrait = actor.getMoodPortrait(actorInteractions.getLast().getMood().get());
-      } else {
-        portrait = actor.getPortrait();
-      }
-    } else {
-      portrait = actor.getPortrait();
-    }
-
     return new GetSessionDetailsUseCase.PerformanceDto(
-        actor.getId(), role.getId(), actor.getName(), role.getName(), portrait);
+        actor.getId(), role.getId(), actor.getName(), role.getName(), actor.getPortrait());
   }
 
   default GetSessionDetailsUseCase.InteractionDto toDto(
@@ -129,12 +116,6 @@ public interface SessionMapper {
       moodName = dom.getMood().get().name().toLowerCase();
       mooodEmoji = dom.getMood().get().getEmoji();
     }
-    byte[] portrait;
-    if (dom.getMood().isPresent()) {
-      portrait = actor.getMoodPortrait(dom.getMood().get());
-    } else {
-      portrait = actor.getPortrait();
-    }
     return new GetSessionDetailsUseCase.InteractionDto(
         dom.getId(),
         dom.getTimestamp(),
@@ -142,7 +123,7 @@ public interface SessionMapper {
         dom.getThoughtText().map(e -> e.getText()).orElse(""),
         dom.getActionText().map(e -> e.getText()).orElse(""),
         dom.getSpokenText().getText(),
-        portrait,
+        actor.getPortrait(),
         siblings.indexOf(dom) + 1,
         siblings.size(),
         moodName,

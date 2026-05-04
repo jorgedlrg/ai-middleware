@@ -235,12 +235,17 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
       log.debug("UI push");
       this.getUI()
           .ifPresent(
-              ui ->
+              ui -> {
+                if (ui.isAttached()) {
                   ui.access(
                       () -> {
                         reloadInteractions();
                         ui.push();
-                      }));
+                      });
+                } else {
+                  log.info("UI not attached");
+                }
+              });
     }
   }
 
