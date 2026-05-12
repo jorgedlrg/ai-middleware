@@ -14,5 +14,5 @@ public interface GetScenariosUseCase {
   public record Command() {}
 
   public record ScenarioDto(
-      UUID id, String name, Integer contexts, Integer roles, Integer introductions) {}
+      UUID id, String name, List<String> contextNames, List<String> roleNames, int introductionCount) {}
 }
