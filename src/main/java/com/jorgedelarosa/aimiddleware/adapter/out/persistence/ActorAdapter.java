@@ -11,11 +11,9 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByCurrent
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
+import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorPortraitOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
-import com.jorgedelarosa.aimiddleware.domain.session.Mood;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -61,35 +59,25 @@ public class ActorAdapter
   }
 
   private Actor restoreActor(ActorEntity entity) {
-    byte[] portrait = assetRepository.load("actors/" + entity.getId() + "/portrait.png");
-    Map<Mood, List<byte[]>> moodPortraits = new HashMap<>();
-    for (Mood mood : Mood.values()) {
-      moodPortraits.put(
-          mood,
-          assetRepository.loadAssets("actors/" + entity.getId() + "/" + mood.name().toLowerCase()));
-    }
-
     return Actor.restore(
         entity.getId(),
         entity.getName(),
         entity.getProfile(),
         entity.getPhysicalDescription(),
         mindRepository.findById(entity.getId()).map(e -> ActorMapper.INSTANCE.toMind(e)),
-        Optional.ofNullable(entity.getCurrentOutfit()),
-        portrait,
-        moodPortraits);
+        Optional.ofNullable(entity.getCurrentOutfit()));
   }
 
   @Override
-  public void save(Actor actor) {
+  public void save(Actor actor, byte[] portrait) {
     mindRepository.deleteById(actor.getId());
     assetRepository.delete("actors/" + actor.getId() + "/portrait.png");
 
     actorRepository.save(ActorMapper.INSTANCE.toEntity(actor));
     actor.getMind().ifPresent(e -> mindRepository.save(ActorMapper.INSTANCE.toEntity(e)));
 
-    if (actor.getPortrait().length > 0) {
-      assetRepository.save("actors/" + actor.getId(), "/portrait.png", actor.getPortrait());
+    if (portrait != null && portrait.length > 0) {
+      assetRepository.save("actors/" + actor.getId(), "/portrait.png", portrait);
     }
   }
 

@@ -7,5 +7,5 @@ import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
  */
 public interface SaveActorOutPort {
 
-  public void save(Actor actor);
+  public void save(Actor actor, byte[] portrait);
 }

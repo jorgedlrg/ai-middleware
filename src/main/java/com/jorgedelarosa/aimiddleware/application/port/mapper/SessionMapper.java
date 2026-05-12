@@ -105,7 +105,7 @@ public interface SessionMapper {
   default GetSessionDetailsUseCase.PerformanceDto toDto(
       Actor actor, Role role, List<Interaction> interactions) {
     return new GetSessionDetailsUseCase.PerformanceDto(
-        actor.getId(), role.getId(), actor.getName(), role.getName(), actor.getPortrait());
+        actor.getId(), role.getId(), actor.getName(), role.getName());
   }
 
   default GetSessionDetailsUseCase.InteractionDto toDto(
@@ -123,7 +123,7 @@ public interface SessionMapper {
         dom.getThoughtText().map(e -> e.getText()).orElse(""),
         dom.getActionText().map(e -> e.getText()).orElse(""),
         dom.getSpokenText().getText(),
-        actor.getPortrait(),
+        actor.getId(),
         siblings.indexOf(dom) + 1,
         siblings.size(),
         moodName,

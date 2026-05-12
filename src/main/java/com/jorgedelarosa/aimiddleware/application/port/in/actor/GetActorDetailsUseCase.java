@@ -17,7 +17,6 @@ public interface GetActorDetailsUseCase {
       String profile,
       String physicalDescription,
       Optional<MindDto> mind,
-      byte[] portrait,
       Optional<UUID> currentOutfit) {}
 
   public record MindDto(String personality) {}

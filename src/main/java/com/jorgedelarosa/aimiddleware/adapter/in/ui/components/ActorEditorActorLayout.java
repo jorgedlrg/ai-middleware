@@ -33,16 +33,10 @@ public class ActorEditorActorLayout extends VerticalLayout {
     name.setValue(actorDto.name());
     name.setRequired(true);
 
-    Image portrait;
-    if (actorDto.portrait() != null && actorDto.portrait().length > 0) {
-      portraitBytes = Arrays.copyOf(actorDto.portrait(), actorDto.portrait().length);
-      portrait = new ByteImage("Portrait", portraitBytes);
-    } else {
-      portraitBytes = new byte[0];
-      portrait = new Image();
-    }
-
+    Image portrait = new Image("/api/v1/actor/actors/" + actorDto.id() + "/portrait", "Portrait");
     portrait.setMaxHeight("480px");
+
+    portraitBytes = new byte[0];
 
     profile = new TextArea("Profile");
     profile.setValue(actorDto.profile());

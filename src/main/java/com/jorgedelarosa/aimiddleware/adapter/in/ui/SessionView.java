@@ -105,7 +105,7 @@ public class SessionView extends HorizontalLayout implements HasDynamicTitle, Be
     autoreplySelector.setRenderer(performancesRenderer);
     List<GetSessionDetailsUseCase.PerformanceDto> autoreplyPerformances = new ArrayList();
     GetSessionDetailsUseCase.PerformanceDto disabled =
-        new GetSessionDetailsUseCase.PerformanceDto(null, null, "Disabled", "No auto reply", null);
+        new GetSessionDetailsUseCase.PerformanceDto(null, null, "Disabled", "No auto reply");
     autoreplyPerformances.add(disabled);
     autoreplyPerformances.addAll(sessionDetails.performances());
     autoreplySelector.setItems(autoreplyPerformances);

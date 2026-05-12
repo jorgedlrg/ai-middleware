@@ -24,7 +24,7 @@ public class RemoveOutfitAllActorsUseCaseImpl implements RemoveOutfitAllActorsUs
     List<Actor> actors = getActorListByCurrentOutfitOutPort.queryActors(cmd.outfit());
     for (Actor actor : actors) {
       actor.chooseOutfit(null);
-      saveActorOutPort.save(actor);
+      saveActorOutPort.save(actor, null);
     }
   }
 }

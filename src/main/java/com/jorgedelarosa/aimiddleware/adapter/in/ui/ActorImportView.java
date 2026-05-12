@@ -73,7 +73,6 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
                   processedDescription,
                   processedDescription,
                   Optional.of(new GetActorDetailsUseCase.MindDto(card.data().personality())),
-                  portraitBytes,
                   Optional.empty()),
               Collections.EMPTY_LIST);
       scenario = new TextArea("Scenario");
