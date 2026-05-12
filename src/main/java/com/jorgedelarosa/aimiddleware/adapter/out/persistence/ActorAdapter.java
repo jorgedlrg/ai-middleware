@@ -11,7 +11,6 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByCurrent
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
-import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorPortraitOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import java.util.List;
 import java.util.Optional;
