@@ -7,10 +7,8 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.SessionEntity;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.CreateSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.EditSessionUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionsUseCase;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
 import com.jorgedelarosa.aimiddleware.domain.scenario.Role;
-import com.jorgedelarosa.aimiddleware.domain.scenario.Scenario;
 import com.jorgedelarosa.aimiddleware.domain.session.Interaction;
 import com.jorgedelarosa.aimiddleware.domain.session.InteractionText;
 import com.jorgedelarosa.aimiddleware.domain.session.Mood;
@@ -20,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import org.mapstruct.Mapper;
-import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 
 /**
@@ -34,19 +31,11 @@ public interface SessionMapper {
 
   Performance toDom(EditSessionUseCase.PerformanceDto dto);
 
-  @Mapping(target = "session", source = "dom.id")
-  @Mapping(target = "scenario", source = "sc.name")
-  GetSessionsUseCase.SessionDto toDto(Session dom, Scenario sc);
-
   SessionEntity toEntity(Session session);
 
   default UUID map(Interaction value) {
     if (value != null) return value.getId();
     else return null;
-  }
-
-  default UUID map(Scenario value) {
-    return value.getId();
   }
 
   default Performance toValueObject(PerformanceEntity a) {
