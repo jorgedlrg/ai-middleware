@@ -36,8 +36,8 @@ public interface ScenarioMapper {
     return new GetScenariosUseCase.ScenarioDto(
         dom.getId(),
         dom.getName(),
-        dom.getContexts().size(),
-        dom.getRoles().size(),
+        dom.getContexts().stream().map(Context::getName).toList(),
+        dom.getRoles().stream().map(Role::getName).toList(),
         dom.getIntroductions().size());
   }
 

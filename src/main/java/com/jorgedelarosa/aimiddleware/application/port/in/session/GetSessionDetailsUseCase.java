@@ -22,8 +22,7 @@ public interface GetSessionDetailsUseCase {
       List<PerformanceDto> performances,
       List<InteractionDto> interactions) {}
 
-  public record PerformanceDto(
-      UUID actor, UUID role, String actorName, String roleName, byte[] portrait) {}
+  public record PerformanceDto(UUID actor, UUID role, String actorName, String roleName) {}
 
   public record InteractionDto(
       UUID id,
@@ -32,7 +31,7 @@ public interface GetSessionDetailsUseCase {
       String thoughtText,
       String actionText,
       String spokenText,
-      byte[] portrait,
+      UUID actorId,
       Integer siblingNumber,
       Integer totalSiblings,
       String mood,

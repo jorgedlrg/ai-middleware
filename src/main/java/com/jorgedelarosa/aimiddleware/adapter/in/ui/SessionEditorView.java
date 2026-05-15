@@ -1,6 +1,5 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
-import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ByteImage;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenarioDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.scenario.GetScenariosUseCase;
@@ -15,7 +14,6 @@ import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -25,7 +23,6 @@ import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
 import com.vaadin.flow.router.HasDynamicTitle;
 import com.vaadin.flow.router.Route;
-import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -197,20 +194,10 @@ public class SessionEditorView extends VerticalLayout
   private final Renderer<GetActorsUseCase.ActorDto> actorComboRenderer =
       new ComponentRenderer<>(
           actor -> {
-            Image portrait;
-            if (actor.portrait().length > 0) {
-              portrait = new ByteImage("Portrait", actor.portrait());
-              portrait.setMaxWidth("64px");
-              portrait.setMinWidth("64px");
-              return new Div(portrait, new Text(actor.name()));
-            } else {
-              Icon icon = LumoIcon.PHOTO.create();
-              icon.getStyle()
-                  .setColor("var(--lumo-primary-color)")
-                  .setBackgroundColor("var(--lumo-primary-color-10pct)");
-              icon.setSize("64px");
-              return new VerticalLayout(icon, new Text(actor.name()));
-            }
+            Image portrait = new Image("/api/v1/actor/actors/" + actor.id() + "/portrait", "Portrait");
+            portrait.setMaxWidth("64px");
+            portrait.setMinWidth("64px");
+            return new Div(portrait, new Text(actor.name()));
           });
 
   private ComponentEventListener<ClickEvent<Button>> saveSessionListener() {

@@ -2,20 +2,15 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
 import com.jorgedelarosa.aimiddleware.application.port.in.session.GetSessionDetailsUseCase;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.avatar.Avatar;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.server.streams.DownloadEvent;
-import com.vaadin.flow.server.streams.DownloadHandler;
-import com.vaadin.flow.server.streams.DownloadResponse;
 import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.theme.lumo.LumoUtility;
-import java.io.ByteArrayInputStream;
-import java.io.OutputStream;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -37,26 +32,11 @@ public class InteractionLayout extends HorizontalLayout {
     setMargin(true);
     setPadding(false);
 
-    Avatar avatar = new Avatar(dto.actorName());
-    avatar.setHeight("112px");
-    avatar.setWidth("112px");
-
-    if (dto.portrait().length > 0) {
-      avatar.setImageHandler(
-          DownloadHandler.fromInputStream(
-              (DownloadEvent downloadEvent) -> {
-                try (OutputStream outputStream = downloadEvent.getOutputStream()) {
-                  outputStream.write(dto.portrait());
-                }
-                return new DownloadResponse(
-                    new ByteArrayInputStream(dto.portrait()),
-                    "avatar",
-                    "image/png",
-                    dto.portrait().length);
-              }));
-    } else {
-      avatar.setColorIndex(Math.abs(dto.actorName().hashCode()) % 5);
-    }
+    Avatar portrait = new Avatar();
+    portrait.setImage("/api/v1/actor/actors/" + dto.actorId() + "/portrait");
+    portrait.setName(dto.actorName());
+    portrait.setHeight("112px");
+    portrait.setWidth("112px");
 
     VerticalLayout detailsLayout = new VerticalLayout();
     detailsLayout.setWidthFull();
@@ -121,7 +101,7 @@ public class InteractionLayout extends HorizontalLayout {
 
     HorizontalLayout header = new HorizontalLayout();
     header.addClassNames(LumoUtility.Width.FULL, LumoUtility.Padding.SMALL);
-    header.add(avatar, detailsLayout);
+    header.add(portrait, detailsLayout);
 
     VerticalLayout verticalLayout = new VerticalLayout();
     verticalLayout.addClassNames(

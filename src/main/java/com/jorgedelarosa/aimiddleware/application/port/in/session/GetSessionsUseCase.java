@@ -1,5 +1,6 @@
 package com.jorgedelarosa.aimiddleware.application.port.in.session;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.UUID;
 
@@ -10,8 +11,12 @@ public interface GetSessionsUseCase {
 
   public List<SessionDto> execute(Command cmd);
 
-  // TODO: find by user
   public record Command() {}
 
-  public record SessionDto(UUID session, String scenario) {}
+  public record SessionDto(
+      UUID session,
+      String scenario,
+      Instant lastActivity,
+      int interactionCount,
+      List<String> participantNames) {}
 }

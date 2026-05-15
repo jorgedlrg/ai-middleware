@@ -10,10 +10,8 @@ import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
-import com.vaadin.flow.component.icon.Icon;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.theme.lumo.LumoIcon;
 import java.util.UUID;
 
 /**
@@ -32,20 +30,10 @@ public class ActorCard extends Card {
     name = dto.name();
     setTitle(new Div(dto.name()));
 
-    Image portrait;
-    if (dto.portrait().length > 0) {
-      portrait = new ByteImage("Portrait", dto.portrait());
-      portrait.setMaxWidth("330px");
-      portrait.setMinWidth("128px");
-      setMedia(portrait);
-    } else {
-      Icon icon = LumoIcon.PHOTO.create();
-      icon.getStyle()
-          .setColor("var(--lumo-primary-color)")
-          .setBackgroundColor("var(--lumo-primary-color-10pct)");
-      icon.setSize("128px");
-      setMedia(icon);
-    }
+    Image portrait = new Image("/api/v1/actor/actors/" + dto.id() + "/portrait", "Portrait");
+    portrait.setMaxWidth("330px");
+    portrait.setMinWidth("128px");
+    setMedia(portrait);
 
     Button editActor = new Button("Edit");
     editActor.addClickListener(editActorListener());

@@ -6,14 +6,10 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.H2;
-import com.vaadin.flow.component.icon.Icon;
+import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.shared.Tooltip;
-import com.vaadin.flow.theme.lumo.LumoIcon;
 import com.vaadin.flow.theme.lumo.LumoUtility;
 
-/**
- * @author jorge
- */
 public class PerformanceCard extends Card implements ClickNotifier<Component> {
 
   public PerformanceCard(
@@ -21,16 +17,7 @@ public class PerformanceCard extends Card implements ClickNotifier<Component> {
       InteractionLayout.OneUuidVoidOperator machineInteractionListener) {
     super();
     Component portrait;
-    if (dto.portrait().length > 0) {
-      portrait = new ByteImage("Portrait", dto.portrait());
-    } else {
-      portrait = LumoIcon.PHOTO.create();
-      portrait
-          .getStyle()
-          .setColor("var(--lumo-primary-color)")
-          .setBackgroundColor("var(--lumo-primary-color-10pct)");
-      ((Icon) portrait).setSize("330px");
-    }
+    portrait = new Image("/api/v1/actor/actors/" + dto.actor() + "/portrait", "Portrait");
     setMedia(portrait);
 
     Div header = new Div();

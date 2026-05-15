@@ -2,15 +2,9 @@ package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
 import com.jorgedelarosa.aimiddleware.domain.Validator;
-import com.jorgedelarosa.aimiddleware.domain.session.Mood;
-import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author jorge
- */
 public class Actor extends AggregateRoot {
 
   private String name;
@@ -18,8 +12,6 @@ public class Actor extends AggregateRoot {
   private String physicalDescription;
   private Optional<Mind> mind;
   private Optional<UUID> currentOutfit;
-  @Deprecated()
-  private byte[] portrait;  //TODO: serve this from a resource, not in memory
 
   private Actor(
       UUID id,
@@ -27,16 +19,13 @@ public class Actor extends AggregateRoot {
       String profile,
       String physicalDescription,
       Optional<Mind> mind,
-      Optional<UUID> currentOutfit,
-      byte[] portrait) {
+      Optional<UUID> currentOutfit) {
     super(Actor.class, id);
     this.name = name;
     this.profile = profile;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
     this.currentOutfit = currentOutfit;
-    this.portrait = portrait;
-    ;
   }
 
   public static Actor create(
@@ -46,8 +35,7 @@ public class Actor extends AggregateRoot {
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    Actor actor =
-        new Actor(id, name, profile, physicalDescription, mind, Optional.empty(), new byte[0]);
+    Actor actor = new Actor(id, name, profile, physicalDescription, mind, Optional.empty());
     actor.validate();
     return actor;
   }
@@ -58,10 +46,8 @@ public class Actor extends AggregateRoot {
       String profile,
       String physicalDescription,
       Optional<Mind> mind,
-      Optional<UUID> currentOutfit,
-      byte[] portrait,
-      Map<Mood, List<byte[]>> moodPortraits) {
-    Actor actor = new Actor(id, name, profile, physicalDescription, mind, currentOutfit, portrait);
+      Optional<UUID> currentOutfit) {
+    Actor actor = new Actor(id, name, profile, physicalDescription, mind, currentOutfit);
     actor.validate();
     return actor;
   }
@@ -84,15 +70,6 @@ public class Actor extends AggregateRoot {
 
   public Optional<UUID> getCurrentOutfit() {
     return currentOutfit;
-  }
-
-  public byte[] getPortrait() {
-    return portrait;
-  }
-
-  public void setPortrait(byte[] portrait) {
-    this.portrait = portrait;
-    validate();
   }
 
   public void chooseOutfit(UUID newOutfit) {
@@ -136,7 +113,7 @@ public class Actor extends AggregateRoot {
             && currentOutfit != null
             && mind.isPresent()
         ? mind.get().validate()
-        : true && portrait != null) return true;
+        : true) return true;
     else
       throw new RuntimeException(
           String.format("%s %s not valid", this.getClass().getName(), getId()));
