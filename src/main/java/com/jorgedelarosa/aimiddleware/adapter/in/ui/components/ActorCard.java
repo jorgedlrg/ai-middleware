@@ -44,7 +44,7 @@ public class ActorCard extends Card {
         new DeleteConfirmButton("Delete", name, deleteActorListener());
 
     VerticalLayout rightPanel = new VerticalLayout(editActor, memory, deleteButton);
-    add(rightPanel);
+    addToFooter(rightPanel);
 
     addThemeVariants(
         CardVariant.LUMO_HORIZONTAL, CardVariant.LUMO_COVER_MEDIA, CardVariant.LUMO_ELEVATED);
