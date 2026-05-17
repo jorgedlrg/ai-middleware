@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -36,10 +35,7 @@ public class Mind extends Entity {
   }
 
   @Override
-  public boolean validate() {
-    if (Validator.strNotEmpty.validate(personality)) return true;
-    else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+  public boolean isValid() {
+    return personality != null && !personality.isBlank();
   }
 }

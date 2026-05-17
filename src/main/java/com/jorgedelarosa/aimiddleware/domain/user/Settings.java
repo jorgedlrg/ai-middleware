@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.user;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -164,8 +163,9 @@ public class Settings extends Entity {
   }
 
   @Override
-  public final boolean validate() {
-    return Validator.strNotEmpty.validate(textgenProvider)
+  public final boolean isValid() {
+    return textgenProvider != null
+        && !textgenProvider.isBlank()
         && (textgenProvider.equals("openrouter") || textgenProvider.equals("ollama"));
   }
 }

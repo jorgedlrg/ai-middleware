@@ -12,9 +12,10 @@ public class InteractionText {
 
   /**
    * Creates optional interaction from a nullable or blank text input
+   *
    * @param text
    * @param reasoning
-   * @return 
+   * @return
    */
   public static Optional<InteractionText> optionalFromNullable(String text, String reasoning) {
     if (text != null && !text.isBlank()) {

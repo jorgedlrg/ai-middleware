@@ -1,14 +1,10 @@
 package com.jorgedelarosa.aimiddleware.domain.session;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author jorge
- */
 public class Interaction extends Entity {
 
   private final Optional<InteractionText> thoughtText;
@@ -150,8 +146,8 @@ public class Interaction extends Entity {
   }
 
   @Override
-  public boolean validate() {
-    if (Validator.strNotEmpty.validate(spokenText.getText())
+  public boolean isValid() {
+    return (spokenText != null && spokenText.getText() != null && !spokenText.getText().isBlank())
         && actionText != null
         && thoughtText != null
         && timestamp != null
@@ -160,9 +156,6 @@ public class Interaction extends Entity {
         && context != null
         && parent != null
         && level != null
-        && mood != null) return true;
-    else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+        && mood != null;
   }
 }

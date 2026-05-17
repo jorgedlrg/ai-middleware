@@ -16,5 +16,14 @@ public abstract class Entity {
     return entityId;
   }
 
-  public abstract boolean validate();
+  public void validate() {
+    if (!isValid()) {
+      throw new RuntimeException(
+          String.format("%s %s not valid", getClass().getName(), getId()));
+    }
+  }
+
+  public boolean isValid() {
+    return entityId != null;
+  }
 }

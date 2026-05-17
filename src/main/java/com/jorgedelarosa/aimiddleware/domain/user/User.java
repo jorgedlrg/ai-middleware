@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.user;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
 /**
@@ -37,8 +36,7 @@ public class User extends AggregateRoot {
   }
 
   @Override
-  public final boolean validate() {
-    // TODO: validate email format
-    return Validator.strNotEmpty.validate(email) && settings != null;
+  public final boolean isValid() {
+    return email != null && !email.isBlank() && settings != null;
   }
 }

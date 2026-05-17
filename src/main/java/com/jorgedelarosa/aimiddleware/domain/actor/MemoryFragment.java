@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.time.Instant;
 import java.util.UUID;
 
@@ -53,7 +52,7 @@ public class MemoryFragment extends Entity {
   }
 
   @Override
-  public final boolean validate() {
-    return Validator.strNotEmpty.validate(text) && timestamp != null;
+  public boolean isValid() {
+    return (text != null && !text.isBlank()) && timestamp != null;
   }
 }

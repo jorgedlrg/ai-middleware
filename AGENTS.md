@@ -16,7 +16,7 @@ mvn package
 ```
 
 ## Tech Stack
-- Spring Boot 4.0.6, Java 25, Maven 3
+- Spring Boot 4.X, Java 25, Maven 3
 - H2 database at `~/aimiddleware/mydb` (file-based, H2 console at `/h2-console`)
 - Liquibase for schema management (changeLog at `db/changelog/changelog.h2.sql`)
 - Annotation processors: MapStruct + Lombok (uses `lombok-mapstruct-binding` for compatibility)
@@ -68,3 +68,7 @@ Domain entities extend:
 ### DTO Pattern
 
 Use cases accept `Command` records and return `Dto` records. Mappers live in `application/port/mapper/`.
+
+## Agent behavior
+
+Don't assume things: if you have doubts, ask the user. This is imperative for functional behavior.

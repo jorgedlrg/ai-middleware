@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -186,11 +185,7 @@ public class Scenario extends AggregateRoot {
   }
 
   @Override
-  public boolean validate() {
-    if (Validator.strNotEmpty.validate(name) && Validator.strNotEmpty.validate(description))
-      return true;
-    else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+  public boolean isValid() {
+    return (name != null && !name.isBlank()) && (description != null && !description.isBlank());
   }
 }
