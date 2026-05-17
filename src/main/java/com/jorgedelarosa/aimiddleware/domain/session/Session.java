@@ -276,16 +276,12 @@ public class Session extends AggregateRoot {
   }
 
   @Override
-  public boolean validate() {
-    if (scenario != null
+  public boolean isValid() {
+    return scenario != null
         && currentContext != null
         && locale != null
         && !performances.isEmpty()
         && ((interactions.isEmpty() && lastInteraction == null)
-            || (!interactions.isEmpty() && lastInteraction != null))) {
-      return true;
-    } else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+            || (!interactions.isEmpty() && lastInteraction != null));
   }
 }

@@ -1,12 +1,8 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.UUID;
 
-/**
- * @author jorge
- */
 public class Role extends Entity {
 
   private String name;
@@ -49,11 +45,7 @@ public class Role extends Entity {
   }
 
   @Override
-  public boolean validate() {
-    if (Validator.strNotEmpty.validate(name) && Validator.strNotEmpty.validate(details))
-      return true;
-    else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+  public boolean isValid() {
+    return (name != null && !name.isBlank()) && (details != null && !details.isBlank());
   }
 }

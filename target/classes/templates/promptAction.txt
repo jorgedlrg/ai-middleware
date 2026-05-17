@@ -1,0 +1,34 @@
+You're in a fictional roleplay scenario.
+This is the scenario description:
+[(${scenarioDescription})]
+
+This is the current context, named [(${name})]:
+{
+    [(${description})]
+}
+
+This scenario contains the following actors:
+[[# th:each="actor : ${actors}"]
+    {
+      "name": [(${actor.actorName})],
+      "profile": [(${actor.profile})],
+      "physical description": [(${actor.physicalDescription})],
+      [# th:if="${actor.currentOutfit.present}"]"outfit": [(${actor.currentOutfit.get})],[/]
+      [# th:if="${actor.personality.present}"]"personality": [(${actor.personality.get})],[/]
+      "role": [(${actor.roleDescription})]
+    }
+[/]]
+
+This is what the actors have said so far:
+[[# th:each="previousMessage : ${previousMessages}"]
+    [(${previousMessage.actorName})]: [# th:if="${previousMessage.action.present}"]*[(${previousMessage.action.get})]*[/] [(${previousMessage.speech})]
+[/]]
+
+You're playing the actor [(${you})][# th:if="${currentThoughts}!=null"], and this is what [(${you})] is currently thinking:
+{
+    [(${currentThoughts})]
+}[/]
+
+Now, write (very briefly, 1 or 2 sentences, no more) what [(${you})] is doing[# th:if="${currentThoughts}!=null"] after having those thoughts[/]. [(${you})] might also talk while performing that action, but don't write what they're talking, ONLY the actions.
+
+VERY IMPORTANT: write your answer completely in [(${language})].

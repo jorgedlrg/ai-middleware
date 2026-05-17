@@ -1,7 +1,6 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -106,16 +105,11 @@ public class Actor extends AggregateRoot {
   }
 
   @Override
-  public boolean validate() {
-    if (Validator.strNotEmpty.validate(name)
-            && Validator.strNotEmpty.validate(profile)
-            && Validator.strNotEmpty.validate(physicalDescription)
-            && currentOutfit != null
-            && mind.isPresent()
-        ? mind.get().validate()
-        : true) return true;
-    else
-      throw new RuntimeException(
-          String.format("%s %s not valid", this.getClass().getName(), getId()));
+  public boolean isValid() {
+    return (name != null && !name.isBlank())
+        && (profile != null && !profile.isBlank())
+        && (physicalDescription != null && !physicalDescription.isBlank())
+        && currentOutfit != null
+        && (mind.isEmpty() || mind.get().isValid());
   }
 }

@@ -42,35 +42,38 @@ class OutfitTest {
   }
 
   @Test
-  void validate_shouldSucceedForValidFields() {
+  void isValid_shouldReturnTrueForValidFields() {
     Outfit outfit = Outfit.create("Sporty", "Tracksuit");
-    assertTrue(outfit.validate());
+    assertTrue(outfit.isValid());
   }
 
   @Test
-  void validate_shouldFailWhenNameEmpty() {
+  void isValid_shouldReturnFalseWhenNameEmpty() {
     Outfit outfit = Outfit.create("Valid", "Valid description");
     outfit.setName("");
-
-    RuntimeException ex = assertThrows(RuntimeException.class, outfit::validate);
-    assertTrue(ex.getMessage().contains("shouldn't be empty"));
+    assertFalse(outfit.isValid());
   }
 
   @Test
-  void validate_shouldFailWhenDescriptionNull() {
+  void isValid_shouldReturnFalseWhenDescriptionNull() {
     Outfit outfit = Outfit.create("Valid", "Valid description");
     outfit.setDescription(null);
-
-    RuntimeException ex = assertThrows(RuntimeException.class, outfit::validate);
-    assertTrue(ex.getMessage().contains("shouldn't be empty"));
+    assertFalse(outfit.isValid());
   }
 
   @Test
-  void validate_shouldFailWhenDescriptionEmpty() {
+  void isValid_shouldReturnFalseWhenDescriptionEmpty() {
     Outfit outfit = Outfit.create("Valid", "Valid description");
     outfit.setDescription("");
+    assertFalse(outfit.isValid());
+  }
 
+  @Test
+  void validate_shouldThrowWhenNameEmpty() {
+    Outfit outfit = Outfit.create("Valid", "Valid description");
+    outfit.setName("");
     RuntimeException ex = assertThrows(RuntimeException.class, outfit::validate);
-    assertTrue(ex.getMessage().contains("shouldn't be empty"));
+    assertTrue(ex.getMessage().contains("Outfit"));
+    assertTrue(ex.getMessage().contains(outfit.getId().toString()));
   }
 }

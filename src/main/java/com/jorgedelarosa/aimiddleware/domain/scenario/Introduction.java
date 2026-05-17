@@ -1,13 +1,9 @@
 package com.jorgedelarosa.aimiddleware.domain.scenario;
 
 import com.jorgedelarosa.aimiddleware.domain.Entity;
-import com.jorgedelarosa.aimiddleware.domain.Validator;
 import java.util.Optional;
 import java.util.UUID;
 
-/**
- * @author jorge
- */
 public class Introduction extends Entity {
 
   private String spokenText;
@@ -93,7 +89,7 @@ public class Introduction extends Entity {
   }
 
   @Override
-  public boolean validate() {
-    return Validator.strNotEmpty.validate(spokenText) && performer != null && context != null;
+  public boolean isValid() {
+    return (spokenText != null && !spokenText.isBlank()) && performer != null && context != null;
   }
 }

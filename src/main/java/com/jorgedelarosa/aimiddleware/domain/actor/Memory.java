@@ -57,7 +57,7 @@ public class Memory extends AggregateRoot {
   }
 
   @Override
-  public final boolean validate() {
+  public boolean isValid() {
     return actor != null && fragments != null;
   }
 }
