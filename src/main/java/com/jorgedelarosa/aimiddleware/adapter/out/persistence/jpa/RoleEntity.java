@@ -5,12 +5,9 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "role")
 @Data
-public class RoleEntity {
+public class RoleEntity extends BaseJpaEntity {
   @Id private UUID id;
   private UUID scenario;
   private String name;

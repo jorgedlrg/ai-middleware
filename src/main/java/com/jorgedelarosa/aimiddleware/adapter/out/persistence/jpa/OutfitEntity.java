@@ -5,12 +5,9 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "outfit")
 @Data
-public class OutfitEntity {
+public class OutfitEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private String name;

@@ -5,12 +5,9 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "usertable")
 @Data
-public class UserEntity {
+public class UserEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private String email;

@@ -6,12 +6,9 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "settings")
 @Data
-public class SettingsEntity {
+public class SettingsEntity extends BaseJpaEntity {
   @Id private UUID userid;
 
   @Column(name = "textgen_provider")

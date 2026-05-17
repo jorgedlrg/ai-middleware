@@ -5,12 +5,9 @@ import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "memory_fragment")
 @Data
-public class MemoryFragmentEntity {
+public class MemoryFragmentEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private UUID owner;

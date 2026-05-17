@@ -27,7 +27,7 @@ public class ActorsListView extends Composite<VerticalLayout> implements BeforeE
   private final DeleteActorUseCase deleteActorUseCase;
 
   private TextField searchField;
-  private ComboBox<String> sortCombo;
+  private ComboBox<ActorSortOption> sortCombo;
   private HorizontalLayout cardsLayout;
 
   private void buildFilterBar() {
@@ -37,8 +37,9 @@ public class ActorsListView extends Composite<VerticalLayout> implements BeforeE
     searchField.addValueChangeListener(e -> applyFilterAndSort());
 
     sortCombo = new ComboBox<>();
-    sortCombo.setItems("Name (A-Z)", "Name (Z-A)");
-    sortCombo.setValue("Name (A-Z)");
+    sortCombo.setItems(ActorSortOption.values());
+    sortCombo.setItemLabelGenerator(ActorSortOption::displayName);
+    sortCombo.setValue(ActorSortOption.NAME_ASC);
     sortCombo.setClearButtonVisible(false);
     sortCombo.addValueChangeListener(e -> applyFilterAndSort());
 
@@ -50,20 +51,12 @@ public class ActorsListView extends Composite<VerticalLayout> implements BeforeE
   private void applyFilterAndSort() {
     List<ActorDto> dtos = getActorsUseCase.execute();
 
-    String searchText = searchField.getValue() != null ? searchField.getValue().toLowerCase() : "";
-    List<ActorDto> filtered = dtos.stream()
-        .filter(dto -> dto.name().toLowerCase().contains(searchText))
-        .toList();
+    String searchText =
+        searchField.getValue() != null ? searchField.getValue().toLowerCase() : "";
+    List<ActorDto> filtered =
+        dtos.stream().filter(dto -> dto.name().toLowerCase().contains(searchText)).toList();
 
-    String sortOrder = sortCombo.getValue();
-    Comparator<ActorDto> comparator = switch (sortOrder) {
-      case "Name (Z-A)" -> Comparator.<ActorDto>comparingDouble(d -> 0).reversed();
-      default -> Comparator.comparing(ActorDto::name);
-    };
-    if ("Name (Z-A)".equals(sortOrder)) {
-      comparator = Comparator.comparing(ActorDto::name).reversed();
-    }
-
+    Comparator<ActorDto> comparator = sortCombo.getValue().comparator();
     List<ActorDto> sorted = filtered.stream().sorted(comparator).toList();
 
     cardsLayout.removeAll();

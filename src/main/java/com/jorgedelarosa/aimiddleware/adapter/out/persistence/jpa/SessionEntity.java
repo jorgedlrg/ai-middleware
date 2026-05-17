@@ -7,12 +7,9 @@ import java.util.Locale;
 import java.util.UUID;
 import lombok.Data;
 
-/**
- * @author jorge
- */
 @Entity(name = "session")
 @Data
-public class SessionEntity {
+public class SessionEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private UUID scenario;
