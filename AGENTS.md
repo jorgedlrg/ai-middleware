@@ -68,3 +68,7 @@ Domain entities extend:
 ### DTO Pattern
 
 Use cases accept `Command` records and return `Dto` records. Mappers live in `application/port/mapper/`.
+
+## Agent behavior
+
+Don't assume things: if you have doubts, ask the user. This is imperative for functional behavior.
