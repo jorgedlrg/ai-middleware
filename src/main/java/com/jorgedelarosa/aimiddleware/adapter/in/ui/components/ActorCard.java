@@ -8,10 +8,10 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.card.Card;
 import com.vaadin.flow.component.card.CardVariant;
 import com.vaadin.flow.component.confirmdialog.ConfirmDialog;
-import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.Image;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import java.util.UUID;
 
 /**
@@ -28,11 +28,12 @@ public class ActorCard extends Card {
     this.deleteActorUseCase = deleteActorUseCase;
     id = dto.id();
     name = dto.name();
-    setTitle(new Div(dto.name()));
+    setTitle(name);
+    setMaxWidth("432px");
 
     Image portrait = new Image("/api/v1/actor/actors/" + dto.id() + "/portrait", "Portrait");
-    portrait.setMaxWidth("330px");
-    portrait.setMinWidth("128px");
+    portrait.setMaxWidth("216px");
+    portrait.setMinWidth("216px");
     setMedia(portrait);
 
     Button editActor = new Button("Edit");
@@ -40,8 +41,11 @@ public class ActorCard extends Card {
     Button memory = new Button("Memory");
     memory.addClickListener(editMemoryListener());
     DeleteConfirmButton deleteButton =
-        new DeleteConfirmButton("Delete", dto.name(), deleteActorListener());
-    addToFooter(editActor, memory, deleteButton);
+        new DeleteConfirmButton("Delete", name, deleteActorListener());
+
+    VerticalLayout rightPanel = new VerticalLayout(editActor, memory, deleteButton);
+    add(rightPanel);
+
     addThemeVariants(
         CardVariant.LUMO_HORIZONTAL, CardVariant.LUMO_COVER_MEDIA, CardVariant.LUMO_ELEVATED);
   }
