@@ -5,12 +5,14 @@ import jakarta.persistence.Entity;
 import java.util.UUID;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 @Entity(name = "performance")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(callSuper = false)
 public class PerformanceEntity extends BaseJpaEntity {
   @EmbeddedId private PerformanceId performanceId;
   private UUID actor;

@@ -4,9 +4,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity(name = "scenario")
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class ScenarioEntity extends BaseJpaEntity {
   @Id private UUID id;
   private String name;

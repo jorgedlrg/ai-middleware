@@ -4,9 +4,11 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity(name = "outbox_event")
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class OutboxEventEntity extends BaseJpaEntity {
   @Id private String id;
 

@@ -6,9 +6,11 @@ import jakarta.persistence.Id;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 @Entity(name = "session")
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class SessionEntity extends BaseJpaEntity {
 
   @Id private UUID id;
