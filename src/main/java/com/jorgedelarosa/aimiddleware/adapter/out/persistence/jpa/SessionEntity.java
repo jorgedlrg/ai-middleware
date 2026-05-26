@@ -6,13 +6,12 @@ import jakarta.persistence.Id;
 import java.util.Locale;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "session")
 @Data
-public class SessionEntity {
+@EqualsAndHashCode(callSuper = false)
+public class SessionEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private UUID scenario;

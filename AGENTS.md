@@ -40,11 +40,13 @@ src/main/java/com/jorgedelarosa/aimiddleware/
 └── infrastructure/   # Spring @Configuration classes
 ```
 
-### Base Classes
+### Domain
 
 Domain entities extend:
 - **Entity** - provides uuid + equals/hashCode/tostring
 - **AggregateRoot** - extends Entity, adds `AggregateId` with URN format: `urn:{package}.{class}:{uuid}`
+
+Every method that mutates a Domain class should call validate() method at the end.
 
 ### Naming Conventions
 

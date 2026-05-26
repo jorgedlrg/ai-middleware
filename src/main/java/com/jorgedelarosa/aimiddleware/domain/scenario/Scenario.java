@@ -75,12 +75,17 @@ public class Scenario extends AggregateRoot {
   public void modifyContext(UUID contextId, String name, String physicalDescription) {
     contexts.stream()
         .filter(e -> e.getId().equals(contextId))
-        .forEach(
+        .findAny()
+        .ifPresentOrElse(
             e -> {
               e.setName(name);
               e.setPhysicalDescription(physicalDescription);
+              validate();
+            },
+            () -> {
+              throw new RuntimeException(
+                  String.format("Context %s not found in scenario %s", contextId, getId()));
             });
-    validate();
   }
 
   public void deleteContext(UUID contextId) {
@@ -101,12 +106,17 @@ public class Scenario extends AggregateRoot {
   public void modifyRole(UUID roleId, String name, String details) {
     roles.stream()
         .filter(e -> e.getId().equals(roleId))
-        .forEach(
+        .findAny()
+        .ifPresentOrElse(
             e -> {
               e.setName(name);
               e.setDetails(details);
+              validate();
+            },
+            () -> {
+              throw new RuntimeException(
+                  String.format("Role %s not found in scenario %s", roleId, getId()));
             });
-    validate();
   }
 
   public void deleteRole(UUID roleId) {
@@ -136,13 +146,18 @@ public class Scenario extends AggregateRoot {
       Optional<String> actionText) {
     introductions.stream()
         .filter(e -> e.getId().equals(introductionId))
-        .forEach(
+        .findAny()
+        .ifPresentOrElse(
             e -> {
               e.setActionText(actionText);
               e.setSpokenText(spokenText);
               e.setThoughtText(thoughtText);
+              validate();
+            },
+            () -> {
+              throw new RuntimeException(
+                  String.format("Introduction %s not found in scenario %s", introductionId, getId()));
             });
-    validate();
   }
 
   public void deleteIntroduction(UUID introductionId) {

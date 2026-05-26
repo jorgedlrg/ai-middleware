@@ -4,13 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "usertable")
 @Data
-public class UserEntity {
+@EqualsAndHashCode(callSuper = false)
+public class UserEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private String email;

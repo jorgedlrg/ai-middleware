@@ -243,6 +243,36 @@ public class CharacterCardReader {
         List<String> tags,
         String post_history_instructions,
         String character_version,
-        Map<String, Object> extensions) {}
+        String creator,
+        Map<String, Object> extensions,
+        List<String> alternate_greetings,
+        CharacterBook character_book) {}
   }
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static record CharacterBook(
+      String name,
+      String description,
+      Integer scan_depth,
+      Integer token_budget,
+      Boolean recursive_scanning,
+      Map<String, Object> extensions,
+      List<Entry> entries) {}
+
+  @JsonIgnoreProperties(ignoreUnknown = true)
+  public static record Entry(
+      List<String> keys,
+      String content,
+      Map<String, Object> extensions,
+      boolean enabled,
+      int insertion_order,
+      Boolean case_sensitive,
+      String name,
+      Integer priority,
+      Integer id,
+      String comment,
+      Boolean selective,
+      List<String> secondary_keys,
+      Boolean constant,
+      String position) {}
 }

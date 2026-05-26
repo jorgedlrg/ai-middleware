@@ -4,13 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "mind")
 @Data
-public class MindEntity {
+@EqualsAndHashCode(callSuper = false)
+public class MindEntity extends BaseJpaEntity {
 
   @Id private UUID actor;
   private String personality;

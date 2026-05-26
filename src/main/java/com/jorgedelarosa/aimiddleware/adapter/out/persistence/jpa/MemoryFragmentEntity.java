@@ -4,13 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "memory_fragment")
 @Data
-public class MemoryFragmentEntity {
+@EqualsAndHashCode(callSuper = false)
+public class MemoryFragmentEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private UUID owner;

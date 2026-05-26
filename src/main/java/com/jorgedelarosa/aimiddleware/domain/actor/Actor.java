@@ -1,6 +1,7 @@
 package com.jorgedelarosa.aimiddleware.domain.actor;
 
 import com.jorgedelarosa.aimiddleware.domain.AggregateRoot;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -11,6 +12,8 @@ public class Actor extends AggregateRoot {
   private String physicalDescription;
   private Optional<Mind> mind;
   private Optional<UUID> currentOutfit;
+  private final Instant createdAt;
+  private Instant updatedAt;
 
   private Actor(
       UUID id,
@@ -18,23 +21,28 @@ public class Actor extends AggregateRoot {
       String profile,
       String physicalDescription,
       Optional<Mind> mind,
-      Optional<UUID> currentOutfit) {
+      Optional<UUID> currentOutfit,
+      Instant createdAt,
+      Instant updatedAt) {
     super(Actor.class, id);
     this.name = name;
     this.profile = profile;
     this.physicalDescription = physicalDescription;
     this.mind = mind;
     this.currentOutfit = currentOutfit;
+    this.createdAt = createdAt;
+    this.updatedAt = updatedAt;
   }
 
   public static Actor create(
       String name, String profile, String physicalDescription, String personality) {
     UUID id = UUID.randomUUID();
+    Instant now = Instant.now();
     Optional<Mind> mind = Optional.empty();
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    Actor actor = new Actor(id, name, profile, physicalDescription, mind, Optional.empty());
+    Actor actor = new Actor(id, name, profile, physicalDescription, mind, Optional.empty(), now, now);
     actor.validate();
     return actor;
   }
@@ -45,8 +53,10 @@ public class Actor extends AggregateRoot {
       String profile,
       String physicalDescription,
       Optional<Mind> mind,
-      Optional<UUID> currentOutfit) {
-    Actor actor = new Actor(id, name, profile, physicalDescription, mind, currentOutfit);
+      Optional<UUID> currentOutfit,
+      Instant createdAt,
+      Instant updatedAt) {
+    Actor actor = new Actor(id, name, profile, physicalDescription, mind, currentOutfit, createdAt, updatedAt);
     actor.validate();
     return actor;
   }
@@ -69,6 +79,19 @@ public class Actor extends AggregateRoot {
 
   public Optional<UUID> getCurrentOutfit() {
     return currentOutfit;
+  }
+
+  public Instant getCreatedAt() {
+    return createdAt;
+  }
+
+  public Instant getUpdatedAt() {
+    return updatedAt;
+  }
+
+  public void setUpdatedAt(Instant updatedAt) {
+    this.updatedAt = updatedAt;
+    validate();
   }
 
   public void chooseOutfit(UUID newOutfit) {

@@ -10,6 +10,12 @@ public class Performance {
   private final UUID role;
 
   public Performance(UUID actor, UUID role) {
+    if (actor == null) {
+      throw new RuntimeException("Performance actor cannot be null");
+    }
+    if (role == null) {
+      throw new RuntimeException("Performance role cannot be null");
+    }
     this.actor = actor;
     this.role = role;
   }

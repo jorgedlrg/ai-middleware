@@ -5,13 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "interaction")
 @Data
-public class InteractionEntity {
+@EqualsAndHashCode(callSuper = false)
+public class InteractionEntity extends BaseJpaEntity {
   @Id private UUID id;
   private UUID role;
   private UUID actor;

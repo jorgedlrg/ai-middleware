@@ -4,13 +4,12 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "outbox_event")
 @Data
-public class OutboxEventEntity {
+@EqualsAndHashCode(callSuper = false)
+public class OutboxEventEntity extends BaseJpaEntity {
   @Id private String id;
 
   @Column(name = "aggregate_id")
@@ -20,9 +19,6 @@ public class OutboxEventEntity {
   private String eventType;
 
   private String payload;
-
-  @Column(name = "created_at")
-  private long createdAt;
 
   private boolean processed = false;
 

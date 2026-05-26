@@ -1,16 +1,19 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
+import com.jorgedelarosa.aimiddleware.adapter.in.ui.CharacterCardReader.CharacterCardV2;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
-import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.ImportCharacterCardUseCase;
 import com.vaadin.flow.component.ClickEvent;
 import com.vaadin.flow.component.ComponentEventListener;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.html.H3;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
+import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.upload.Upload;
 import com.vaadin.flow.router.BeforeEnterEvent;
 import com.vaadin.flow.router.BeforeEnterObserver;
@@ -20,26 +23,22 @@ import com.vaadin.flow.server.streams.UploadHandler;
 import com.vaadin.flow.server.streams.UploadMetadata;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-/**
- * @author jorge
- */
 @Route(value = "actors-import", layout = MainView.class)
 @PageTitle("Actor import")
 @RequiredArgsConstructor
 @Slf4j
 public class ActorImportView extends VerticalLayout implements BeforeEnterObserver {
 
-  private final SaveActorUseCase saveActorUseCase;
+  private final ImportCharacterCardUseCase importCharacterCardUseCase;
 
-  private CharacterCardReader.CharacterCardV2 card;
+  private CharacterCardV2 card;
   private byte[] portraitBytes;
   private ActorEditorActorLayout actorEditorLayout;
-  private TextArea scenario;
-  private TextArea firstMes;
 
   private void render() {
     removeAll();
@@ -61,8 +60,6 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
     add(readDataButton);
 
     if (card != null) {
-      // People use to refer to the character in the cards as {{char}} so it can be dinamically
-      // changed. I don't use this.
       String processedDescription =
           card.data().description().replace("{{char}}", card.data().name());
       actorEditorLayout =
@@ -75,22 +72,61 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
                   Optional.of(new GetActorDetailsUseCase.MindDto(card.data().personality())),
                   Optional.empty()),
               Collections.EMPTY_LIST);
-      scenario = new TextArea("Scenario");
-      scenario.setValue(card.data().scenario());
-      scenario.setWidthFull();
-      scenario.setMinRows(4);
-      firstMes = new TextArea("Introduction");
-      firstMes.setValue(card.data().first_mes());
-      firstMes.setWidthFull();
-      firstMes.setMinRows(4);
+
       add(actorEditorLayout);
-      Button saveActorOnlyButton = new Button("Save Actor Only");
-      saveActorOnlyButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-      saveActorOnlyButton.addClickListener(saveOnlyActorListener());
-      add(saveActorOnlyButton);
-      add(scenario);
-      add(firstMes);
+
+      Button importButton = new Button("Import Character");
+      importButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+      importButton.addClickListener(importCharacterListener());
+      add(importButton);
+
+      addInfoSection();
     }
+  }
+
+  private void addInfoSection() {
+    add(new H3("Card data (not persisted — for reference only)"));
+
+    addReadOnlyTextArea("Scenario", card.data().scenario());
+    addReadOnlyTextArea("First message", card.data().first_mes());
+    addReadOnlyTextArea("Message example", card.data().mes_example());
+    addReadOnlyTextArea("System prompt", card.data().system_prompt());
+    addReadOnlyTextArea("Post history instructions", card.data().post_history_instructions());
+
+    if (card.data().alternate_greetings() != null && !card.data().alternate_greetings().isEmpty()) {
+      int i = 1;
+      for (String greeting : card.data().alternate_greetings()) {
+        addReadOnlyTextArea("Alt Greeting " + i, greeting);
+        i++;
+      }
+    }
+
+    addReadOnlyTextField("Creator notes", card.data().creator_notes());
+    addReadOnlyTextField("Creator", card.data().creator());
+    addReadOnlyTextField("Character version", card.data().character_version());
+
+    if (card.data().tags() != null && !card.data().tags().isEmpty()) {
+      addReadOnlyTextField("Tags", String.join(", ", card.data().tags()));
+    }
+  }
+
+  private void addReadOnlyTextArea(String label, String value) {
+    if (value == null || value.isBlank()) return;
+    TextArea area = new TextArea(label);
+    area.setValue(value);
+    area.setReadOnly(true);
+    area.setWidthFull();
+    area.setMinRows(2);
+    add(area);
+  }
+
+  private void addReadOnlyTextField(String label, String value) {
+    if (value == null || value.isBlank()) return;
+    TextField field = new TextField(label);
+    field.setValue(value);
+    field.setReadOnly(true);
+    field.setWidthFull();
+    add(field);
   }
 
   private ComponentEventListener<ClickEvent<Button>> readDataListener() {
@@ -99,19 +135,22 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
     };
   }
 
-  private ComponentEventListener<ClickEvent<Button>> saveOnlyActorListener() {
+  private ComponentEventListener<ClickEvent<Button>> importCharacterListener() {
     return (ClickEvent<Button> t) -> {
-      saveActorUseCase.execute(
-          new SaveActorUseCase.Command(
-              null,
+      List<String> altGreetings = card.data().alternate_greetings() != null
+          ? card.data().alternate_greetings()
+          : List.of();
+      importCharacterCardUseCase.execute(
+          new ImportCharacterCardUseCase.Command(
               actorEditorLayout.getNameValue(),
               actorEditorLayout.getProfileValue(),
-              actorEditorLayout.getPhysicalDescriptionValue(),
               actorEditorLayout.getPersonalityValue(),
-              actorEditorLayout.getPortraitBytes(),
-              actorEditorLayout.getOutfitValue()));
+              card.data().scenario(),
+              card.data().first_mes(),
+              altGreetings,
+              portraitBytes));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
-      Notification notification = Notification.show(actorEditorLayout.getNameValue() + " saved!");
+      Notification notification = Notification.show(actorEditorLayout.getNameValue() + " imported!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }

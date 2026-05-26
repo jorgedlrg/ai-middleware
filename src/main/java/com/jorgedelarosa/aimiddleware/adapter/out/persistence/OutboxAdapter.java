@@ -5,7 +5,6 @@ import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutboxEventEnt
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.jpa.OutboxEventRepository;
 import com.jorgedelarosa.aimiddleware.application.port.out.PublishDomainEventOutPort;
 import com.jorgedelarosa.aimiddleware.domain.DomainEvent;
-import java.time.Instant;
 import java.util.HashMap;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +40,6 @@ public class OutboxAdapter implements PublishDomainEventOutPort {
       log.error(ex.getOriginalMessage());
       throw new RuntimeException(ex);
     }
-    oee.setCreatedAt(Instant.now().toEpochMilli());
 
     repository.save(oee);
   }

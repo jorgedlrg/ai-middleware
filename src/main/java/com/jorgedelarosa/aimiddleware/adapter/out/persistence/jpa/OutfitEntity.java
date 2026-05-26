@@ -4,13 +4,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "outfit")
 @Data
-public class OutfitEntity {
+@EqualsAndHashCode(callSuper = false)
+public class OutfitEntity extends BaseJpaEntity {
 
   @Id private UUID id;
   private String name;

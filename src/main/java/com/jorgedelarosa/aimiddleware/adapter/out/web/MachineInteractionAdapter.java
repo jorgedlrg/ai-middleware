@@ -221,6 +221,7 @@ public class MachineInteractionAdapter implements GenerateMachineInteractionOutP
     @Mapping(target = "think", source = "reasoning")
     OllamaChatRequest toOllamaChatMessage(GenericChatRequest a);
 
+    @Mapping(target = "refusal", ignore = true)
     OpenRouterChatCompletionMessage toOpenRouterChatCompletionMessage(GenericChatMessage a);
 
     default OpenRouterChatCompletionRequest toOpenRouterChatCompletionRequest(

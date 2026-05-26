@@ -12,6 +12,7 @@ import com.jorgedelarosa.aimiddleware.application.port.out.GetActorListByIdOutPo
 import com.jorgedelarosa.aimiddleware.application.port.out.GetActorsOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.SaveActorOutPort;
 import com.jorgedelarosa.aimiddleware.domain.actor.Actor;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -64,7 +65,9 @@ public class ActorAdapter
         entity.getProfile(),
         entity.getPhysicalDescription(),
         mindRepository.findById(entity.getId()).map(e -> ActorMapper.INSTANCE.toMind(e)),
-        Optional.ofNullable(entity.getCurrentOutfit()));
+        Optional.ofNullable(entity.getCurrentOutfit()),
+        Instant.ofEpochMilli(entity.getCreatedAt()),
+        Instant.ofEpochMilli(entity.getUpdatedAt()));
   }
 
   @Override

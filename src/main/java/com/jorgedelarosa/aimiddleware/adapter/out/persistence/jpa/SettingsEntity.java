@@ -5,13 +5,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import java.util.UUID;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-/**
- * @author jorge
- */
 @Entity(name = "settings")
 @Data
-public class SettingsEntity {
+@EqualsAndHashCode(callSuper = false)
+public class SettingsEntity extends BaseJpaEntity {
   @Id private UUID userid;
 
   @Column(name = "textgen_provider")
