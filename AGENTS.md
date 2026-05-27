@@ -74,3 +74,17 @@ Use cases accept `Command` records and return `Dto` records. Mappers live in `ap
 ## Agent behavior
 
 Don't assume things: if you have doubts, ask the user. This is imperative for functional behavior.
+
+## Liquibase Workflow
+
+When modifying the database schema, add a **new changeset** at the **END** of `db/changelog/changelog.h2.sql`:
+
+```sql
+-- changeset author:YYYYMMDD-N
+ALTER TABLE table_name ADD COLUMN column_name TYPE;
+UPDATE table_name SET column_name = 'default_value';
+```
+
+- Each changeset must be unique (author + timestamp + number)
+- Add new changesets at the END of the file
+- Use inline defaults when convenient, but separate UPDATE statements are allowed

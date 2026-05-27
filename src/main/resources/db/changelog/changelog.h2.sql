@@ -100,3 +100,6 @@ ALTER TABLE introduction ADD updated_at BIGINT DEFAULT 1779026346108;
 ALTER TABLE memory_fragment ADD created_at BIGINT DEFAULT 1779026346108;
 ALTER TABLE memory_fragment ADD updated_at BIGINT DEFAULT 1779026346108;
 ALTER TABLE outbox_event ADD updated_at BIGINT DEFAULT 1779026346108;
+
+-- changeset opencode:20260527-1
+ALTER TABLE settings ADD COLUMN comfy_ui_host TEXT DEFAULT 'localhost:8188';

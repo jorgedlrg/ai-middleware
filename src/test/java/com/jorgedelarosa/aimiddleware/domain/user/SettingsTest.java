@@ -39,6 +39,7 @@ class SettingsTest {
         "model-xyz",
         "http://localhost:11434",
         "llama2",
+        "localhost:8188",
         true,
         false,
         true,
@@ -52,6 +53,7 @@ class SettingsTest {
     assertEquals("model-xyz", settings.getOpenrouterModel());
     assertEquals("http://localhost:11434", settings.getOllamaHost());
     assertEquals("llama2", settings.getOllamaModel());
+    assertEquals("localhost:8188", settings.getComfyUiHost());
     assertTrue(settings.isActionsEnabled());
     assertFalse(settings.isMoodEnabled());
     assertTrue(settings.isThoughtsEnabled());

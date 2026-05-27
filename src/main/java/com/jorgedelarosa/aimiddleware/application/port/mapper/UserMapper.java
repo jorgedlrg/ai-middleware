@@ -29,6 +29,7 @@ public interface UserMapper {
         se.getOpenrouterModel(),
         se.getOllamaHost(),
         se.getOllamaModel(),
+        se.getComfyUiHost(),
         se.isActionsEnabled(),
         se.isMoodEnabled(),
         se.isThoughtsEnabled(),

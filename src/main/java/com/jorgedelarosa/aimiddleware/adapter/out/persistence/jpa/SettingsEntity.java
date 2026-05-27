@@ -28,6 +28,9 @@ public class SettingsEntity extends BaseJpaEntity {
   @Column(name = "ollama_model")
   private String ollamaModel;
 
+  @Column(name = "comfy_ui_host")
+  private String comfyUiHost;
+
   @Column(name = "actions_enabled")
   private boolean actionsEnabled;
 
