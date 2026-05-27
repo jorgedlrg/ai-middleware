@@ -49,11 +49,11 @@ public class GenerateActorPortraitUseCaseImpl implements GenerateActorPortraitUs
 
     var description = actor.getPhysicalDescription();
     var seed = ThreadLocalRandom.current().nextLong(1, Long.MAX_VALUE);
-
     try {
-      var jsonDescription = objectMapper.writeValueAsString(description);
+      var escapedDescription = objectMapper.writeValueAsString(description);
+      var jsonSafeDescription = escapedDescription.substring(1, escapedDescription.length() - 1);
       var workflowJson = workflowTemplate
-          .replace("{{PHYSICAL_DESCRIPTION}}", jsonDescription.substring(1, jsonDescription.length() - 1))
+          .replace("{{PHYSICAL_DESCRIPTION}}", jsonSafeDescription)
           .replace("{{SEED}}", String.valueOf(seed));
       Map<String, Object> workflow =
           objectMapper.readValue(workflowJson, new TypeReference<Map<String, Object>>() {});
