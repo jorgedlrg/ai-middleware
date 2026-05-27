@@ -3,8 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.web.dto;
 import java.util.List;
 import java.util.Map;
 
-public record ComfyUiHistoryResponse(Map<String, PromptHistory> history) {
-  public record PromptHistory(List<OutputNode> outputs) {}
+public record PromptHistory(Map<String, OutputNode> outputs) {
 
   public record OutputNode(List<ImageOutput> images) {}
 

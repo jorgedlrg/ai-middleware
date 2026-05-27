@@ -3,7 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.out.comfyui;
 import com.jorgedelarosa.aimiddleware.adapter.in.message.ComfyUiWebSocketListener;
 import com.jorgedelarosa.aimiddleware.adapter.out.persistence.filesystem.AssetRepository;
 import com.jorgedelarosa.aimiddleware.adapter.out.web.ComfyUiClient;
-import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.ComfyUiHistoryResponse;
+import com.jorgedelarosa.aimiddleware.adapter.out.web.dto.PromptHistory;
 import com.jorgedelarosa.aimiddleware.application.port.out.ComfyUiOutPort;
 import com.jorgedelarosa.aimiddleware.application.port.out.GetUserByIdOutPort;
 import com.jorgedelarosa.aimiddleware.domain.user.User;
@@ -24,6 +24,7 @@ public class ComfyUiAdapter implements ComfyUiOutPort {
 
   private ComfyUiClient client;
   private ComfyUiWebSocketListener webSocketListener;
+  private String clientId;
   private volatile boolean initialized = false;
 
   public ComfyUiAdapter(AssetRepository assetRepository, GetUserByIdOutPort getUserByIdOutPort) {
@@ -42,11 +43,12 @@ public class ComfyUiAdapter implements ComfyUiOutPort {
           String comfyUiHost = user.getSettings().getComfyUiHost();
 
           this.client = new ComfyUiClient(comfyUiHost);
+          this.clientId = UUID.randomUUID().toString();
 
           this.webSocketListener =
               new ComfyUiWebSocketListener(
                   comfyUiHost,
-                  UUID.randomUUID().toString(),
+                  clientId,
                   this::onPromptComplete,
                   this::onPromptError);
           this.webSocketListener.start();
@@ -57,7 +59,7 @@ public class ComfyUiAdapter implements ComfyUiOutPort {
   }
 
   @Override
-  public String queuePrompt(Map<String, Object> workflow, String clientId, String relativePath) {
+  public String queuePrompt(Map<String, Object> workflow, String relativePath) {
     initializeIfNeeded();
     String promptId = client.queuePrompt(workflow, clientId);
     promptToRelativePath.put(promptId, relativePath);
@@ -75,8 +77,8 @@ public class ComfyUiAdapter implements ComfyUiOutPort {
       return;
     }
     try {
-      ComfyUiHistoryResponse history = client.getHistory(promptId);
-      if (history.history() == null || history.history().isEmpty()) {
+      Map<String, PromptHistory> history = client.getHistory(promptId);
+      if (history == null || history.isEmpty()) {
         log.warn("No history found for prompt {}", promptId);
         return;
       }
@@ -86,12 +88,13 @@ public class ComfyUiAdapter implements ComfyUiOutPort {
               : "";
       String filename = Paths.get(relativePath).getFileName().toString();
       int index = 0;
-      for (var entry : history.history().entrySet()) {
-        ComfyUiHistoryResponse.PromptHistory promptHistory = entry.getValue();
+      for (var entry : history.entrySet()) {
+        PromptHistory promptHistory = entry.getValue();
         if (promptHistory.outputs() != null) {
-          for (ComfyUiHistoryResponse.OutputNode outputNode : promptHistory.outputs()) {
+          for (var outputEntry : promptHistory.outputs().entrySet()) {
+            PromptHistory.OutputNode outputNode = outputEntry.getValue();
             if (outputNode.images() != null) {
-              for (ComfyUiHistoryResponse.ImageOutput image : outputNode.images()) {
+              for (PromptHistory.ImageOutput image : outputNode.images()) {
                 byte[] imageData =
                     client.getImage(image.filename(), image.subfolder(), image.type());
                 String finalFilename = index == 0 ? filename : generateFilename(filename, index);

@@ -3,6 +3,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.DeleteConfirmButton;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.DeleteActorUseCase;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GenerateActorPortraitUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetOutfitsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.SaveActorUseCase;
@@ -36,6 +37,7 @@ public class ActorEditorView extends VerticalLayout
   private final SaveActorUseCase saveActorUseCase;
   private final DeleteActorUseCase deleteActorUseCase;
   private final GetOutfitsUseCase getOutfitsUseCase;
+  private final GenerateActorPortraitUseCase generateActorPortraitUseCase;
 
   private GetActorDetailsUseCase.ActorDto actorDto;
   private String pageTitle;
@@ -45,7 +47,8 @@ public class ActorEditorView extends VerticalLayout
   private void rebuildEditor() {
     removeAll();
 
-    actorEditorActorLayout = new ActorEditorActorLayout(actorDto, getOutfitsUseCase.execute());
+    actorEditorActorLayout =
+        new ActorEditorActorLayout(actorDto, getOutfitsUseCase.execute(), generateActorPortraitUseCase);
 
     Button saveButton = new Button("Save");
     saveButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
