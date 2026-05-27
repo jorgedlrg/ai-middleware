@@ -41,6 +41,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
   private final TextField openrouterModel = new TextField("Model");
   private final TextField ollamaHost = new TextField("Host URL");
   private final TextField ollamaModel = new TextField("Model");
+  private final TextField comfyUiHost = new TextField("Host URL");
 
   private void render() {
     removeAll();
@@ -108,6 +109,14 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
     }
     ollamaSettingsForm.add(ollamaModel, 1);
     accordion.add("Ollama", ollamaSettingsForm);
+
+    FormLayout comfyUiSettingsForm = new FormLayout();
+    if (dto.comfyUiHost() != null) {
+      comfyUiHost.setValue(dto.comfyUiHost());
+    }
+    comfyUiSettingsForm.add(comfyUiHost, 1);
+    accordion.add("ComfyUI", comfyUiSettingsForm);
+
     if (dto.textgenProvider().equals("openrouter")) {
       accordion.open(0);
     } else {
@@ -131,6 +140,7 @@ public class UserSettingsView extends VerticalLayout implements BeforeEnterObser
               openrouterModel.getValue(),
               ollamaHost.getValue(),
               ollamaModel.getValue(),
+              comfyUiHost.getValue(),
               textGenFeatures.getSelectedItems().contains("Actions"),
               textGenFeatures.getSelectedItems().contains("Mood"),
               textGenFeatures.getSelectedItems().contains("Thoughts"),

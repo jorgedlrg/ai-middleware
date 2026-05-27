@@ -25,6 +25,7 @@ public class UpdateUserSettingsUseCaseImpl implements UpdateUserSettingsUseCase 
     user.getSettings().setMoodEnabled(cmd.moodEnabled());
     user.getSettings().setOllamaHost(cmd.ollamaHost());
     user.getSettings().setOllamaModel(cmd.ollamaModel());
+    user.getSettings().setComfyUiHost(cmd.comfyUiHost());
     user.getSettings().setOpenrouterApikey(cmd.openrouterApikey());
     user.getSettings().setOpenrouterModel(cmd.openrouterModel());
     user.getSettings().setTextgenProvider(cmd.textgenProvider());

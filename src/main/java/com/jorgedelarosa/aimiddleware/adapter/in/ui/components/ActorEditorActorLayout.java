@@ -1,10 +1,17 @@
 package com.jorgedelarosa.aimiddleware.adapter.in.ui.components;
 
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GenerateActorPortraitUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetOutfitsUseCase;
+import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Image;
+import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.notification.Notification;
+import com.vaadin.flow.component.notification.NotificationVariant;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -26,14 +33,19 @@ public class ActorEditorActorLayout extends VerticalLayout {
   private final TextArea personality;
   private byte[] portraitBytes;
   private final ComboBox<GetOutfitsUseCase.OutfitDto> outfitComboBox;
+  private final Image portrait;
+  private final UUID actorId;
 
   public ActorEditorActorLayout(
-      GetActorDetailsUseCase.ActorDto actorDto, List<GetOutfitsUseCase.OutfitDto> outfits) {
+      GetActorDetailsUseCase.ActorDto actorDto,
+      List<GetOutfitsUseCase.OutfitDto> outfits,
+      GenerateActorPortraitUseCase generateActorPortraitUseCase) {
+    this.actorId = actorDto.id();
     name = new TextField("Name");
     name.setValue(actorDto.name());
     name.setRequired(true);
 
-    Image portrait = new Image("/api/v1/actor/actors/" + actorDto.id() + "/portrait", "Portrait");
+    portrait = new Image(buildPortraitUrl(), "Portrait");
     portrait.setMaxHeight("480px");
 
     portraitBytes = new byte[0];
@@ -74,6 +86,37 @@ public class ActorEditorActorLayout extends VerticalLayout {
               .orElseThrow());
     }
 
+    var portraitActions = new HorizontalLayout();
+    if (actorDto.id() != null) {
+      Button generateButton = new Button("Generate with ComfyUI");
+      generateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+      generateButton.addClickListener(e -> {
+        generateButton.setEnabled(false);
+        generateButton.setText("Generating...");
+        try {
+          String promptId =
+              generateActorPortraitUseCase.execute(
+                  new GenerateActorPortraitUseCase.Command(actorDto.id()));
+          Notification notification = Notification.show(
+              "Portrait generation requested (promptId: " + promptId + ")");
+          notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
+        } finally {
+          generateButton.setEnabled(true);
+          generateButton.setText("Generate with ComfyUI");
+        }
+      });
+      portraitActions.add(generateButton);
+
+      Button refreshButton = new Button("Refresh portrait");
+      refreshButton.addClickListener(e -> {
+        portrait.setSrc(buildPortraitUrl());
+        Notification.show("Portrait refreshed");
+      });
+      portraitActions.add(refreshButton);
+    } else {
+      portraitActions.add(new Span("Save the actor first to enable portrait generation"));
+    }
+
     FormLayout formLayout = new FormLayout();
     formLayout.setAutoResponsive(false);
     formLayout.addFormRow(portrait, name, outfitComboBox);
@@ -81,9 +124,15 @@ public class ActorEditorActorLayout extends VerticalLayout {
     formLayout.addFormRow(physicalDescription);
     formLayout.addFormRow(personality);
     formLayout.addFormRow(upload);
+    formLayout.addFormRow(portraitActions);
     formLayout.setWidthFull();
 
     add(formLayout);
+  }
+
+  private String buildPortraitUrl() {
+    if (actorId == null) return "";
+    return "/api/v1/actor/actors/" + actorId + "/portrait?t=" + System.currentTimeMillis();
   }
 
   public String getNameValue() {

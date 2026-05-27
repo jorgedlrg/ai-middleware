@@ -18,8 +18,7 @@ public abstract class Entity {
 
   public void validate() {
     if (!isValid()) {
-      throw new RuntimeException(
-          String.format("%s %s not valid", getClass().getName(), getId()));
+      throw new RuntimeException(String.format("%s %s not valid", getClass().getName(), getId()));
     }
   }
 

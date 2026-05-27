@@ -26,7 +26,8 @@ public class ImportCharacterCardUseCaseImpl implements ImportCharacterCardUseCas
     saveActorOutPort.save(actor, cmd.portrait());
 
     if (cmd.scenario() != null && !cmd.scenario().isBlank()) {
-      Scenario scenario = Scenario.create(actor.getName() + " - Scenario", "This is a roleplay scenario.");
+      Scenario scenario =
+          Scenario.create(actor.getName() + " - Scenario", "This is a roleplay scenario.");
       scenario.addNewContext("Default", cmd.scenario());
       scenario.addNewRole("char", "The character acting in this roleplay");
       scenario.addNewRole("user", "The user interacting with the character");

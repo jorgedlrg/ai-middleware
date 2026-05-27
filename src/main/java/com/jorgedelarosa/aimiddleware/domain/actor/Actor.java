@@ -42,7 +42,8 @@ public class Actor extends AggregateRoot {
     if (personality != null && !personality.equals("")) {
       mind = Optional.of(Mind.create(id, personality));
     }
-    Actor actor = new Actor(id, name, profile, physicalDescription, mind, Optional.empty(), now, now);
+    Actor actor =
+        new Actor(id, name, profile, physicalDescription, mind, Optional.empty(), now, now);
     actor.validate();
     return actor;
   }
@@ -56,7 +57,9 @@ public class Actor extends AggregateRoot {
       Optional<UUID> currentOutfit,
       Instant createdAt,
       Instant updatedAt) {
-    Actor actor = new Actor(id, name, profile, physicalDescription, mind, currentOutfit, createdAt, updatedAt);
+    Actor actor =
+        new Actor(
+            id, name, profile, physicalDescription, mind, currentOutfit, createdAt, updatedAt);
     actor.validate();
     return actor;
   }

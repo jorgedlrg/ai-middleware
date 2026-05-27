@@ -2,6 +2,7 @@ package com.jorgedelarosa.aimiddleware.adapter.in.ui;
 
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.CharacterCardReader.CharacterCardV2;
 import com.jorgedelarosa.aimiddleware.adapter.in.ui.components.ActorEditorActorLayout;
+import com.jorgedelarosa.aimiddleware.application.port.in.actor.GenerateActorPortraitUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorDetailsUseCase;
 import com.jorgedelarosa.aimiddleware.application.port.in.actor.ImportCharacterCardUseCase;
 import com.vaadin.flow.component.ClickEvent;
@@ -35,6 +36,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ActorImportView extends VerticalLayout implements BeforeEnterObserver {
 
   private final ImportCharacterCardUseCase importCharacterCardUseCase;
+  private final GenerateActorPortraitUseCase generateActorPortraitUseCase;
 
   private CharacterCardV2 card;
   private byte[] portraitBytes;
@@ -71,7 +73,8 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
                   processedDescription,
                   Optional.of(new GetActorDetailsUseCase.MindDto(card.data().personality())),
                   Optional.empty()),
-              Collections.EMPTY_LIST);
+              Collections.EMPTY_LIST,
+              generateActorPortraitUseCase);
 
       add(actorEditorLayout);
 
@@ -137,9 +140,8 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
 
   private ComponentEventListener<ClickEvent<Button>> importCharacterListener() {
     return (ClickEvent<Button> t) -> {
-      List<String> altGreetings = card.data().alternate_greetings() != null
-          ? card.data().alternate_greetings()
-          : List.of();
+      List<String> altGreetings =
+          card.data().alternate_greetings() != null ? card.data().alternate_greetings() : List.of();
       importCharacterCardUseCase.execute(
           new ImportCharacterCardUseCase.Command(
               actorEditorLayout.getNameValue(),
@@ -150,7 +152,8 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
               altGreetings,
               portraitBytes));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
-      Notification notification = Notification.show(actorEditorLayout.getNameValue() + " imported!");
+      Notification notification =
+          Notification.show(actorEditorLayout.getNameValue() + " imported!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }

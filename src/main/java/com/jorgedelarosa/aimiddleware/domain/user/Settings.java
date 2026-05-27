@@ -13,6 +13,7 @@ public class Settings extends Entity {
   private String openrouterModel;
   private String ollamaHost;
   private String ollamaModel;
+  private String comfyUiHost;
   private boolean actionsEnabled;
   private boolean moodEnabled;
   private boolean thoughtsEnabled;
@@ -39,6 +40,7 @@ public class Settings extends Entity {
       String openrouterModel,
       String ollamaHost,
       String ollamaModel,
+      String comfyUiHost,
       boolean actionsEnabled,
       boolean moodEnabled,
       boolean thoughtsEnabled,
@@ -52,6 +54,7 @@ public class Settings extends Entity {
     settings.setOllamaModel(ollamaModel);
     settings.setOpenrouterApikey(openrouterApikey);
     settings.setOpenrouterModel(openrouterModel);
+    settings.setComfyUiHost(comfyUiHost);
     settings.setThoughtsEnabled(thoughtsEnabled);
     settings.setActionsReasoning(actionsReasoning);
     settings.setSpeechReasoning(speechReasoning);
@@ -85,6 +88,11 @@ public class Settings extends Entity {
 
   public void setOllamaModel(String ollamaModel) {
     this.ollamaModel = ollamaModel;
+    validate();
+  }
+
+  public void setComfyUiHost(String comfyUiHost) {
+    this.comfyUiHost = comfyUiHost;
     validate();
   }
 
@@ -136,6 +144,10 @@ public class Settings extends Entity {
 
   public String getOllamaModel() {
     return ollamaModel;
+  }
+
+  public String getComfyUiHost() {
+    return comfyUiHost;
   }
 
   public boolean isActionsEnabled() {
