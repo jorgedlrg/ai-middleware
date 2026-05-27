@@ -94,11 +94,10 @@ public class ActorEditorActorLayout extends VerticalLayout {
         generateButton.setEnabled(false);
         generateButton.setText("Generating...");
         try {
-          String promptId =
-              generateActorPortraitUseCase.execute(
-                  new GenerateActorPortraitUseCase.Command(actorDto.id()));
+          generateActorPortraitUseCase.execute(
+              new GenerateActorPortraitUseCase.Command(actorDto.id()));
           Notification notification = Notification.show(
-              "Portrait generation requested (promptId: " + promptId + ")");
+              "Portrait generation requested");
           notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
         } finally {
           generateButton.setEnabled(true);
