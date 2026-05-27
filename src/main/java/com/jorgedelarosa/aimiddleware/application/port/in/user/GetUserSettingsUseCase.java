@@ -17,6 +17,7 @@ public interface GetUserSettingsUseCase {
       String openrouterModel,
       String ollamaHost,
       String ollamaModel,
+      String comfyUiHost,
       boolean actionsEnabled,
       boolean moodEnabled,
       boolean thoughtsEnabled,

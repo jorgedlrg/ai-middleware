@@ -93,6 +93,7 @@ public class Settings extends Entity {
 
   public void setComfyUiHost(String comfyUiHost) {
     this.comfyUiHost = comfyUiHost;
+    validate();
   }
 
   public void setActionsEnabled(boolean actionsEnabled) {
