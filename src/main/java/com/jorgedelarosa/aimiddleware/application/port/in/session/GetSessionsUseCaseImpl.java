@@ -27,8 +27,9 @@ public class GetSessionsUseCaseImpl implements GetSessionsUseCase {
         .map(this::toDto)
         .sorted(
             Comparator.comparing(
-                    (SessionDto dto) -> dto.lastActivity() != null ? dto.lastActivity() : java.time.Instant.MIN,
-                    Comparator.nullsLast(Comparator.reverseOrder())))
+                (SessionDto dto) ->
+                    dto.lastActivity() != null ? dto.lastActivity() : java.time.Instant.MIN,
+                Comparator.nullsLast(Comparator.reverseOrder())))
         .toList();
   }
 
@@ -53,9 +54,7 @@ public class GetSessionsUseCaseImpl implements GetSessionsUseCase {
             .toList();
 
     var lastActivity =
-        session.getLastInteraction() != null
-            ? session.getLastInteraction().getTimestamp()
-            : null;
+        session.getLastInteraction() != null ? session.getLastInteraction().getTimestamp() : null;
 
     return new SessionDto(
         session.getId(),

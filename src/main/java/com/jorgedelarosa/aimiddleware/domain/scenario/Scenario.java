@@ -156,7 +156,8 @@ public class Scenario extends AggregateRoot {
             },
             () -> {
               throw new RuntimeException(
-                  String.format("Introduction %s not found in scenario %s", introductionId, getId()));
+                  String.format(
+                      "Introduction %s not found in scenario %s", introductionId, getId()));
             });
   }
 

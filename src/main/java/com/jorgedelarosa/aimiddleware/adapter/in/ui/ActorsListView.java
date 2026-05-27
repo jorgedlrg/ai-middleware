@@ -51,8 +51,7 @@ public class ActorsListView extends Composite<VerticalLayout> implements BeforeE
   private void applyFilterAndSort() {
     List<ActorDto> dtos = getActorsUseCase.execute();
 
-    String searchText =
-        searchField.getValue() != null ? searchField.getValue().toLowerCase() : "";
+    String searchText = searchField.getValue() != null ? searchField.getValue().toLowerCase() : "";
     List<ActorDto> filtered =
         dtos.stream().filter(dto -> dto.name().toLowerCase().contains(searchText)).toList();
 

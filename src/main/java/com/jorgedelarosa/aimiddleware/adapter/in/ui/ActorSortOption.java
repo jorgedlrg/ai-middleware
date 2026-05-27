@@ -4,7 +4,6 @@ import com.jorgedelarosa.aimiddleware.application.port.in.actor.GetActorsUseCase
 import java.util.Comparator;
 
 public enum ActorSortOption implements SortableEnum<ActorDto> {
-
   NAME_ASC("Name (A-Z)", Comparator.comparing(ActorDto::name)),
   NAME_DESC("Name (Z-A)", Comparator.comparing(ActorDto::name).reversed()),
   MODIFIED_DESC(

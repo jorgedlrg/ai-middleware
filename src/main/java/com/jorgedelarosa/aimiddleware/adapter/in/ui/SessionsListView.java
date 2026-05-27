@@ -32,7 +32,8 @@ public class SessionsListView extends VerticalLayout {
 
   private List<GetSessionsUseCase.SessionDto> allSessions;
 
-  public SessionsListView(GetSessionsUseCase getSessionsUseCase, GetScenariosUseCase getScenariosUseCase) {
+  public SessionsListView(
+      GetSessionsUseCase getSessionsUseCase, GetScenariosUseCase getScenariosUseCase) {
     this.getSessionsUseCase = getSessionsUseCase;
     this.getScenariosUseCase = getScenariosUseCase;
 
@@ -73,10 +74,26 @@ public class SessionsListView extends VerticalLayout {
     sessionsGrid.setWidthFull();
     sessionsGrid.setHeightFull();
 
-    sessionsGrid.addColumn(GetSessionsUseCase.SessionDto::scenario).setHeader("Scenario").setSortable(true).setFlexGrow(2);
-    sessionsGrid.addColumn(dto -> String.join(", ", dto.participantNames())).setHeader("Participants").setSortable(true).setFlexGrow(4);
-    sessionsGrid.addColumn(dto -> formatLastActivity(dto.lastActivity())).setHeader("Last Activity").setSortable(true).setFlexGrow(1);
-    sessionsGrid.addColumn(GetSessionsUseCase.SessionDto::interactionCount).setHeader("Messages").setSortable(true).setFlexGrow(1);
+    sessionsGrid
+        .addColumn(GetSessionsUseCase.SessionDto::scenario)
+        .setHeader("Scenario")
+        .setSortable(true)
+        .setFlexGrow(2);
+    sessionsGrid
+        .addColumn(dto -> String.join(", ", dto.participantNames()))
+        .setHeader("Participants")
+        .setSortable(true)
+        .setFlexGrow(4);
+    sessionsGrid
+        .addColumn(dto -> formatLastActivity(dto.lastActivity()))
+        .setHeader("Last Activity")
+        .setSortable(true)
+        .setFlexGrow(1);
+    sessionsGrid
+        .addColumn(GetSessionsUseCase.SessionDto::interactionCount)
+        .setHeader("Messages")
+        .setSortable(true)
+        .setFlexGrow(1);
 
     sessionsGrid.addItemClickListener(sessionListener());
 

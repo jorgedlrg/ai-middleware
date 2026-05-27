@@ -194,7 +194,8 @@ public class SessionEditorView extends VerticalLayout
   private final Renderer<GetActorsUseCase.ActorDto> actorComboRenderer =
       new ComponentRenderer<>(
           actor -> {
-            Image portrait = new Image("/api/v1/actor/actors/" + actor.id() + "/portrait", "Portrait");
+            Image portrait =
+                new Image("/api/v1/actor/actors/" + actor.id() + "/portrait", "Portrait");
             portrait.setMaxWidth("64px");
             portrait.setMinWidth("64px");
             return new Div(portrait, new Text(actor.name()));

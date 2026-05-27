@@ -62,7 +62,7 @@ public class NextInteractionUseCaseImpl implements NextInteractionUseCase {
 
     try {
       session.setLastInteraction(session.getNextInteraction());
-      //FIXME: I don't like using a catch for logic
+      // FIXME: I don't like using a catch for logic
     } catch (NoSuchElementException ex) {
       log.debug(
           String.format(

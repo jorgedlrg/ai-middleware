@@ -93,8 +93,7 @@ public class ActorEditorView extends VerticalLayout
       pageTitle = "Actor Editor - " + actorDto.name();
     } else {
       actorDto =
-          new GetActorDetailsUseCase.ActorDto(
-              null, "", "", "", Optional.empty(), Optional.empty());
+          new GetActorDetailsUseCase.ActorDto(null, "", "", "", Optional.empty(), Optional.empty());
       pageTitle = "Actor Editor - new";
     }
     rebuildEditor();

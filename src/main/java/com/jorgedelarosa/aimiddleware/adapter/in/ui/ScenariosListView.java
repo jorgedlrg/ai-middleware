@@ -38,10 +38,26 @@ public class ScenariosListView extends VerticalLayout {
     scenariosGrid.setWidthFull();
     scenariosGrid.setHeightFull();
 
-    scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::name).setHeader("Scenario").setSortable(true).setFlexGrow(1);
-    scenariosGrid.addColumn(dto -> String.join(", ", dto.contextNames())).setHeader("Contexts").setSortable(true).setFlexGrow(3);
-    scenariosGrid.addColumn(dto -> String.join(", ", dto.roleNames())).setHeader("Roles").setSortable(true).setFlexGrow(3);
-    scenariosGrid.addColumn(GetScenariosUseCase.ScenarioDto::introductionCount).setHeader("Intro").setSortable(true).setFlexGrow(0);
+    scenariosGrid
+        .addColumn(GetScenariosUseCase.ScenarioDto::name)
+        .setHeader("Scenario")
+        .setSortable(true)
+        .setFlexGrow(1);
+    scenariosGrid
+        .addColumn(dto -> String.join(", ", dto.contextNames()))
+        .setHeader("Contexts")
+        .setSortable(true)
+        .setFlexGrow(3);
+    scenariosGrid
+        .addColumn(dto -> String.join(", ", dto.roleNames()))
+        .setHeader("Roles")
+        .setSortable(true)
+        .setFlexGrow(3);
+    scenariosGrid
+        .addColumn(GetScenariosUseCase.ScenarioDto::introductionCount)
+        .setHeader("Intro")
+        .setSortable(true)
+        .setFlexGrow(0);
 
     scenariosGrid.addItemClickListener(editScenarioListener());
 

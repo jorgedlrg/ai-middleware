@@ -4,5 +4,5 @@ import java.util.Map;
 
 public interface ComfyUiOutPort {
 
-    String queuePrompt(Map<String, Object> workflow, String clientId, String relativePath);
+  String queuePrompt(Map<String, Object> workflow, String clientId, String relativePath);
 }

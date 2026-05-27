@@ -17,103 +17,109 @@ import org.springframework.stereotype.Component;
 @Component
 public class ComfyUiAdapter implements ComfyUiOutPort {
 
-    private static final UUID USER_ID = UUID.fromString("857fa610-b987-454c-96c3-bbf5354f13a0");
+  private static final UUID USER_ID = UUID.fromString("857fa610-b987-454c-96c3-bbf5354f13a0");
 
-    private final AssetRepository assetRepository;
-    private final GetUserByIdOutPort getUserByIdOutPort;
+  private final AssetRepository assetRepository;
+  private final GetUserByIdOutPort getUserByIdOutPort;
 
-    private ComfyUiClient client;
-    private ComfyUiWebSocketListener webSocketListener;
-    private volatile boolean initialized = false;
+  private ComfyUiClient client;
+  private ComfyUiWebSocketListener webSocketListener;
+  private volatile boolean initialized = false;
 
-    public ComfyUiAdapter(AssetRepository assetRepository, GetUserByIdOutPort getUserByIdOutPort) {
-        this.assetRepository = assetRepository;
-        this.getUserByIdOutPort = getUserByIdOutPort;
-    }
+  public ComfyUiAdapter(AssetRepository assetRepository, GetUserByIdOutPort getUserByIdOutPort) {
+    this.assetRepository = assetRepository;
+    this.getUserByIdOutPort = getUserByIdOutPort;
+  }
 
-    private void initializeIfNeeded() {
+  private void initializeIfNeeded() {
+    if (!initialized) {
+      synchronized (this) {
         if (!initialized) {
-            synchronized (this) {
-                if (!initialized) {
-                    User user = getUserByIdOutPort.query(USER_ID).orElseThrow(() -> new RuntimeException("User not found"));
-                    String comfyUiHost = user.getSettings().getComfyUiHost();
+          User user =
+              getUserByIdOutPort
+                  .query(USER_ID)
+                  .orElseThrow(() -> new RuntimeException("User not found"));
+          String comfyUiHost = user.getSettings().getComfyUiHost();
 
-                    this.client = new ComfyUiClient(comfyUiHost);
+          this.client = new ComfyUiClient(comfyUiHost);
 
-                    this.webSocketListener = new ComfyUiWebSocketListener(
-                            comfyUiHost,
-                            UUID.randomUUID().toString(),
-                            this::onPromptComplete,
-                            this::onPromptError
-                    );
-                    this.webSocketListener.start();
-                    initialized = true;
-                }
+          this.webSocketListener =
+              new ComfyUiWebSocketListener(
+                  comfyUiHost,
+                  UUID.randomUUID().toString(),
+                  this::onPromptComplete,
+                  this::onPromptError);
+          this.webSocketListener.start();
+          initialized = true;
+        }
+      }
+    }
+  }
+
+  @Override
+  public String queuePrompt(Map<String, Object> workflow, String clientId, String relativePath) {
+    initializeIfNeeded();
+    String promptId = client.queuePrompt(workflow, clientId);
+    promptToRelativePath.put(promptId, relativePath);
+    log.info("Queued prompt {} with relativePath {}", promptId, relativePath);
+    return promptId;
+  }
+
+  private final java.util.concurrent.ConcurrentHashMap<String, String> promptToRelativePath =
+      new java.util.concurrent.ConcurrentHashMap<>();
+
+  private void onPromptComplete(String promptId) {
+    String relativePath = promptToRelativePath.remove(promptId);
+    if (relativePath == null) {
+      log.warn("No relativePath found for prompt {}", promptId);
+      return;
+    }
+    try {
+      ComfyUiHistoryResponse history = client.getHistory(promptId);
+      if (history.history() == null || history.history().isEmpty()) {
+        log.warn("No history found for prompt {}", promptId);
+        return;
+      }
+      String parentDir =
+          Paths.get(relativePath).getParent() != null
+              ? Paths.get(relativePath).getParent().toString()
+              : "";
+      String filename = Paths.get(relativePath).getFileName().toString();
+      int index = 0;
+      for (var entry : history.history().entrySet()) {
+        ComfyUiHistoryResponse.PromptHistory promptHistory = entry.getValue();
+        if (promptHistory.outputs() != null) {
+          for (ComfyUiHistoryResponse.OutputNode outputNode : promptHistory.outputs()) {
+            if (outputNode.images() != null) {
+              for (ComfyUiHistoryResponse.ImageOutput image : outputNode.images()) {
+                byte[] imageData =
+                    client.getImage(image.filename(), image.subfolder(), image.type());
+                String finalFilename = index == 0 ? filename : generateFilename(filename, index);
+                assetRepository.save(parentDir, finalFilename, imageData);
+                log.info("Saved image to {}/{}", parentDir, finalFilename);
+                index++;
+              }
             }
+          }
         }
+      }
+    } catch (Exception e) {
+      log.error("Failed to process prompt completion for {}", promptId, e);
     }
+  }
 
-    @Override
-    public String queuePrompt(Map<String, Object> workflow, String clientId, String relativePath) {
-        initializeIfNeeded();
-        String promptId = client.queuePrompt(workflow, clientId);
-        promptToRelativePath.put(promptId, relativePath);
-        log.info("Queued prompt {} with relativePath {}", promptId, relativePath);
-        return promptId;
+  private void onPromptError(String promptId) {
+    promptToRelativePath.remove(promptId);
+    log.warn("Prompt {} failed", promptId);
+  }
+
+  private String generateFilename(String baseFilename, int index) {
+    int dotIndex = baseFilename.lastIndexOf('.');
+    if (dotIndex > 0) {
+      String name = baseFilename.substring(0, dotIndex);
+      String ext = baseFilename.substring(dotIndex);
+      return name + "_" + index + ext;
     }
-
-    private final java.util.concurrent.ConcurrentHashMap<String, String> promptToRelativePath = new java.util.concurrent.ConcurrentHashMap<>();
-
-    private void onPromptComplete(String promptId) {
-        String relativePath = promptToRelativePath.remove(promptId);
-        if (relativePath == null) {
-            log.warn("No relativePath found for prompt {}", promptId);
-            return;
-        }
-        try {
-            ComfyUiHistoryResponse history = client.getHistory(promptId);
-            if (history.history() == null || history.history().isEmpty()) {
-                log.warn("No history found for prompt {}", promptId);
-                return;
-            }
-            String parentDir = Paths.get(relativePath).getParent() != null
-                    ? Paths.get(relativePath).getParent().toString()
-                    : "";
-            String filename = Paths.get(relativePath).getFileName().toString();
-            int index = 0;
-            for (var entry : history.history().entrySet()) {
-                ComfyUiHistoryResponse.PromptHistory promptHistory = entry.getValue();
-                if (promptHistory.outputs() != null) {
-                    for (ComfyUiHistoryResponse.OutputNode outputNode : promptHistory.outputs()) {
-                        if (outputNode.images() != null) {
-                            for (ComfyUiHistoryResponse.ImageOutput image : outputNode.images()) {
-                                byte[] imageData = client.getImage(image.filename(), image.subfolder(), image.type());
-                                String finalFilename = index == 0 ? filename : generateFilename(filename, index);
-                                assetRepository.save(parentDir, finalFilename, imageData);
-                                log.info("Saved image to {}/{}", parentDir, finalFilename);
-                                index++;
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            log.error("Failed to process prompt completion for {}", promptId, e);
-        }
-    }
-
-    private void onPromptError(String promptId) {
-        promptToRelativePath.remove(promptId);
-        log.warn("Prompt {} failed", promptId);
-    }
-
-    private String generateFilename(String baseFilename, int index) {
-        int dotIndex = baseFilename.lastIndexOf('.');
-        if (dotIndex > 0) {
-            String name = baseFilename.substring(0, dotIndex);
-            String ext = baseFilename.substring(dotIndex);
-            return name + "_" + index + ext;
-        }
-        return baseFilename + "_" + index;
-    }
+    return baseFilename + "_" + index;
+  }
 }

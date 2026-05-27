@@ -137,9 +137,8 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
 
   private ComponentEventListener<ClickEvent<Button>> importCharacterListener() {
     return (ClickEvent<Button> t) -> {
-      List<String> altGreetings = card.data().alternate_greetings() != null
-          ? card.data().alternate_greetings()
-          : List.of();
+      List<String> altGreetings =
+          card.data().alternate_greetings() != null ? card.data().alternate_greetings() : List.of();
       importCharacterCardUseCase.execute(
           new ImportCharacterCardUseCase.Command(
               actorEditorLayout.getNameValue(),
@@ -150,7 +149,8 @@ public class ActorImportView extends VerticalLayout implements BeforeEnterObserv
               altGreetings,
               portraitBytes));
       t.getSource().getUI().ifPresent(ui -> ui.navigate("actors-list"));
-      Notification notification = Notification.show(actorEditorLayout.getNameValue() + " imported!");
+      Notification notification =
+          Notification.show(actorEditorLayout.getNameValue() + " imported!");
       notification.addThemeVariants(NotificationVariant.LUMO_SUCCESS);
     };
   }
